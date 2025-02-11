@@ -1,0 +1,48 @@
+/* Nord theme <https://www.nordtheme.com> */
+:root {
+  --bg1: #2e3440;
+  --bg2: #3b4252;
+  --bg3: #434c5e;
+  --bg4: #4c566a;
+
+  --fg1: #eceff4;
+  --fg2: #e5e9f0;
+  --fg3: #d8dee9;
+
+  --emphasis: #88c0d0;
+  --emphasis-dark: #5e81ac;
+
+  --red: #bf616a;
+  --green: #a3be8c;
+
+  --fg-emphasis: var(--bg1);
+}
+
+* {
+  color: var(--fg1);
+
+  font-family: 'Lexend', sans-serif;
+  font-optical-sizing: auto;
+}
+
+/* As it should be */
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+
+  background-color: var(--bg2);
+}
+
+/* Annoying af to work with */
+h1,h2,h3,h4,h5,h6 {
+  margin: 0;
+}
+
+/* Custom class notations */
+.link {
+  &:active {
+    color: var(--emphasis-dark);
+  }
+  color: var(--emphasis);
+}
