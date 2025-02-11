@@ -1,8 +1,7 @@
-import pg, { Client, Pool, type PoolClient } from 'pg';
+import pg, { Client, Pool, type PoolClient, type PoolConfig } from 'pg';
 import 'dotenv/config';
 
-
-class DBConnection {
+export class Connection {
   connection: PoolClient | Client;
 
   constructor (client: PoolClient | Client) {
@@ -13,19 +12,42 @@ class DBConnection {
     return (await this.connection.query<T>(query, args)).rows;
   }
   
-  async query <T extends pg.QueryResultRow>(query: string, ...args: any[]): Promise<T | undefined> {
+  async queryOne <T extends pg.QueryResultRow>(query: string, ...args: any[]): Promise<T | undefined> {
     return (await this.connection.query<T>(query, args)).rows[0];
   }
-}
 
-class Database extends DBConnection {
-  constructor (config: pg.PoolConfig) {
-    const pool = new Pool(config);
-    super();
+  async doTransaction (transaction: (cursor: Connection) => Promise<void>): Promise<void> {
+    await transaction(this);
   }
 }
 
-export const db: Database = new Database({
+export class PoolConnection extends Connection {
+  pool: Pool;
+
+  constructor (pool: Pool, connection: PoolClient) {
+    super(connection);
+    this.pool = pool;
+  }
+
+  static async fromConfig (config: PoolConfig): Promise<PoolConnection> {
+    const pool = new Pool(config);
+    const connection = await pool.connect();
+  
+    return new PoolConnection(pool, connection);
+  }
+
+  async getCursor(): Promise<Connection> {
+    return new Connection(await this.pool.connect());
+  }
+
+  override async doTransaction(transaction: (cursor: Connection) => Promise<void>): Promise<void> {
+    const cursor = await this.getCursor();
+
+    await cursor.doTransaction(transaction);
+  }
+}
+
+export const db: PoolConnection = await PoolConnection.fromConfig({
   host: process.env.PGHOST,
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,
