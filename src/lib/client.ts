@@ -87,6 +87,15 @@ export class Client {
   static async registerNewClient(username: string, password: string, email: string): Promise<Client | null> {
     const salt = this.genSalt();
     const hash = this.hashPassword(password, salt);
+
+    // Check for dupes
+    const existing = await db.queryOne<client>(`
+      select * from clients
+      where
+        username = $1::text
+        or email = $2::text`,username, email);
+
+    if (existing) return null;
     
     const client = await db.queryOne<client>(`
       insert into

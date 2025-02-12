@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- [ ] Login & registering
+- [x] Login & registering
 - [ ] List of available games (and categories)
 - [ ] Per-game speedrunning ranking
 - [ ] Submitting speedruns
