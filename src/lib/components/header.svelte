@@ -7,7 +7,7 @@
 
 <style>
   header {
-    background-color: var(--bg3);
+    background-color: var(--bg2);
     height: 5rem;
     display: flex;
     flex-direction: row;
