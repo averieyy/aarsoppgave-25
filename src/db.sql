@@ -12,6 +12,15 @@ create table clients (
   joined timestamp not null default statement_timestamp()
 );
 
+-- Tokens
+drop table if exists tokens cascade;
+
+create table tokens (
+  content text not null primary key,
+  client_id int not null references clients(id),
+  expires timestamp not null default statement_timestamp() + interval '7 days'
+);
+
 -- Games
 drop table if exists games cascade;
 

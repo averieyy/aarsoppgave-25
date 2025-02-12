@@ -1,10 +1,10 @@
-import pg, { Client, Pool, type PoolClient, type PoolConfig } from 'pg';
+import pg from 'pg';
 import 'dotenv/config';
 
 export class Connection {
-  connection: PoolClient | Client;
+  connection: pg.PoolClient | pg.Client;
 
-  constructor (client: PoolClient | Client) {
+  constructor (client: pg.PoolClient | pg.Client) {
     this.connection = client;
   }
   
@@ -16,21 +16,25 @@ export class Connection {
     return (await this.connection.query<T>(query, args)).rows[0];
   }
 
+  async execute (query: string, ...args: any[]) {
+    await this.connection.query(query, args);
+  }
+
   async doTransaction (transaction: (cursor: Connection) => Promise<void>): Promise<void> {
     await transaction(this);
   }
 }
 
 export class PoolConnection extends Connection {
-  pool: Pool;
+  pool: pg.Pool;
 
-  constructor (pool: Pool, connection: PoolClient) {
+  constructor (pool: pg.Pool, connection: pg.PoolClient) {
     super(connection);
     this.pool = pool;
   }
 
-  static async fromConfig (config: PoolConfig): Promise<PoolConnection> {
-    const pool = new Pool(config);
+  static async fromConfig (config: pg.PoolConfig): Promise<PoolConnection> {
+    const pool = new pg.Pool(config);
     const connection = await pool.connect();
   
     return new PoolConnection(pool, connection);
