@@ -1,5 +1,5 @@
 import type { Cookies } from "@sveltejs/kit";
-import type { client } from "./types";
+import type { client, frontendclient } from "./types";
 import { db } from "./db";
 import { randomBytes, createHash } from 'crypto';
 
@@ -32,12 +32,16 @@ export class Client {
       from clients as c
         where t.client_id = c.id
         and t.content = $1::text
-        and t.expires < now()
+        and t.expires > now()
       returning c.*`, token);
     if (!client) return null;
 
     this.setToken(cookies, token);
 
+    return this.fromStruct(client);
+  }
+
+  static fromStruct(client: client): Client {
     return new Client(
       client.username,
       client.hash,
@@ -84,24 +88,21 @@ export class Client {
     const salt = this.genSalt();
     const hash = this.hashPassword(password, salt);
     
-    const user = await db.queryOne<client>(`
+    const client = await db.queryOne<client>(`
       insert into
         clients (username, hash, salt, email)
         values ($1::text, $2::text, $3::text, $4::text)
       returning *`, username, hash, salt, email); 
-    if (!user) return null;
+    if (!client) return null;
     
-    return new Client(
-      user.username,
-      user.hash,
-      user.salt,
-      user.email,
-      user.id,
-      user.joined
-    );
+    return Client.fromStruct(client);
   }
 
-  toJSON() {
-
+  toJSON(): frontendclient {
+    return {
+      username: this.username,
+      id: this.id,
+      joined: this.joined
+    }
   }
 }

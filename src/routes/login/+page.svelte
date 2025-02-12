@@ -11,9 +11,13 @@
   let password: string = $state('');
 
   async function submit () {
+    if (!username || !password) {
+      error = 'Username or password missing';
+      return;
+    }
     const resp = await fetch('/api/login', {
       method: 'POST',
-      body: JSON.stringify({}),
+      body: JSON.stringify({ username, password }),
     });
 
     if (!resp.ok) {
@@ -35,8 +39,8 @@
           {error}
         </span>
       {/if}
-      <input bind:value={username} type="text" placeholder="Username" maxlength="24">
-      <input bind:value={password} type="password" placeholder="Password">
+      <input required bind:value={username} type="text" placeholder="Username" maxlength="24">
+      <input required bind:value={password} type="password" placeholder="Password">
       <input type="submit" value="Log in">
     </form>
     <a href="/register?redirect={redirect}" class="link">Register</a>

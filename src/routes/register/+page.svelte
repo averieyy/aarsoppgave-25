@@ -40,9 +40,9 @@
           {error}
         </span>
       {/if}
-      <input bind:value={username} type="text" placeholder="Username" maxlength="24">
-      <input bind:value={email} type="email" placeholder="Email address">
-      <input bind:value={password} type="password" placeholder="Password">
+      <input required bind:value={username} type="text" placeholder="Username" maxlength="24">
+      <input required bind:value={email} type="email" placeholder="Email address">
+      <input required bind:value={password} type="password" placeholder="Password">
       <input type="submit" value="Register">
     </form>
     <a href="/login?redirect={redirect}" class="link">Log in</a>
