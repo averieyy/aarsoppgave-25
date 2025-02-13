@@ -1,7 +1,7 @@
 import { Client } from "$lib/client";
-import type { PageServerLoad } from "./$types";
+import type { LayoutServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ cookies }) => {
+export const load: LayoutServerLoad = async ({ cookies }) => {
   const client = await Client.getClientFromCookies(cookies);
 
   return { client: client?.toJSON() }
