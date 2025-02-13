@@ -31,7 +31,6 @@
 </script>
 
 <div class="page">
-  <Header />
   <main class="innerpage">
     <form onsubmit={submit}>
       <h2>Register</h2>

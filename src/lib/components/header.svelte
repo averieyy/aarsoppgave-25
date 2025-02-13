@@ -1,8 +1,17 @@
 <script lang="ts">
+  const { client }: { client: undefined | object } = $props();
 </script>
 
 <header>
   <h1>Speedrun</h1>
+  <div class="client">
+    {#if client}
+      <a href="/settings" class="button">Settings</a>
+    {:else}
+      <a href="/login" class="button">Login</a>
+      <a href="/register" class="button">Register</a>
+    {/if}
+  </div>
 </header>
 
 <style>
@@ -14,5 +23,12 @@
     padding: 1rem;
     box-sizing: border-box;
     align-items: center;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+  .client {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
   }
 </style>

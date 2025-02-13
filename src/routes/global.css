@@ -85,6 +85,10 @@ input:not([type="submit"]), .input {
   padding: .5rem;
   height: 3rem;
   font-size: .9rem;
+  text-decoration: none;
+
+  display: flex;
+  align-items: center;
 
   box-sizing: border-box;;
 
