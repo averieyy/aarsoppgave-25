@@ -1,13 +1,14 @@
-<script lang="ts">
+<script>
   import Header from "$lib/components/header.svelte";
 
   const { data } = $props();
   let { client } = $state(data);
+
 </script>
 
 <div class="page">
-  <Header client={client}/>
-  <div class="innerpage">
+  <Header client={client} />
+  <main class="innerpage">
 
-  </div>
+  </main>
 </div>

@@ -6,7 +6,7 @@
   <h1>Speedrun</h1>
   <div class="client">
     {#if client}
-      <a href="/settings" class="button">Settings</a>
+      <a href="/user" class="button">My page</a>
     {:else}
       <a href="/login" class="button">Login</a>
       <a href="/register" class="button">Register</a>
