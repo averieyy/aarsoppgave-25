@@ -89,6 +89,7 @@ input:not([type="submit"]), .input {
 
   display: flex;
   align-items: center;
+  justify-content: center;
 
   box-sizing: border-box;;
 
@@ -108,4 +109,19 @@ input:not([type="submit"]), .input {
   text-align: center;
   color: var(--red);
   font-style: italic;
+}
+
+.innerpage:has(.centered) {
+  align-items: center;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+
+  max-width: 100%;
+  width: 500px;
+  min-width: 300px;
+  box-sizing: border-box;
 }
