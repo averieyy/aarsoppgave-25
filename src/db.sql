@@ -28,7 +28,17 @@ create table games (
   id serial not null primary key,
   name text not null,
   url_id varchar(32) not null,
+  description text not null,
   created timestamp not null default statement_timestamp()
+);
+
+-- Game tags
+drop table if exists game_tags cascade;
+
+create table game_tags (
+  game_id int not null references games(id),
+  tag varchar(24) not null,
+  primary key (game_id, tag)
 );
 
 -- Game members
@@ -37,6 +47,7 @@ drop table if exists game_members cascade;
 create table game_members (
   client_id int not null references clients(id),
   game_id int not null references games(id),
+  admin boolean not null default false,
   primary key (client_id, game_id)
 );
 

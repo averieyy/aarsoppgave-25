@@ -20,8 +20,22 @@ export class Connection {
     await this.connection.query(query, args);
   }
 
-  async doTransaction (transaction: (cursor: Connection) => Promise<void>): Promise<void> {
-    await transaction(this);
+  async doTransaction(transaction: (cursor: Connection) => Promise<boolean | void>): Promise<boolean> {
+    this.execute('begin');
+    
+    let resp;
+
+    try {
+      resp = await transaction(this);
+      if (resp == false) this.execute('rollback');
+      else this.execute('commit');
+    }
+    catch (e) {
+      console.error(e);
+      this.execute('rollback');
+    }
+
+    return resp != false;
   }
 }
 
@@ -44,10 +58,10 @@ export class PoolConnection extends Connection {
     return new Connection(await this.pool.connect());
   }
 
-  override async doTransaction(transaction: (cursor: Connection) => Promise<void>): Promise<void> {
+  override async doTransaction(transaction: (cursor: Connection) => Promise<boolean | void>): Promise<boolean> {
     const cursor = await this.getCursor();
 
-    await cursor.doTransaction(transaction);
+    return await cursor.doTransaction(transaction);
   }
 }
 
