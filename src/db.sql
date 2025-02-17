@@ -27,7 +27,7 @@ drop table if exists games cascade;
 create table games (
   id serial not null primary key,
   name text not null,
-  url_id varchar(32) not null,
+  url_id varchar(32) not null unique,
   description text not null,
   created timestamp not null default statement_timestamp()
 );
