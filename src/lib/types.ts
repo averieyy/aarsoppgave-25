@@ -12,3 +12,17 @@ export interface frontendclient {
   id: number,
   joined: Date,
 }
+
+export interface gamemember {
+  game_id: number,
+  client_id: number,
+  admin: boolean,
+}
+
+export interface game {
+  id: number,
+  name: string,
+  url_id: string,
+  description: string,
+  created: Date,
+}

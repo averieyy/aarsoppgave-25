@@ -2,6 +2,7 @@ import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { Client } from "$lib/client";
 import { db } from "$lib/db";
+import type { game } from "$lib/types";
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
   const client = await Client.getClientFromCookies(cookies);
@@ -25,7 +26,10 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   const urlTitle = title
     .toLowerCase()
     .replaceAll(/ +/g, '_')
-    .replaceAll(/[^a-z0-9_]/g, '')
+    .replaceAll(/[^a-z0-9_]/g, '');
+
+  const existing = await db.queryOne<game>('select * from games where url_id = $1::text', urlTitle);
+  if (existing) return json({ message: 'Name already in use' }, { status: 409 });
 
   let idresponse: {id: number} | undefined;
 
