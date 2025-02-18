@@ -51,4 +51,17 @@ create table game_members (
   primary key (client_id, game_id)
 );
 
+-- Speedruns
+drop table if exists speedrun;
+
+create table speedrun (
+  client_id int not null references clients(id),
+  game_id int not null references games(id),
+  submitted timestamp not null default statement_timestamp(),
+  score int not null,
+  description text,
+  verified boolean not null default false,
+  deleted boolean not null default false
+);
+
 commit;

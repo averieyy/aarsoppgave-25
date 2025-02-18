@@ -13,8 +13,32 @@ export const load: PageServerLoad = async ({ parent, params }) => {
     : null;
   
   const game = await db.queryOne<game>('select * from games where url_id = $1::text', url_id);
-
-  if (!game) redirect(302, '/');
   
-  return { gameMember, client, game }
+  if (!game) redirect(302, '/');
+
+  const speedruns = await db.queryAll<{
+    submitted: Date,
+    score: number,
+    description: string,
+    verified: boolean,
+    deleted: boolean,
+    username: string
+  }>(`select
+      s.submitted,
+      s.score,
+      s.description,
+      s.verified,
+      s.deleted,
+      c.username
+    from
+      speedrun s
+      join clients c on s.client_id = c.id
+    where
+      s.verified = true
+      and s.deleted = false
+      and s.game_id = $1::integer
+    order by s.score asc
+    limit 50`, game.id);
+  
+  return { gameMember, client, game, speedruns }
 };

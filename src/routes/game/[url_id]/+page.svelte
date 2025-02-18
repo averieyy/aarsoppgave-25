@@ -1,8 +1,9 @@
 <script lang="ts">
-    import Header from "$lib/components/header.svelte";
+  import Header from "$lib/components/header.svelte";
+    import Speedrunlist from "$lib/components/speedrunlist.svelte";
 
   const { data } = $props();
-  let { client, game, gameMember } = $state(data);
+  let { client, game, gameMember, speedruns } = $state(data);
 </script>
 
 <div class="page">
@@ -10,7 +11,7 @@
   <div class="innerpage">
     <main>
       <div class="speedruns">
-        <span>No speedruns yet. Be the first one!</span>
+        <Speedrunlist speedruns={speedruns} />
       </div>
       <div class="info">
         <h1>{game.name}</h1>
