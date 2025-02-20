@@ -16,6 +16,8 @@
   --green: #a3be8c;
 
   --fg-emphasis: var(--bg1);
+
+  --monospaced: 'Jetbrains Mono', monospace;
 }
 
 * {

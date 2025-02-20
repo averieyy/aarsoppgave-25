@@ -1,6 +1,6 @@
 <script lang="ts">
   import Header from "$lib/components/header.svelte";
-    import Speedrunlist from "$lib/components/speedrunlist.svelte";
+  import Speedrunlist from "$lib/components/speedrunlist.svelte";
 
   const { data } = $props();
   let { client, game, gameMember, speedruns } = $state(data);
