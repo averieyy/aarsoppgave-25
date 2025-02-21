@@ -30,6 +30,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Speedrun - Register</title>
+</svelte:head>
+
 <div class="page">
   <main class="innerpage">
     <form onsubmit={submit}>

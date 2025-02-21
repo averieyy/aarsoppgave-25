@@ -9,6 +9,10 @@
   let time = $state(0);
 </script>
 
+<svelte:head>
+  <title>Speedrun - Register new run</title>
+</svelte:head>
+
 <div class="page">
   <Header {client} />
   <main class="innerpage">

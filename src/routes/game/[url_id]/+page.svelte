@@ -6,6 +6,10 @@
   let { client, game, gameMember, speedruns } = $state(data);
 </script>
 
+<svelte:head>
+  <title>Speedrun - {game.name}</title>
+</svelte:head>
+
 <div class="page">
   <Header client={client} />
   <div class="innerpage">

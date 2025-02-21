@@ -42,6 +42,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Speedrun - Add new game</title>
+</svelte:head>
+
 <div class="page">
   <Header client={client} />
   <div class="innerpage">

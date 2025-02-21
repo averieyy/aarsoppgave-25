@@ -6,6 +6,10 @@
 
 </script>
 
+<svelte:head>
+  <title>Speedrun - User settings</title>
+</svelte:head>
+
 <div class="page">
   <Header client={client} />
   <main class="innerpage">
