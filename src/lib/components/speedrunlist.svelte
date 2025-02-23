@@ -29,7 +29,7 @@
       <div class="speedrun">
         <div class="time">
           <span class="fulltime">{toTime(speedrun.score)}</span>
-          <span class="mills">:{(speedrun.score % 1000).toString().padStart(3, '0')}</span>
+          <span class="mills">.{(speedrun.score % 1000).toString().padStart(3, '0')}</span>
         </div>
         <div class="namesubmitted">
           <span class="name">

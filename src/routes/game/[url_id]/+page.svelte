@@ -11,11 +11,11 @@
 </svelte:head>
 
 <div class="page">
-  <Header client={client} />
+  <Header {client} />
   <div class="innerpage">
     <main>
       <div class="speedruns">
-        <Speedrunlist speedruns={speedruns} />
+        <Speedrunlist {speedruns} />
       </div>
       <div class="info">
         <h1>{game.name}</h1>
@@ -25,6 +25,13 @@
             {game.description}
           </p>
         </div>
+        {#if gameMember}
+          <a href="/game/{game.url_id}/newrun" class="button">Submit run</a>
+        {:else}
+          <a href="/login?redirect=/game/{game.url_id}/newrun" class="button"
+            >Log in to submit run</a
+          >
+        {/if}
       </div>
     </main>
   </div>
@@ -37,14 +44,20 @@
     }
   }
   h1 {
-    border-bottom: .125rem solid var(--emphasis);
+    border-bottom: 0.125rem solid var(--emphasis);
     font-size: 1.5rem;
+  }
+  .innerpage {
+    align-items: center;
   }
   main {
     display: flex;
-    gap: .5rem;
+    gap: 0.5rem;
     flex-direction: column-reverse;
     flex: 1;
+    max-width: 750px;
+    width: 100%;
+    box-sizing: border-box;
   }
   .speedruns {
     flex: 1;
@@ -55,20 +68,20 @@
     height: fit-content;
     padding: 1rem;
     box-sizing: border-box;
-    gap: .5rem;
+    gap: 0.5rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    border-radius: .5rem;
-    &>.pair {
+    border-radius: 0.5rem;
+    & > .pair {
       display: flex;
       flex-direction: column;
-      gap: .5rem;
+      gap: 0.5rem;
 
-      &>p {
+      & > p {
         padding-left: 1rem;
-        border-left: .125rem solid var(--emphasis);
-        border-radius: .125rem;
+        border-left: 0.125rem solid var(--emphasis);
+        border-radius: 0.125rem;
       }
     }
   }
