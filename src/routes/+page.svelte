@@ -1,8 +1,10 @@
 <script lang="ts">
+  import Gamelist from "$lib/components/gamelist.svelte";
   import Header from "$lib/components/header.svelte";
+  import { toTimeSince } from '$lib/timedisplay';
 
   const { data } = $props();
-  let { client } = $state(data);
+  let { client, lastspeedrungames, games } = $state(data);
 </script>
 
 <svelte:head>
@@ -12,6 +14,90 @@
 <div class="page">
   <Header client={client}/>
   <div class="innerpage">
-
+    <main>
+      <div class="info">
+        <h2>Welcome to speedrun.[tld]</h2>
+        <p>
+          Speedrun.[tld] is a respected website for speedruns of all kinds.
+        </p>
+      </div>
+      <div class="recentruns">
+        <h2>Recent runs</h2>
+        <div class="runlist">
+          {#each lastspeedrungames as speedrun}
+            <div class="recent">
+              <h3>
+                {speedrun.name}
+              </h3>
+              <span>{toTimeSince(speedrun.submitted)}</span>
+            </div>
+          {/each}
+        </div>
+      </div>
+      <div class="games">
+        <h2>Games</h2>
+        <Gamelist games={games} light />
+        <a href="/games" class="button">Show all games</a>
+      </div>
+    </main>
   </div>
 </div>
+
+<style>
+  .innerpage {
+    align-items: center;
+  }
+  h2 {
+    border-bottom: .125rem solid var(--emphasis);
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    width: 750px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+
+    padding: 1rem;
+    background-color: var(--bg2);
+    border-radius: .5rem;
+  }
+  .recentruns {
+    padding: 1rem;
+    border-radius: .5rem;
+    background-color: var(--bg2);
+
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .runlist {
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+
+    gap: .5rem;
+  }
+  .recent {
+    background-color: var(--bg3);
+    padding: .5rem;
+    border-radius: .25rem;
+    
+    height: 7rem;
+    width: 12rem;
+  }
+  .games {
+    padding: 1rem;
+    border-radius: .5rem;
+    background-color: var(--bg2);
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+</style>

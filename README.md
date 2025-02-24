@@ -3,9 +3,9 @@
 ## Requirements
 
 - [x] Login & registering
-- [ ] List of available games (and categories)
-- [ ] Per-game speedrunning ranking
-- [ ] Submitting speedruns
+- [x] List of available games (and categories)
+- [x] Per-game speedrunning ranking
+- [x] Submitting speedruns
   - [ ] Review process?
 - [ ] Creating game categories
 
