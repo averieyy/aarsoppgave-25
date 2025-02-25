@@ -3,7 +3,7 @@
   import Speedrunlist from "$lib/components/speedrunlist.svelte";
 
   const { data } = $props();
-  let { client, game, gameMember, speedruns } = $state(data);
+  let { client, game, member, speedruns } = $state(data);
 </script>
 
 <svelte:head>
@@ -25,13 +25,16 @@
             {game.description}
           </p>
         </div>
-        {#if gameMember}
-          <a href="/game/{game.url_id}/newrun" class="button">Submit run</a>
-        {:else}
-          <a href="/login?redirect=/game/{game.url_id}/newrun" class="button"
-            >Log in to submit run</a
-          >
-        {/if}
+        <div class="actions">
+          {#if member}
+            <a href="/game/{game.url_id}/newrun" class="button">Submit run</a>
+            {#if member.admin}
+              <a href="/game/{game.url_id}/manage" class="button red">Manage game</a>
+            {/if}
+          {:else}
+            <a href="/login?redirect=/game/{game.url_id}/newrun" class="button">Log in to submit run</a>
+          {/if}
+        </div>
       </div>
     </main>
   </div>
@@ -87,5 +90,10 @@
   }
   h3 {
     font-size: 1.2rem;
+  }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
   }
 </style>

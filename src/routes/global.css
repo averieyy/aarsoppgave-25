@@ -93,17 +93,29 @@ input:not([type="submit"]), .input {
   align-items: center;
   justify-content: center;
 
-  box-sizing: border-box;;
+  box-sizing: border-box;
 
   &:hover, &:focus {
     background-color: var(--emphasis);
     color: var(--fg-emphasis);
+    
+    &.red {
+      background-color: var(--red);
+    }
   }
 
   &:active {
     background-color: var(--emphasis-dark);
     border-color: var(--emphasis-dark);
     color: var(--fg-emphasis);
+
+    &.red {
+      background-color: var(--red);
+    }
+  }
+
+  &.red {
+    border-color: var(--red);
   }
 }
 

@@ -4,18 +4,8 @@ import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ parent, params }) => {
-  const { client } = await parent();
-
-  const { url_id } = params;
-
-  const gameMember = client
-    ? await db.queryOne<gamemember>('select m.* from game_members m join games g on g.id = m.game_id where m.client_id = $1::integer and g.url_id = $2::text', client.id, url_id)
-    : null;
+  const { client, game, member } = await parent();
   
-  const game = await db.queryOne<game>('select * from games where url_id = $1::text', url_id);
-  
-  if (!game) redirect(302, '/');
-
   const speedruns = await db.queryAll<{
     submitted: Date,
     score: number,
@@ -40,5 +30,5 @@ export const load: PageServerLoad = async ({ parent, params }) => {
     order by s.score asc
     limit 50`, game.id);
   
-  return { gameMember, client, game, speedruns }
+  return { member, client, game, speedruns }
 };

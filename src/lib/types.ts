@@ -26,3 +26,13 @@ export interface game {
   description: string,
   created: Date,
 }
+
+export interface speedrun {
+  client_id: number,
+  game_id: number,
+  submitted: Date,
+  score: number,
+  description: string,
+  verified: boolean,
+  deleted: boolean
+}

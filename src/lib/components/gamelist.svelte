@@ -26,7 +26,7 @@
   .game {
     background-color: var(--bg2);
     padding: .5rem;
-    border-radius: .5rem;
+    border-radius: .25rem;
     text-decoration: none;
     aspect-ratio: 2 / 1;
     max-height: 9rem;
