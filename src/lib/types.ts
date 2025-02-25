@@ -28,6 +28,7 @@ export interface game {
 }
 
 export interface speedrun {
+  id: number,
   client_id: number,
   game_id: number,
   submitted: Date,

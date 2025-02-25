@@ -55,6 +55,7 @@ create table game_members (
 drop table if exists speedrun;
 
 create table speedrun (
+  id serial not null primary key,
   client_id int not null references clients(id),
   game_id int not null references games(id),
   submitted timestamp not null default statement_timestamp(),

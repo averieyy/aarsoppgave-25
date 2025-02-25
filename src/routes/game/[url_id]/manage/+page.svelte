@@ -1,9 +1,48 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import Header from "$lib/components/header.svelte";
-    import { toTime } from "$lib/timedisplay.js";
+  import { toTime } from "$lib/timedisplay.js";
 
   const { data } = $props();
   let { client, game, speedruns } = $state(data);
+
+  let error = $state('');
+
+  async function verify (speedrun: number) {
+    // remove
+    let oldspeedruns = $state.snapshot(speedruns);
+    speedruns.splice(speedruns.findIndex(s => s.id == speedrun), 1);
+    speedruns = speedruns;
+
+    const resp = await fetch('/api/game/verify', {
+      method: 'POST',
+      body: JSON.stringify({ speedrun }),
+    });
+
+    if (resp.status == 403) await goto(`/game/${game.url_id}`);
+    if (!resp.ok) {
+      speedruns = oldspeedruns;
+      error = (await resp.json()).message;
+    }
+  }
+
+  async function deny (speedrun: number) {
+    // remove
+    let oldspeedruns = $state.snapshot(speedruns);
+    speedruns.splice(speedruns.findIndex(s => s.id == speedrun), 1);
+    speedruns = speedruns;
+
+    const resp = await fetch('/api/game/deny', {
+      method: 'POST',
+      body: JSON.stringify({ speedrun }),
+    });
+
+    if (resp.status == 403) await goto(`/game/${game.url_id}`);
+    if (!resp.ok) {
+      speedruns = oldspeedruns;
+      error = (await resp.json()).message;
+    }
+  }
 </script>
 
 <div class="page">
@@ -29,10 +68,10 @@
                   <p>{speedrun.description}</p>
                 </div>
                 <div class="actions">
-                  <button>
+                  <button onclick={() => verify(speedrun.id)}>
                     ok
                   </button>
-                  <button class="red">
+                  <button class="red" onclick={() => deny(speedrun.id)}>
                     deny
                   </button>
                   <button class="red">
