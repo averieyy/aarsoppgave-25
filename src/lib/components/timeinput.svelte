@@ -1,7 +1,4 @@
 <script lang="ts">
-  let writtenvalue = $state('');
-  let input: HTMLInputElement | undefined = $state();
-
   let { value = $bindable(0) }: { value: number } = $props();
 
   let milliseconds = $state('000');
@@ -9,36 +6,36 @@
   let minutes = $state('00');
   let hours = $state('00');
 
-  function toMilliseconds(time: string): number {
-    milliseconds = time.slice(-3).padStart(3,'0');
-    seconds = time.slice(-5,-3).padStart(2,'0');
-    minutes = time.slice(-7,-5).padStart(2,'0');
-    hours = time.slice(0,-7).padStart(2,'0');
+  function toMilliseconds(): number {
+    const nmilliseconds = Math.min(Math.max(parseInt(milliseconds), 0), 999);
+    const nseconds = Math.min(Math.max(parseInt(seconds), 0), 59);
+    const nminutes = Math.min(Math.max(parseInt(minutes), 0), 59);
+    const nhours = Math.max(parseInt(hours), 0);
 
-    return parseInt(milliseconds)
-      + parseInt(seconds) * 1000
-      + parseInt(minutes) * 60000
-      + parseInt(hours) * 3600000;
+    return nmilliseconds
+      + nseconds * 1000
+      + nminutes * 60000
+      + nhours * 3600000;
   }
 
   $effect(() => {
-    writtenvalue;
+    milliseconds;
+    seconds;
+    minutes;
+    hours;
 
-    if (writtenvalue.match(/[^0-9]/)) writtenvalue = writtenvalue.replaceAll(/[^0-9]/g, '');
-
-    value = toMilliseconds(writtenvalue);
+    value = toMilliseconds();
   });
-</script>
+</script> 
 
-<div class="timeinput input">
-  <input type="text" accept="[0-9]*" bind:this={input} bind:value={writtenvalue}>
-  <span>{hours}</span>
+<div class="timeinput">
+  <input type="text" class="hours" bind:value={hours} placeholder="00">
   <span class="sep">:</span>
-  <span>{minutes}</span>
+  <input type="text" bind:value={minutes} placeholder="00">
   <span class="sep">:</span>
-  <span>{seconds}</span>
+  <input type="text" bind:value={seconds} placeholder="00">
   <span class="sep">.</span>
-  <span>{milliseconds}</span>
+  <input type="text" class="mills" bind:value={milliseconds} placeholder="000">
 </div>
 
 <style>
@@ -46,8 +43,17 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: .5rem;
   }
-  .timeinput>span {
-    font-family: var(--monospaced);
+  .timeinput>input {
+    width: 2rem;
+    text-align: center;
+    padding: .25rem;
+    height: 2rem;
+    border: none;
+
+    &.mills, &.hours {
+      width: 3rem;
+    }
   }
 </style>

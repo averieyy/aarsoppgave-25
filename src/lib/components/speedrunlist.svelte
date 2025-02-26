@@ -58,7 +58,6 @@
     gap: 0;
     height: 3rem;
     align-items: center;
-    width: 5rem;
     overflow: hidden;
 
     &>.mills {
