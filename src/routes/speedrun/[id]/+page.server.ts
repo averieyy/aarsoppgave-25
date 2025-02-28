@@ -12,8 +12,13 @@ export const load: PageServerLoad = async ({ parent, params }) => {
   if (id.toString() != rawid) redirect(302, '/');
 
   const speedrun = await db.queryOne<speedrun & {game: string, game_desc: string, username: string, url_id: string}>('select s.*, g.name as game, g.description as game_desc, g.url_id, c.username from speedrun s join games g on s.game_id = g.id join clients c on c.id = s.client_id where s.id = $1::integer', id);
-
+  
   if (!speedrun) redirect(302, '/');
 
-  return { client, speedrun }
+  const placement = await db.queryOne<{count: string}>('select count(*) as count from speedrun where game_id = $1::integer and score < $2::integer', speedrun.game_id, speedrun.score);
+
+  console.log(placement);
+  
+
+  return { client, speedrun, placement: parseInt(placement?.count || '0') + 1 }
 };

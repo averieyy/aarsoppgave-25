@@ -3,7 +3,7 @@
   import { toTime } from "$lib/timedisplay";
 
   const { data } = $props();
-  let { client, speedrun } = $state(data);
+  let { client, speedrun, placement } = $state(data);
 
   let showmoredesc = $state(false);
 </script>
@@ -24,6 +24,7 @@
         <h3>
           Speedrun in <span class="emphasis">{toTime(speedrun.score)}.{(speedrun.score % 1000).toString().padStart(3,'0')}</span>
         </h3>
+        <span>In {placement}{(10 < placement % 100 && placement % 100 < 20) ? 'th' : (placement % 10 == 1) ? 'st' : (placement % 10 == 2) ? 'nd' : (placement % 10 == 3) ? 'rd' : 'th'} place</span>
         <div class="description">
           <div class="innerdesc {showmoredesc ? 'shown' : ''}">
             <p>
@@ -32,6 +33,7 @@
           </div>
           <button class="moreless" onclick={() => showmoredesc = !showmoredesc}>{#if showmoredesc}Show less{:else}Show more{/if}</button>
         </div>
+        <a href="/user/{speedrun.client_id}" class="button">View user profile</a>
       </div>
     </main>
   </div>
