@@ -33,7 +33,7 @@
           </div>
           <button class="moreless" onclick={() => showmoredesc = !showmoredesc}>{#if showmoredesc}Show less{:else}Show more{/if}</button>
         </div>
-        <a href="/user/{speedrun.client_id}" class="button">View user profile</a>
+        <a href="/user/{speedrun.username}" class="button">View user profile</a>
       </div>
     </main>
   </div>
@@ -82,6 +82,7 @@
     max-height: 6rem;
     overflow: hidden;
     white-space-collapse: preserve;
+    width: 100%;
 
     &.shown {
       max-height: none;

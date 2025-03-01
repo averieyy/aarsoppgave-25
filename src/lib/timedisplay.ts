@@ -4,14 +4,14 @@ export function toTimeSince(date: Date): string {
   if (numeric < 3600000)
     return 'Just now'; // Less than an hour
   if (numeric < 1000 * 60 * 60 * 24)
-    return `${Math.floor(numeric / 3600000)} hours ago`; // Less than a day 
+    return `${Math.floor(numeric / 3600000)} hour${Math.floor(numeric / 3600000) == 1 ? '' : 's'} ago`; // Less than a day 
   if (numeric < 1000 * 60 * 60 * 24 * 7)
-    return `${Math.floor(numeric / (1000 * 60 * 60 * 24))} days ago`; // Less than a week
+    return `${Math.floor(numeric / (1000 * 60 * 60 * 24))} day${Math.floor(numeric / (1000 * 60 * 60 * 24))  == 1 ? '' : 's'} ago`; // Less than a week
   if (numeric < 1000 * 60 * 60 * 24 * 30)
-    return `${Math.floor(numeric / (1000 * 60 * 60 * 24 * 7))} weeks ago` // Less than a month
+    return `${Math.floor(numeric / (1000 * 60 * 60 * 24 * 7))} week${Math.floor(numeric / (1000 * 60 * 60 * 24 * 7)) == 1 ? '' : 's'} ago` // Less than a month
   if (numeric < 1000 * 60 * 60 * 24 * 365)
-    return `${Math.floor(numeric / (1000 * 60 * 60 * 24 * 30))} months ago` // Less than a year
-  else return `${Math.floor(numeric / (1000 * 60 * 60 * 24 * 365))} years ago` // Years
+    return `${Math.floor(numeric / (1000 * 60 * 60 * 24 * 30))} month${Math.floor(numeric / (1000 * 60 * 60 * 24 * 30)) == 1 ? '' : 's'} ago` // Less than a year
+  else return `${Math.floor(numeric / (1000 * 60 * 60 * 24 * 365))} year${Math.floor(numeric / (1000 * 60 * 60 * 24 * 365)) == 0 ? '' : 's'} ago` // Years
 }
 
 export function toTime(score: number, milliseconds?: boolean): string {

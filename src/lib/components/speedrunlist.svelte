@@ -1,5 +1,5 @@
 <script lang="ts">
-  const { speedruns }: { speedruns: {score: number, username: string, submitted: Date }[] } = $props();
+  const { speedruns }: { speedruns: {score: number, username: string, submitted: Date, id: number }[] } = $props();
 
   import { toTimeSince, toTime } from '$lib/timedisplay';
 </script>
@@ -9,7 +9,7 @@
     <span>No speedruns yet. Be the first one!</span>
   {:else}
     {#each speedruns as speedrun}
-      <div class="speedrun">
+      <a href="/speedrun/{speedrun.id}" class="speedrun">
         <div class="time">
           <span class="fulltime">{toTime(speedrun.score)}</span>
           <span class="mills">.{(speedrun.score % 1000).toString().padStart(3, '0')}</span>
@@ -22,7 +22,7 @@
             {toTimeSince(speedrun.submitted)}
           </span>
         </div>
-      </div>
+      </a>
     {/each}
   {/if}
 </div>
@@ -35,6 +35,7 @@
     height: 3rem;
     padding: 0 .5rem;
     justify-content: space-between;
+    text-decoration: none;
 
     &:nth-child(even) {
       background-color: var(--bg3);

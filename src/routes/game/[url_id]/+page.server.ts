@@ -12,10 +12,12 @@ export const load: PageServerLoad = async ({ parent, params }) => {
     description: string,
     verified: boolean,
     deleted: boolean,
-    username: string
+    username: string,
+    id: number
   }>(`select
       s.submitted,
       s.score,
+      s.id,
       s.description,
       s.verified,
       s.deleted,
