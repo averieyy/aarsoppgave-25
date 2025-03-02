@@ -5,7 +5,12 @@
   const { data } = $props();
   let { client, speedrun, placement } = $state(data);
 
+  let outerheight = $state(0);
+  let innerheight = $state(0);
+
   let showmoredesc = $state(false);
+
+  let moreavailable = $derived(innerheight > outerheight);
 </script>
 
 <div class="page">
@@ -26,12 +31,14 @@
         </h3>
         <span>In {placement}{(10 < placement % 100 && placement % 100 < 20) ? 'th' : (placement % 10 == 1) ? 'st' : (placement % 10 == 2) ? 'nd' : (placement % 10 == 3) ? 'rd' : 'th'} place</span>
         <div class="description">
-          <div class="innerdesc {showmoredesc ? 'shown' : ''}">
-            <p>
+          <div bind:clientHeight={outerheight} class="innerdesc {showmoredesc ? 'noshadow' : ''}">
+            <p bind:clientHeight={innerheight}>
               {speedrun.description}
             </p>
           </div>
-          <button class="moreless" onclick={() => showmoredesc = !showmoredesc}>{#if showmoredesc}Show less{:else}Show more{/if}</button>
+          {#if moreavailable || showmoredesc}
+            <button class="moreless" onclick={() => showmoredesc = !showmoredesc}>{#if showmoredesc}Show less{:else}Show more{/if}</button>
+          {/if}
         </div>
         <a href="/user/{speedrun.username}" class="button">View user profile</a>
       </div>
@@ -84,10 +91,10 @@
     white-space-collapse: preserve;
     width: 100%;
 
-    &.shown {
+    &.noshadow {
       max-height: none;
 
-      &::before { box-shadow: none; }
+      &::noshadow { box-shadow: none; }
     }
     
     &>p {

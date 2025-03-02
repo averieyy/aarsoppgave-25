@@ -17,8 +17,5 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 
   const placement = await db.queryOne<{count: string}>('select count(*) as count from speedrun where game_id = $1::integer and score < $2::integer', speedrun.game_id, speedrun.score);
 
-  console.log(placement);
-  
-
   return { client, speedrun, placement: parseInt(placement?.count || '0') + 1 }
 };

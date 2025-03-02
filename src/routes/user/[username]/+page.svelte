@@ -1,9 +1,18 @@
 <script lang="ts">
     import Header from "$lib/components/header.svelte";
+    import Speedrunlist from "$lib/components/speedrunlist.svelte";
     import { toTimeSince } from "$lib/timedisplay";
 
   const { data } = $props();
-  let { client, user } = $state(data);
+  let { client, user, speedruns } = $state(data);
+
+  let speedrunninggames: [string, number][] = [];
+  
+  for (let i in speedruns) {
+    speedrunninggames.push([speedruns[i][0].name, speedruns[i][0].game_id]);
+  }
+
+  let selectedgame: number = $state(speedrunninggames[0][1]);
 </script>
 
 <div class="page">
@@ -13,6 +22,17 @@
       <section class="titlesection">
         <h2><span class="emphasis">{user.username}'{user.username.endsWith('s') ? '' : 's'}</span> user page</h2>
         <span class="joined">Joined {toTimeSince(user.joined)}</span>
+      </section>
+      <section>
+        <h2>Speedruns</h2>
+        <div class="outerspeedruns">
+          <div class="speedrungames">
+            {#each speedrunninggames as game}
+              <button class="speedrunninggame {selectedgame == game[1] ? 'selected' : ''}" onclick={() => selectedgame = game[1]}>{game[0]}</button>
+            {/each}
+          </div>
+          <Speedrunlist speedruns={speedruns[selectedgame] || []} />
+        </div>
       </section>
     </main>
   </div>
@@ -26,6 +46,9 @@
     padding: 1rem;
     background-color: var(--bg2);
     border-radius: .5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
   }
   .innerpage {
     align-items: center;
@@ -42,12 +65,32 @@
     border-bottom: .125rem solid var(--emphasis);
     border-radius: .125rem;
   }
-  .titlesection {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-  }
   .joined {
     font-style: italic;
+  }
+  .speedrungames {
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+  }
+  .speedrunninggame {
+    border: none;
+    border-bottom: .125rem solid transparent;
+
+    background-color: var(--bg2);
+
+    &:hover, &:active, &:focus {
+      color: var(--fg1);
+      background-color: var(--bg3);
+    }
+
+    &.selected {
+      background-color: var(--bg3);
+      border-bottom: .125rem var(--emphasis) solid;
+    }
+  }
+  .outerspeedruns {
+    display: flex;
+    flex-direction: column;
   }
 </style>
