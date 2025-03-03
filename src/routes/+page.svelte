@@ -23,15 +23,17 @@
       </div>
       <div class="recentruns">
         <h2>Recent runs</h2>
-        <div class="runlist">
-          {#each lastspeedrungames as speedrun}
-            <div class="recent">
-              <h3>
-                {speedrun.name}
-              </h3>
-              <span>{toTimeSince(speedrun.submitted)}</span>
-            </div>
-          {/each}
+        <div class="outerrunlist">
+          <div class="runlist">
+            {#each lastspeedrungames as speedrun}
+              <a class="recent" href="/speedrun/{speedrun.id}">
+                <h3>
+                  {speedrun.name}
+                </h3>
+                <span>{toTimeSince(speedrun.submitted)}</span>
+              </a>
+            {/each}
+          </div>
         </div>
       </div>
       <div class="games">
@@ -77,10 +79,16 @@
     flex-direction: column;
     gap: .5rem;
   }
+  .outerrunlist {
+    overflow: scroll;
+    width: 100%;
+  }
   .runlist {
     display: flex;
     flex-direction: row;
     overflow-x: scroll;
+    width: fit-content;
+    justify-content: center;
 
     gap: .5rem;
   }
@@ -88,9 +96,12 @@
     background-color: var(--bg3);
     padding: .5rem;
     border-radius: .25rem;
+
+    text-decoration: none;
     
     height: 7rem;
     width: 12rem;
+
   }
   .games {
     padding: 1rem;
