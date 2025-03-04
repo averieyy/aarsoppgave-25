@@ -25,6 +25,15 @@
 
   font-family: 'Lexend', sans-serif;
   font-optical-sizing: auto;
+
+  &::-webkit-scrollbar {
+    background-color: var(--bg2);
+    width: .75rem;
+    height: .75rem;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--emphasis);
+  }
 }
 
 /* As it should be */

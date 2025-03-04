@@ -71,7 +71,7 @@
   .speedrungames {
     display: flex;
     flex-direction: row;
-    overflow-x: scroll;
+    overflow-x: auto;
   }
   .speedrunninggame {
     border: none;

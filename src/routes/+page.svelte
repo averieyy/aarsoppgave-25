@@ -80,13 +80,13 @@
     gap: .5rem;
   }
   .outerrunlist {
-    overflow: scroll;
+    overflow-x: auto;
     width: 100%;
   }
   .runlist {
     display: flex;
     flex-direction: row;
-    overflow-x: scroll;
+    overflow-x: hidden;
     width: fit-content;
     justify-content: center;
 
