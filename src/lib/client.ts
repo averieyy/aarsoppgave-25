@@ -12,14 +12,16 @@ export class Client {
   email: string;
   id: number;
   joined: Date;
+  displayname: string;
 
-  private constructor (username: string, hash: string, salt: string, email: string, id: number, joined: Date) {
+  private constructor (username: string, hash: string, salt: string, email: string, id: number, joined: Date, displayname: string) {
     this.username = username;
     this.hash = hash;
     this.salt = salt;
     this.email = email;
     this.id = id;
     this.joined = joined;
+    this.displayname = displayname;
   }
 
   static async getClientFromCookies (cookies: Cookies): Promise<Client | null> {
@@ -48,7 +50,8 @@ export class Client {
       client.salt,
       client.email,
       client.id,
-      client.joined
+      client.joined,
+      client.displayname
     );
   }
 
@@ -111,7 +114,8 @@ export class Client {
     return {
       username: this.username,
       id: this.id,
-      joined: this.joined
+      joined: this.joined,
+      displayname: this.displayname
     }
   }
 }

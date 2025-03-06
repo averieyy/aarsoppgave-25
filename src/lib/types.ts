@@ -5,12 +5,14 @@ export interface client {
   email: string;
   id: number;
   joined: Date;
+  displayname: string;
 }
 
 export interface frontendclient {
   username: string,
   id: number,
   joined: Date,
+  displayname: string,
 }
 
 export interface gamemember {

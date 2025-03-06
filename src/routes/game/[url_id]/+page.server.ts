@@ -1,9 +1,7 @@
 import { db } from "$lib/db";
-import type { game, gamemember } from "$lib/types";
-import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ parent, params }) => {
+export const load: PageServerLoad = async ({ parent }) => {
   const { client, game, member } = await parent();
   
   const speedruns = await db.queryAll<{
@@ -21,7 +19,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
       s.description,
       s.verified,
       s.deleted,
-      c.username
+      c.displayname as username
     from
       speedrun s
       join clients c on s.client_id = c.id

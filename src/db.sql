@@ -6,6 +6,7 @@ drop table if exists clients cascade;
 create table clients (
   id serial not null primary key,
   username varchar(24) not null unique,
+  displayname varchar(32) not null,
   hash text not null,     -- TODO: change this to a char(something) when the length of the hashes are locked down
   salt char(24) not null, -- 16 random bytes
   email text not null unique,

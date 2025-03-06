@@ -3,22 +3,25 @@
 
   const { data } = $props();
   let { client } = $state(data);
-  let { username } = $state(client);
-  let { username: lastsavedusername} = $state(client);
+  let { username, displayname } = $state(client);
+  let { username: lastsavedusername, displayname: lastsaveddisplayname } = $state(client);
 
   async function save () {
     const resp = await fetch('/api/settings', {
       method: 'POST',
-      body: JSON.stringify({ username })
+      body: JSON.stringify({ username, displayname: displayname || username })
     });
     if (!resp.ok) {
       // Display an error message
     }
     else {
       lastsavedusername = username;
+      lastsaveddisplayname = displayname;
       return;
     }
   }
+
+  let saveshown = $derived(username == lastsavedusername && displayname == lastsaveddisplayname);
 </script>
 
 <svelte:head>
@@ -27,18 +30,23 @@
 
 <div class="page">
   <Header client={client} />
-  <main class="innerpage">
-    <section>
-      <h2>Settings</h2>
-      <input type="text" placeholder="Username" bind:value={username}>
-    </section>
-    <a href="/newgame" class="button">Create new game</a>
-    <div class="bottom">
-      <div class="outerbutton">
-        <button onclick={() => save()} class="save red {username == lastsavedusername ? 'hidden' : 'shown'}">Unsaved Changes</button>
+  <div class="innerpage">
+    <main>
+      <section>
+        <h2>Settings</h2>
+        <h3>Username</h3>
+        <input type="text" placeholder="Username" bind:value={username}>
+        <h3>Display name</h3>
+        <input type="text" placeholder={username} bind:value={displayname}>
+      </section>
+      <a href="/newgame" class="button">Create new game</a>
+      <div class="bottom">
+        <div class="outerbutton">
+          <button onclick={() => save()} class="save red {saveshown ? 'hidden' : 'shown'}">Unsaved Changes</button>
+        </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
 </div>
 
 <style>
@@ -48,6 +56,16 @@
     border-radius: .5rem;
     display: flex;
     flex-direction: column;
+    gap: .5rem;
+  }
+  .innerpage {
+    align-items: center;
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+    width: 750px;
+    max-width: 100%;
     gap: .5rem;
   }
   .bottom {
