@@ -98,6 +98,8 @@ input:not([type="submit"]), .input {
   font-size: .9rem;
   text-decoration: none;
 
+  user-select: none;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -121,6 +123,13 @@ input:not([type="submit"]), .input {
     &.red {
       background-color: var(--red);
     }
+  }
+
+  &.disabled {
+    background-color: inherit;
+    border-color: var(--emphasis-dark);
+    color: var(--fg1);
+    font-style: italic;
   }
 
   &.red {

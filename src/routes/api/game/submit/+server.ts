@@ -2,7 +2,7 @@ import { Client } from "$lib/client";
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import type { game } from "$lib/types";
+import type { game, gamemember } from "$lib/types";
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
   const client = await Client.getClientFromCookies(cookies);
@@ -24,6 +24,10 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   const game = await db.queryOne<game>('select * from games where id = $1::integer', game_id);
   if (!game) return json({ message: 'Game not found' }, { status: 404 });
+
+  const gamemember = await db.queryOne<gamemember>('select * from game_members where game_id = $1::integer and client_id = $2::integer', game.id, client.id);
+  if (!gamemember) return json({ message: 'Unauthorized' }, { status: 403 });
+  if (gamemember.banned) return json({ message: 'You have been banned' }, { status: 403 });
 
   // Register speedrun
   await db.execute('insert into speedrun (client_id, game_id, score, description) values ($1::integer, $2::integer, $3::integer, $4::text)', client.id, game.id, duration, description);

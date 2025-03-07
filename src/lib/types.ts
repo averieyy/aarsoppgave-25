@@ -19,6 +19,7 @@ export interface gamemember {
   game_id: number,
   client_id: number,
   admin: boolean,
+  banned: boolean,
 }
 
 export interface game {

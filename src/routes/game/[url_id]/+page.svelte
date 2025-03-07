@@ -27,9 +27,13 @@
         </div>
         <div class="actions">
           {#if member}
-            <a href="/game/{game.url_id}/newrun" class="button">Submit run</a>
-            {#if member.admin}
-              <a href="/game/{game.url_id}/manage" class="button red">Manage game</a>
+            {#if member.banned}
+              <span class="button disabled banned">You have been banned, and cannot submit speedruns</span>
+            {:else}
+              <a href="/game/{game.url_id}/newrun" class="button">Submit run</a>
+              {#if member.admin}
+                <a href="/game/{game.url_id}/manage" class="button red">Manage game</a>
+              {/if}
             {/if}
           {:else}
             <a href="/login?redirect=/game/{game.url_id}/newrun" class="button">Log in to submit run</a>
@@ -44,6 +48,9 @@
   @media (min-width: 700px) {
     main {
       flex-direction: row !important;
+    }
+    .info {
+      width: 250px;
     }
   }
   h1 {
@@ -95,5 +102,11 @@
     display: flex;
     flex-direction: column;
     gap: .5rem;
+  }
+  .banned {
+    height: fit-content;
+    min-height: 3rem;
+    text-align: center;
+    cursor: default;
   }
 </style>

@@ -6,6 +6,8 @@
 - [x] List of available games (and categories)
 - [x] Per-game speedrunning ranking
 - [x] Submitting speedruns
-  - [ ] Review process?
-- [ ] Creating game categories
-
+  - [x] Review process?
+- [x] Creating game categories (tags)
+- [ ] Banning game members
+- [ ] Searching
+  - [ ] By tag 

@@ -49,6 +49,7 @@ create table game_members (
   client_id int not null references clients(id),
   game_id int not null references games(id),
   admin boolean not null default false,
+  banned boolean not null default false,
   primary key (client_id, game_id)
 );
 

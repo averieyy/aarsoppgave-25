@@ -6,10 +6,10 @@ import type { speedrun } from "$lib/types";
 export const load: PageServerLoad = async ({ parent }) => {
   const { client, member, game } = await parent();
 
-  if (!member || !member.admin) redirect(302, `/api/game/${game.url_id}`);
+  if (!member || !member.admin || member.banned) redirect(302, `/game/${game.url_id}`);
 
   // Load everything
-  const speedruns = await db.queryAll<speedrun & { username: string }>('select s.*, c.username from speedrun s join clients c on s.client_id = c.id where s.game_id = $1::int and s.verified = false and s.deleted = false order by submitted asc', game.id);
+  const speedruns = await db.queryAll<speedrun & { username: string }>('select s.*, c.username from speedrun s join clients c on s.client_id = c.id join game_members m on m.client_id = c.id where s.game_id = $1::int and s.verified = false and s.deleted = false and m.banned = false order by submitted asc', game.id);
 
   return { client, speedruns }
 };
