@@ -102,8 +102,8 @@ export class Client {
     
     const client = await db.queryOne<client>(`
       insert into
-        clients (username, hash, salt, email)
-        values ($1::text, $2::text, $3::text, $4::text)
+        clients (username, hash, salt, email, displayname)
+        values ($1::text, $2::text, $3::text, $4::text, $1::text)
       returning *`, username, hash, salt, email); 
     if (!client) return null;
     

@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import Header from "$lib/components/header.svelte";
   import { toTime } from "$lib/timedisplay.js";
+    import { backIn } from "svelte/easing";
 
   const { data } = $props();
   let { client, game, speedruns } = $state(data);
@@ -43,6 +44,23 @@
       error = (await resp.json()).message;
     }
   }
+
+  async function ban(username: string) {
+    // remove
+    let oldspeedrus = $state.snapshot(speedruns);
+    speedruns = speedruns.filter(s => s.username != username);
+    
+    const resp = await fetch('/api/game/ban', {
+      method: 'POST',
+      body: JSON.stringify({ game: game.url_id, target: username })
+    });
+    
+    if (resp.status == 403) await goto(`/game/${game.url_id}`);
+    if (!resp.ok) {
+      speedruns = oldspeedrus;
+      error = (await resp.json()).message;
+    }
+  }
 </script>
 
 <div class="page">
@@ -63,7 +81,7 @@
             {#each speedruns as speedrun}
               <div class="speedrun">
                 <div class="info">
-                  <h3>{speedrun.username}</h3>
+                  <h3>{speedrun.displayname}</h3>
                   <span>{toTime(speedrun.score)}.{(speedrun.score % 1000).toString().padStart(3, '0')}</span>
                   <p>{speedrun.description}</p>
                 </div>
@@ -74,7 +92,7 @@
                   <button class="red" onclick={() => deny(speedrun.id)}>
                     deny
                   </button>
-                  <button class="red">
+                  <button class="red" onclick={() => ban(speedrun.username)}>
                     ban
                   </button>
                 </div>
