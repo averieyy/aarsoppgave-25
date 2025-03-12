@@ -2,7 +2,7 @@
   import Header from "$lib/components/header.svelte";
 
   const { data } = $props();
-  let { client } = $state(data);
+  let { client, games } = $state(data);
   let { username, displayname } = $state(client);
   let { username: lastsavedusername, displayname: lastsaveddisplayname } = $state(client);
 
@@ -39,7 +39,22 @@
         <h3>Display name</h3>
         <input type="text" placeholder={username} bind:value={displayname}>
       </section>
-      <a href="/newgame" class="button">Create new game</a>
+      <section>
+        <div class="games">
+          {#each games as game}
+            <div class="game">
+              {game.name}
+              <div class="nav">
+                <a class="button" href="/game/{game.url_id}">View game</a>
+                {#if game.admin}
+                  <a class="button red" href="/game/{game.url_id}/manage">Manage</a>
+                {/if}
+              </div>
+            </div>
+          {/each}
+        </div>
+        <a href="/newgame" class="button">Create new game</a>
+      </section>
       <div class="bottom">
         <div class="outerbutton">
           <button onclick={() => save()} class="save red {saveshown ? 'hidden' : 'shown'}">Unsaved Changes</button>
@@ -93,5 +108,25 @@
         }
       }
     }
+  }
+  .games {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .game {
+    padding: .5rem;
+    box-sizing: border-box;
+    background-color: var(--bg3);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    & .nav {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+    min-height: 5rem;
   }
 </style>
