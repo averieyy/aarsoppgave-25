@@ -67,4 +67,14 @@ create table speedrun (
   deleted boolean not null default false
 );
 
+drop table if exists files;
+
+create table files (
+  displayname text not null,
+  mime text not null default 'text/plain',
+  pathname text not null primary key,
+  client_id int not null references clients(id),
+  uploaded timestamp not null default statement_timestamp()
+);
+
 commit;
