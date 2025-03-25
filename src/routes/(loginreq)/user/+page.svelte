@@ -1,10 +1,15 @@
-<script>
+<script lang="ts">
   import Header from "$lib/components/header.svelte";
 
   const { data } = $props();
   let { client, games } = $state(data);
   let { username, displayname } = $state(client);
   let { username: lastsavedusername, displayname: lastsaveddisplayname } = $state(client);
+
+  let files: FileList | undefined = $state(undefined);
+  let fileError: string = $state('');
+
+  let profile_pic: string | undefined = $state(undefined);
 
   async function save () {
     const resp = await fetch('/api/settings', {
@@ -20,6 +25,35 @@
       return;
     }
   }
+
+  $effect(() => {
+    files;
+    if (!files) return;
+    if (files.length > 1) {
+      fileError = 'You can only select 1 file.';
+      return;
+    }
+
+    const file = files.item(0);
+    if (!file) return;
+    
+    if (file.size > 33554432) {
+      fileError = 'Files cannot be larger than 32MB.';
+      return;
+    }
+
+    // Upload
+    const formdata = new FormData();
+    formdata.set('file', file);
+    
+    fetch('/api/upload', {
+      method: 'POST',
+      body: formdata,
+    }).then(async resp => {
+      const json = await resp.json();
+      profile_pic = json.id;  
+    });
+  });
 
   let saveshown = $derived(username == lastsavedusername && displayname == lastsaveddisplayname);
 </script>
@@ -38,6 +72,14 @@
         <input type="text" placeholder="Username" bind:value={username}>
         <h3>Display name</h3>
         <input type="text" placeholder={username} bind:value={displayname}>
+        <h3>Profile picture</h3>
+        {#if fileError}
+          <span class="error">{fileError}</span>
+        {/if}
+        <label for="profilepic">
+          <div class="label">{profile_pic || '+'}</div>
+        </label>
+        <input bind:files={files} type="file" id="profilepic" max="1" hidden>
       </section>
       <section>
         <div class="games">
@@ -128,5 +170,31 @@
       gap: .5rem;
     }
     min-height: 5rem;
+  }
+  label[for="profilepic"] {
+    width: 10rem;
+    height: 10rem;
+    background-color: var(--bg3);
+    border-radius: 100%;
+    border: .25rem solid var(--bg3);
+    display: flex;
+    overflow: hidden;
+
+    &:hover, &:active {
+      &>.label {
+        background-color: color-mix(in srgb, var(--emphasis) 50%, #00000000 50%);
+        color: var(--fg-emphasis);
+      }
+    }
+    
+    &>.label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background-color: color-mix(in srgb, var(--bg3) 50%, #00000000 50%);
+      user-select: none;
+    }
   }
 </style>

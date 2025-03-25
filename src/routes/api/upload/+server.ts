@@ -1,6 +1,6 @@
 import { Client } from "$lib/client";
 import { json } from "@sveltejs/kit";
-import { createWriteStream, existsSync, mkdirSync, writeFileSync, WriteStream } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
 
