@@ -77,7 +77,11 @@
           <span class="error">{fileError}</span>
         {/if}
         <label for="profilepic">
-          <div class="label">{profile_pic || '+'}</div>
+          {#if profile_pic}
+            <img src="/api/uploads/{profile_pic}" alt="">
+          {:else}  
+            <div class="label">{'+'}</div>
+          {/if}
         </label>
         <input bind:files={files} type="file" id="profilepic" max="1" hidden>
       </section>
@@ -185,6 +189,12 @@
         background-color: color-mix(in srgb, var(--emphasis) 50%, #00000000 50%);
         color: var(--fg-emphasis);
       }
+    }
+
+    &>img {
+      flex: 1;
+      object-fit: cover;
+      object-position: 50% 50%;
     }
     
     &>.label {

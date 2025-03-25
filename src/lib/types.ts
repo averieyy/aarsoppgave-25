@@ -40,3 +40,11 @@ export interface speedrun {
   verified: boolean,
   deleted: boolean
 }
+
+export interface file {
+  displayname: string,
+  mime: string,
+  pathname: string,
+  client_id: number,
+  uploaded: Date,
+}
