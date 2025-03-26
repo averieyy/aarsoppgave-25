@@ -77,4 +77,11 @@ create table files (
   uploaded timestamp not null default statement_timestamp()
 );
 
+drop table if exists profile_pics;
+
+create table profile_pics (
+  client_id int not null primary key references clients(id),
+  file text not null references files(pathname)
+);
+
 commit;
