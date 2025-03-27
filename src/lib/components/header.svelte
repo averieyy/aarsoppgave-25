@@ -1,7 +1,8 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import type { frontendclient } from "$lib/types";
 
-  const { client }: { client: undefined | object } = $props();
+  const { client }: { client: undefined | frontendclient } = $props();
 </script>
 
 <header>
@@ -10,7 +11,9 @@
   </a>
   <div class="client">
     {#if client}
-      <a href="/user" class="button">My page</a>
+      <a href="/user" class="button user">
+        <img src="/api/uploads/{client.profile_pic}" title="My page" alt="My page">
+      </a>
     {:else}
       <a href="/login?redirect={page.url.pathname}" class="button">Login</a>
       <a href="/register?redirect={page.url.pathname}" class="button">Register</a>
@@ -19,6 +22,19 @@
 </header>
 
 <style>
+  .user {
+    height: 3rem;
+    width: 3rem;
+    overflow: hidden;
+    border-radius: 100%;
+    padding: 0;
+
+    & img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
   header {
     background-color: var(--bg2);
     height: 5rem;
