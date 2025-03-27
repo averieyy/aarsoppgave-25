@@ -13,6 +13,7 @@ export interface frontendclient {
   id: number,
   joined: Date,
   displayname: string,
+  profile_pic?: string | null
 }
 
 export interface gamemember {

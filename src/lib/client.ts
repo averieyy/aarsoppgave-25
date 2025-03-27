@@ -13,8 +13,9 @@ export class Client {
   id: number;
   joined: Date;
   displayname: string;
+  profile_pic: string | null;
 
-  private constructor (username: string, hash: string, salt: string, email: string, id: number, joined: Date, displayname: string) {
+  private constructor (username: string, hash: string, salt: string, email: string, id: number, joined: Date, displayname: string, profile_pic: string | null) {
     this.username = username;
     this.hash = hash;
     this.salt = salt;
@@ -22,20 +23,22 @@ export class Client {
     this.id = id;
     this.joined = joined;
     this.displayname = displayname;
+    this.profile_pic = profile_pic;
   }
 
   static async getClientFromCookies (cookies: Cookies): Promise<Client | null> {
     const token = cookies.get('token');
     if (!token) return null;
 
-    const client = await db.queryOne<client>(`
+    const client = await db.queryOne<client & { profile_pic: string | null }>(`
       update tokens t
       set expires = now() + interval '7 days'
       from clients as c
+      left outer join profile_pics p on c.id = p.client_id
         where t.client_id = c.id
         and t.content = $1::text
         and t.expires > now()
-      returning c.*`, token);
+      returning c.*, p.file as profile_pic`, token);
     if (!client) return null;
 
     this.setToken(cookies, token);
@@ -43,7 +46,7 @@ export class Client {
     return this.fromStruct(client);
   }
 
-  static fromStruct(client: client): Client {
+  static fromStruct(client: client & { profile_pic?: string | null }): Client {
     return new Client(
       client.username,
       client.hash,
@@ -51,7 +54,8 @@ export class Client {
       client.email,
       client.id,
       client.joined,
-      client.displayname
+      client.displayname,
+      client.profile_pic || null
     );
   }
 
@@ -115,7 +119,8 @@ export class Client {
       username: this.username,
       id: this.id,
       joined: this.joined,
-      displayname: this.displayname
+      displayname: this.displayname,
+      profile_pic: this.profile_pic,
     }
   }
 }

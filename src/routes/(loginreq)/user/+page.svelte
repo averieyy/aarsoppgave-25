@@ -4,12 +4,10 @@
   const { data } = $props();
   let { client, games } = $state(data);
   let { username, displayname } = $state(client);
-  let { username: lastsavedusername, displayname: lastsaveddisplayname } = $state(client);
+  let { username: lastsavedusername, displayname: lastsaveddisplayname, profile_pic } = $state(client);
 
   let files: FileList | undefined = $state(undefined);
   let fileError: string = $state('');
-
-  let profile_pic: string | undefined = $state(undefined);
 
   async function save () {
     const resp = await fetch('/api/settings', {
@@ -51,7 +49,13 @@
       body: formdata,
     }).then(async resp => {
       const json = await resp.json();
-      profile_pic = json.id;  
+      profile_pic = json.id;
+      
+      // Update the profile picture
+      await fetch('/api/profilepic', {
+        method: 'POST',
+        body: JSON.stringify({ uuid: profile_pic })
+      });
     });
   });
 
