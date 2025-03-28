@@ -1,7 +1,7 @@
 <script lang="ts">
-    import Header from "$lib/components/header.svelte";
-    import Speedrunlist from "$lib/components/speedrunlist.svelte";
-    import { toTimeSince } from "$lib/timedisplay";
+  import Header from "$lib/components/header.svelte";
+  import Speedrunlist from "$lib/components/speedrunlist.svelte";
+  import { toTimeSince } from "$lib/timedisplay";
 
   const { data } = $props();
   let { client, user, speedruns } = $state(data);
@@ -20,7 +20,17 @@
   <div class="innerpage">
     <main>
       <section class="titlesection">
-        <h2><span class="emphasis">{user.username}'{user.username.endsWith('s') ? '' : 's'}</span> user page</h2>
+        <h2>
+          {#if user.profile_pic}
+            <img src="/api/uploads/{user.profile_pic}" alt="{user.username}" class="profilepic">
+          {/if}
+          <span>
+            <span class="emphasis">
+              {user.username}'{user.username.endsWith('s') ? '' : 's'}
+            </span>
+            user page
+          </span>
+        </h2>
         <span class="joined">Joined {toTimeSince(user.joined)}</span>
       </section>
       <section>
@@ -64,6 +74,10 @@
     padding: .5rem;
     border-bottom: .125rem solid var(--emphasis);
     border-radius: .125rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
   }
   .joined {
     font-style: italic;
@@ -92,5 +106,12 @@
   .outerspeedruns {
     display: flex;
     flex-direction: column;
+  }
+  .profilepic {
+    border: .125rem solid var(--emphasis);
+    border-radius: 50%;
+    width: 5rem;
+    height: 5rem;
+    object-fit: cover;
   }
 </style>

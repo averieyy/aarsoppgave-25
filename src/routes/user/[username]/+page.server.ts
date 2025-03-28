@@ -6,7 +6,7 @@ import type { PageServerLoad } from "./$types";
 export const load: PageServerLoad = async ({ parent, params }) => {
   const { client } = await parent();
 
-  const user = await db.queryOne<{ displayname: string, joined: Date, id: number }>('select displayname, joined, id from clients where username = $1::text', params.username);
+  const user = await db.queryOne<{ displayname: string, joined: Date, id: number, profile_pic: string | null }>('select c.displayname, c.joined, c.id, p.file as profile_pic from clients c left join profile_pics p on p.client_id = c.id where username = $1::text', params.username);
 
   if (!user) redirect(302, '/');
 
@@ -18,5 +18,5 @@ export const load: PageServerLoad = async ({ parent, params }) => {
       return acc;
     }, {});
 
-  return { user: { username: user.displayname, joined: user.joined }, client, speedruns }
+  return { user: { username: user.displayname, joined: user.joined, profile_pic: user.profile_pic }, client, speedruns }
 };
