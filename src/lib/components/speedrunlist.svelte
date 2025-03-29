@@ -1,5 +1,5 @@
 <script lang="ts">
-  const { speedruns }: { speedruns: {score: number, username: string, submitted: Date, id: number }[] } = $props();
+  const { speedruns }: { speedruns: {score: number, username: string, submitted: Date, id: number, profile_pic?: string | null }[] } = $props();
 
   import { toTimeSince, toTime } from '$lib/timedisplay';
 </script>
@@ -15,9 +15,13 @@
           <span class="mills">.{(speedrun.score % 1000).toString().padStart(3, '0')}</span>
         </div>
         <div class="namesubmitted">
-          <span class="name">
-            {speedrun.username}
-          </span>
+          {#if speedrun.profile_pic}
+            <img class="profile_pic" src="/api/uploads/{speedrun.profile_pic}" alt="{speedrun.username}">
+          {:else}
+            <span class="name">
+              {speedrun.username}
+            </span>
+          {/if}
           <span class="submitted">
             {toTimeSince(speedrun.submitted)}
           </span>
@@ -50,6 +54,7 @@
       }
       & .submitted {
         max-width: 6rem;
+        margin-left: .5rem;
       }
     }
   }
@@ -70,14 +75,21 @@
   .namesubmitted {
     display: flex;
     flex-direction: row;
-    gap: .5rem;
     align-items: center;
 
     &>.submitted {
       max-width: 0;
       overflow: hidden;
       text-wrap: nowrap;
-      transition: max-width .25s ease;
+      transition: max-width .25s ease, margin-left .25s ease;
+      margin-left: 0;
     }
+  }
+  .profile_pic {
+    width: 2rem;
+    height: 2rem;
+    object-fit: cover;
+    border: .125rem solid var(--emphasis);
+    border-radius: 50%;
   }
 </style>

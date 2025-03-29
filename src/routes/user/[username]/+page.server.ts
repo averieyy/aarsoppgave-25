@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 
   if (!user) redirect(302, '/');
 
-  const speedruns = (await db.queryAll<speedrun & { name: string }>('select s.*, g.name from speedrun s join games g on g.id = s.game_id where s.client_id = $1::integer', user.id))
+  const speedruns = (await db.queryAll<speedrun & { name: string, profile_pic: string | null }>('select s.*, g.name, p.file as profile_pic from speedrun s join games g on g.id = s.game_id join profile_pics p on p.client_id = s.client_id where s.client_id = $1::integer', user.id))
     .reduce<{[id: number]: (speedrun & { name: string, username: string })[] }>((acc, curr) => {
       if (acc[curr.game_id]) acc[curr.game_id].push({...curr, username: user.displayname});
       else acc[curr.game_id] = [{...curr, username: user.displayname}];
