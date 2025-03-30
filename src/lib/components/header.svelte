@@ -11,8 +11,12 @@
   </a>
   <div class="client">
     {#if client}
-      <a href="/user" class="button user">
-        <img src="/api/uploads/{client.profile_pic}" title="My page" alt="My page">
+      <a href="/user" class="button {client.profile_pic ? 'withprofilepic' : 'withoutprofilepic'}">
+        {#if client.profile_pic}
+          <img src="/api/uploads/{client.profile_pic}" title="My page" alt="My page">
+        {:else}
+          My page
+        {/if}
       </a>
     {:else}
       <a href="/login?redirect={page.url.pathname}" class="button">Login</a>
