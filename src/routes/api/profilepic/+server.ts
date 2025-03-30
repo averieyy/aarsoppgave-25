@@ -34,3 +34,12 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   return json({ message: 'Updated profile picture' }, { status: 200 });
 }
+
+export const DELETE: RequestHandler = async ({ cookies }) => {
+  const client = await Client.getClientFromCookies(cookies);
+  if (!client) return json({ message: 'Unauthorized' }, { status: 403 });
+
+  await db.execute('delete from profile_pics where client_id = $1::integer', client.id);
+
+  return json({ message: 'Removed profile picture' }, { status: 200 });
+}

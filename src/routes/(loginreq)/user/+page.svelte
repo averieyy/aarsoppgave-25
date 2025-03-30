@@ -59,6 +59,15 @@
     });
   });
 
+  async function removeProfilePic () {
+    const resp = await fetch('/api/profilepic', {
+      method: 'DELETE'
+    });
+
+    if (!resp.ok) fileError = (await resp.json()).message;
+    else profile_pic = '';
+  }
+
   let saveshown = $derived(username == lastsavedusername && displayname == lastsaveddisplayname);
 </script>
 
@@ -80,14 +89,19 @@
         {#if fileError}
           <span class="error">{fileError}</span>
         {/if}
-        <label for="profilepic">
-          {#if profile_pic}
-            <img src="/api/uploads/{profile_pic}" alt="">
-          {:else}  
-            <div class="label">{'+'}</div>
-          {/if}
-        </label>
-        <input bind:files={files} type="file" id="profilepic" max="1" hidden>
+        <div class="profilepic">
+          <div class="outerpic">
+            <label for="profilepic">
+              {#if profile_pic}
+                <img src="/api/uploads/{profile_pic}" alt="">
+              {:else}  
+                <div class="label">{'+'}</div>
+              {/if}
+            </label>
+          </div>
+          <input bind:files={files} type="file" id="profilepic" max="1" hidden>
+          <button onclick={() => removeProfilePic()}>Remove profile picture</button>
+        </div>
       </section>
       <section>
         <div class="games">
@@ -179,6 +193,11 @@
     }
     min-height: 5rem;
   }
+  .outerpic {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   label[for="profilepic"] {
     width: 10rem;
     height: 10rem;
@@ -210,5 +229,10 @@
       background-color: color-mix(in srgb, var(--bg3) 50%, #00000000 50%);
       user-select: none;
     }
+  }
+  .profilepic {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
   }
 </style>
