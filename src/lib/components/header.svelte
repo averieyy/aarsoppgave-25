@@ -26,7 +26,7 @@
 </header>
 
 <style>
-  .user {
+  .withprofilepic {
     height: 3rem;
     width: 3rem;
     overflow: hidden;

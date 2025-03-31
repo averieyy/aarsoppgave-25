@@ -2,7 +2,6 @@
   import { goto } from "$app/navigation";
   import Header from "$lib/components/header.svelte";
   import { toTime } from "$lib/timedisplay.js";
-    import { backIn } from "svelte/easing";
 
   const { data } = $props();
   let { client, game, speedruns } = $state(data);
@@ -70,6 +69,9 @@
       <h1>
         Managing <a href="/game/{game.url_id}" class="special">{game.name}</a>
       </h1>
+      <section>
+        <h2>Appearance</h2>
+      </section>
       <section>
         <h2>Speedruns</h2>
         <div class="speedruns">
