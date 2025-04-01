@@ -31,6 +31,13 @@
                   {speedrun.name}
                 </h3>
                 <span>{toTimeSince(speedrun.submitted)}</span>
+                <span class="flexexpand"></span>
+                <span class="speedrunname">
+                  {#if speedrun.profile_pic}
+                    <img src="/api/uploads/{speedrun.profile_pic}" alt="{speedrun.username}" class="profile_pic">
+                  {/if}
+                  {speedrun.username}
+                </span>
               </a>
             {/each}
           </div>
@@ -97,6 +104,10 @@
     padding: .5rem;
     border-radius: .25rem;
 
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+
     text-decoration: none;
     
     height: 7rem;
@@ -110,5 +121,20 @@
     display: flex;
     flex-direction: column;
     gap: .5rem;
+  }
+  .flexexpand {
+    flex: 1;
+  }
+  .speedrunname {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    align-items: center;
+    &> img {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      border: .125rem solid var(--emphasis);
+    }
   }
 </style>
