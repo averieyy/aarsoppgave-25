@@ -22,6 +22,16 @@ create table tokens (
   expires timestamp not null default statement_timestamp() + interval '7 days'
 );
 
+drop table if exists files;
+
+create table files (
+  displayname text not null,
+  mime text not null default 'text/plain',
+  pathname text not null primary key,
+  client_id int not null references clients(id),
+  uploaded timestamp not null default statement_timestamp()
+);
+
 -- Games
 drop table if exists games cascade;
 
@@ -30,7 +40,8 @@ create table games (
   name text not null,
   url_id varchar(32) not null unique,
   description text not null,
-  created timestamp not null default statement_timestamp()
+  created timestamp not null default statement_timestamp(),
+  image text references files(pathname) default null
 );
 
 -- Game tags
@@ -65,16 +76,6 @@ create table speedrun (
   description text,
   verified boolean not null default false,
   deleted boolean not null default false
-);
-
-drop table if exists files;
-
-create table files (
-  displayname text not null,
-  mime text not null default 'text/plain',
-  pathname text not null primary key,
-  client_id int not null references clients(id),
-  uploaded timestamp not null default statement_timestamp()
 );
 
 drop table if exists profile_pics;

@@ -29,6 +29,7 @@ export interface game {
   url_id: string,
   description: string,
   created: Date,
+  image: string,
 }
 
 export interface speedrun {
