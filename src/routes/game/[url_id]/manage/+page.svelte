@@ -60,6 +60,63 @@
       error = (await resp.json()).message;
     }
   }
+
+  let files: FileList | undefined = $state(undefined);
+
+  $effect(() => {
+    files;
+
+    if (!files || files.length == 0) return;
+    if (files.length > 1) {
+      error = 'You can only select one file';
+      return;
+    }
+
+    console.log('sadf');
+
+    const file = files[0];
+    if (file.size >= 33554432) {
+      error = 'Files cannot be bigger than 32 GiB';
+      return;
+    }
+
+    console.log('asfd');
+    if (!file.type.startsWith('image/')) {
+      error = 'File has to be an image';
+      return;
+    }
+
+    console.log('saf');
+    
+    // Upload
+    const form = new FormData();
+    form.set('file', file);
+
+    console.log('poto');
+
+    fetch('/api/upload', {
+      method: 'POST',
+      body: form
+    }).then(async resp => {
+      if (!resp.ok) { error = (await resp.json()).message; return; }
+      game.image = (await resp.json()).id;
+
+      console.log('0920');
+
+      // Update game image
+      const r = await fetch('/api/game/image', {
+        method: 'POST',
+        body: JSON.stringify({ game: game.id, file: game.image })
+      })
+
+      console.log('092');
+
+      if (!r.ok) {
+        error = (await r.json()).message;
+        return;
+      }
+    });
+  });
 </script>
 
 <div class="page">
@@ -69,8 +126,23 @@
       <h1>
         Managing <a href="/game/{game.url_id}" class="special">{game.name}</a>
       </h1>
+      {#if error}
+        <span class="error">{error}</span>
+      {/if}
       <section>
         <h2>Appearance</h2>
+        <input type="text" placeholder="Name" bind:value={game.name}>
+        <label for="gameimageselector">
+          <div class="chosenimage">
+            {#if game.image}
+              <img src="/api/uploads/{game.image}" alt="{game.name}">
+            {/if}
+            <div class="plusoverlay">
+              +
+            </div>
+          </div>
+        </label>
+        <input bind:files={files} hidden type="file" id="gameimageselector" class="fileselector">
       </section>
       <section>
         <h2>Speedruns</h2>
@@ -208,6 +280,38 @@
   .missing {
     color: var(--fg3);
     font-style: italic;
+  }
+  label {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  .chosenimage {
+    width: 7.5rem;
+    height: 7.5rem;
+    border: .125rem solid var(--emphasis);
+    border-radius: .5rem;
+    position: relative;
 
+    &>.plusoverlay {
+      width: 100%;
+      height: 100%;
+      color: transparent;
+      background-color: transparent;
+    }
+    &>.plusoverlay:hover {
+      background-color: var(--emphasis);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--fg-emphasis);
+    }
+    &>img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 </style>
