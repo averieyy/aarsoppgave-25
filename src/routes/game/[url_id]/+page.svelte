@@ -18,12 +18,19 @@
         <Speedrunlist {speedruns} />
       </div>
       <div class="info">
-        <h1>{game.name}</h1>
-        <div class="pair">
-          <h3>Description</h3>
-          <p>
-            {game.description}
-          </p>
+        <div class="basic">
+          <div class="titledesc">
+            <h1>{game.name}</h1>
+            <div class="pair">
+              <h3>Description</h3>
+              <p>
+                {game.description}
+              </p>
+            </div>
+          </div>
+          {#if game.image}
+            <img class="gameimage" src="/api/uploads/{game.image}" alt={game.name}>
+          {/if}
         </div>
         <div class="actions">
           {#if member}
@@ -83,15 +90,38 @@
     flex-direction: column;
     gap: 1rem;
     border-radius: 0.5rem;
-    & > .pair {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
 
-      & > p {
-        padding-left: 1rem;
-        border-left: 0.125rem solid var(--emphasis);
-        border-radius: 0.125rem;
+    &>.basic {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+
+      &>img {
+        width: 7.5rem;
+        height: 7.5rem;
+        object-fit: cover;
+
+        border: .125rem solid var(--emphasis);
+        border-radius: .5rem;
+      }
+
+      &>.titledesc {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        & > .pair {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+    
+          & > p {
+            padding-left: 1rem;
+            border-left: 0.125rem solid var(--emphasis);
+            border-radius: 0.125rem;
+          }
+        }
       }
     }
   }

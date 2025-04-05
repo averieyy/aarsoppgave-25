@@ -298,6 +298,9 @@
       height: 100%;
       color: transparent;
       background-color: transparent;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
     &>.plusoverlay:hover {
       background-color: var(--emphasis);
