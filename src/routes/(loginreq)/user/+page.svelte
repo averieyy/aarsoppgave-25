@@ -100,7 +100,9 @@
             </label>
           </div>
           <input bind:files={files} type="file" id="profilepic" max="1" hidden>
-          <button onclick={() => removeProfilePic()}>Remove profile picture</button>
+          {#if profile_pic}
+            <button onclick={() => removeProfilePic()}>Remove profile picture</button>
+          {/if}
         </div>
       </section>
       <section>

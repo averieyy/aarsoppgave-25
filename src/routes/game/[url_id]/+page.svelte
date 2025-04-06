@@ -56,7 +56,10 @@
     main {
       flex-direction: row !important;
     }
-    .info {
+    .titledesc:has(+ img) {
+      width: 180px;
+    }
+    .titledesc {
       width: 250px;
     }
   }
