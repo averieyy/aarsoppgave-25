@@ -30,5 +30,5 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   // Write file
   writeFileSync('./uploads/' + randomFileName, await file.bytes(), "binary");
 
-  return json({ id: randomFileName }, { status: 200 });
+  return json({ id: randomFileName, message: "Uploaded file" }, { status: 200 });
 }
