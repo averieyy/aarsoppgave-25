@@ -34,9 +34,9 @@
                 <span class="flexexpand"></span>
                 <span class="speedrunname">
                   {#if speedrun.profile_pic}
-                    <img src="/api/uploads/{speedrun.profile_pic}" alt="{speedrun.username}" class="profile_pic">
+                    <img src="/api/uploads/{speedrun.profile_pic}" alt="{speedrun.displayname}" class="profile_pic">
                   {/if}
-                  {speedrun.username}
+                  {speedrun.displayname}
                 </span>
               </a>
             {/each}

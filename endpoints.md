@@ -107,8 +107,6 @@ Response
 
 Set the game's image
 
-Administratory
-
 Request
 
 ```ts

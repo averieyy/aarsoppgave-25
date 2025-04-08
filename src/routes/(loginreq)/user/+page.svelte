@@ -157,6 +157,10 @@
     left: 0;
     padding: .5rem;
 
+    &:has(button:not(.shown)) {
+      pointer-events: none;
+    }
+
     &>.outerbutton {
       overflow: hidden;
       
