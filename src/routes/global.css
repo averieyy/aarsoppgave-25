@@ -89,7 +89,7 @@ input:not([type="submit"]), .input {
   }
 }
 
-.button, input[type="submit"], button {
+.button, input[type="submit"], button:not(.no-button-style) {
   border: .125rem solid var(--emphasis);
   background-color: var(--bg2);
   color: var(--fg1);
