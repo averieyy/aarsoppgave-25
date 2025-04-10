@@ -22,8 +22,9 @@
     const resp = await fetch(`/api/games?query=${query}&tags=${selectedtags.join(',')}`);
 
     if (!resp.ok) {
-
+      error = (await resp.json()).message;
     }
+    else games = (await resp.json()).games;
   }
 </script>
 
