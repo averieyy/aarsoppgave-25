@@ -172,6 +172,35 @@ Response
 
 ---
 
+#### GET /api/games
+
+Verify a speedrun
+
+Request Parameters
+
+```url
+?query=<query>
+&tags=<comma-separated list>
+```
+
+Response
+
+```ts
+{
+  games: [
+    {
+      name: string,
+      description: string,
+      image: string,
+      url_id: string
+    },
+    // ...
+  ]
+}
+```
+
+---
+
 ### POST /api/login
 
 Log in

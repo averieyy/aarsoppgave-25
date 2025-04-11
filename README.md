@@ -9,8 +9,8 @@
   - [x] Review process?
 - [x] Creating game categories (tags)
 - [x] Banning game members
-- [ ] Searching
-  - [ ] By tag 
+- [x] Searching
+  - [x] By tag
 
 ## Installation
 
