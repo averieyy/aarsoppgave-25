@@ -119,6 +119,10 @@
   });
 </script>
 
+<svelte:head>
+  <title>Speedrun - Manage {game.name}</title>
+</svelte:head>
+
 <div class="page">
   <Header client={client} />
   <div class="innerpage">

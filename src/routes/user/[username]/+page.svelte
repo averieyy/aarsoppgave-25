@@ -15,6 +15,10 @@
   let selectedgame: number = $state(speedrunninggames[0][1]);
 </script>
 
+<svelte:head>
+  <title>Speedrun - {user.username}</title>
+</svelte:head>
+
 <div class="page">
   <Header client={client} />
   <div class="innerpage">

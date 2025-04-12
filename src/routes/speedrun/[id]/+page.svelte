@@ -13,6 +13,10 @@
   let moreavailable = $derived(innerheight > outerheight);
 </script>
 
+<svelte:head>
+  <title>Speedrun - {toTime(speedrun.score)} by {speedrun.username}</title>
+</svelte:head>
+
 <div class="page">
   <Header client={client} />
   <div class="innerpage">
