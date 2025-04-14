@@ -20,6 +20,7 @@
         <p>
           Speedrun.[tld] is a respected website for speedruns of all kinds.
         </p>
+        <a class="link moreabout" href="/about">More</a>
       </div>
       <div class="recentruns">
         <h2>Recent runs</h2>
@@ -135,6 +136,30 @@
       height: 2.5rem;
       border-radius: 50%;
       border: .125rem solid var(--emphasis);
+    }
+  }
+  .moreabout {
+    display: flex;
+    flex-direction: row;
+    padding: .5rem;
+    gap: .5rem;
+    text-decoration: none;
+    align-items: center;
+    border-bottom: .125rem solid var(--emphasis);
+    width: fit-content;
+
+    border-radius: .25rem;
+    
+    &::after {
+      content: '';
+      background-color: var(--emphasis);
+      width: .375rem;
+      height: .75rem;
+      clip-path: polygon(0 0, 100% 50%, 0% 100%, 0% 80%, 60% 50%, 0% 20%);
+    }
+
+    &:active::after {
+      background-color: var(--emphasis-dark);
     }
   }
 </style>
