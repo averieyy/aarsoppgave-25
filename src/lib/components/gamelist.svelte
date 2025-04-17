@@ -7,12 +7,17 @@
 <div class="games">
   {#each games as game}
     <a class="game {light ? 'light' : ''}" href="/game/{game.url_id}">
-      <h2>
-        {game.name}
-      </h2>
-      <p>
-        {game.description}
-      </p>
+      {#if game.image}
+        <img src="/api/uploads/{game.image}" alt="{game.name}">
+      {/if}
+      <div class="gameinfo">
+        <h2>
+          {game.name}
+        </h2>
+        <p>
+          {game.description}
+        </p>
+      </div>
     </a>
   {/each}
 </div>
@@ -34,14 +39,30 @@
     width: 100%;
 
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 
     gap: .5rem;
 
-    &>p {
-      flex: 1;
-      text-overflow: ellipsis;
+    &>img {
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      height: 100%;
+      border-radius: .5rem;
+      border: .125rem solid var(--emphasis);
     }
+
+    &>.gameinfo {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: .5rem;
+      
+      &>p {
+        flex: 1;
+        text-overflow: ellipsis;
+      }
+    }
+
 
     &.light {
       background-color: var(--bg3);
