@@ -3,6 +3,19 @@
   import type { frontendclient } from "$lib/types";
 
   const { client }: { client: undefined | frontendclient } = $props();
+
+  const pages: {url: string, display: string}[] = [
+    {
+      display: 'About',
+      url: '/about'
+    },
+    {
+      display: 'Games',
+      url: '/games'
+    }
+  ];
+
+  let currenturl = $state(page.url.pathname);
 </script>
 
 <header>
@@ -11,8 +24,14 @@
       <h1>Speedrun</h1>
     </a>
     <span class="sep smallhidden"></span>
-    <a class="smallhidden navbutton" href="/about">About</a>
-    <a class="smallhidden navbutton" href="/games">Games</a>
+    {#each pages as page}
+      <a class="smallhidden navbutton" href="{page.url}">
+        <span class="display">
+          {page.display}
+        </span>
+        <span class="underline {currenturl == page.url ? 'selected' : 'unselected'}"></span>
+      </a>      
+    {/each}
   </nav>
   <div class="client">
     {#if client}
@@ -100,17 +119,43 @@
   }
   .navbutton {
     text-decoration: none;
-    padding: .5rem;
-    box-sizing: border-box;
-    height: 2.5rem;
 
     display: flex;
     align-items: center;
+    flex-direction: column;
 
-    background-color: var(--bg2);
     
     &:hover, &:active, &:focus {
-      background-color: var(--bg3);
+      &>.display {
+        background-color: var(--bg3);
+      }
+      &>.underline {
+        width: 2rem;
+      }
+    }
+    
+    &>.display {
+      padding: .5rem;
+      box-sizing: border-box;
+      height: 2.5rem;
+      
+      border-radius: .25rem;
+      background-color: var(--bg2);
+      display: flex;
+      align-items: center;
+    }
+
+    &>.underline {
+      height: .125rem;
+      width: 0rem;
+      border-radius: .125rem;
+      background-color: var(--emphasis);
+      
+      transition: width .25s ease;
+      
+      &.selected {
+        width: 2rem;
+      }
     }
   }
 </style>
