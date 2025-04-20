@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
   import Header from "$lib/components/header.svelte";
 
   const { data } = $props();
@@ -68,6 +69,12 @@
     else profile_pic = '';
   }
 
+  async function logout () {
+    const resp = await fetch('/api/logout', { method: 'POST' });
+
+    goto('/');
+  }
+
   let saveshown = $derived(username == lastsavedusername && displayname == lastsaveddisplayname);
 </script>
 
@@ -120,6 +127,10 @@
           {/each}
         </div>
         <a href="/newgame" class="button">Create new game</a>
+      </section>
+      <section>
+        <h2>Danger</h2>
+        <button class="red" onclick={() => logout()}>Log out</button>
       </section>
       <div class="bottom">
         <div class="outerbutton">
