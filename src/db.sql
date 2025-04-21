@@ -10,7 +10,8 @@ create table clients (
   hash text not null,     -- TODO: change this to a char(something) when the length of the hashes are locked down
   salt char(24) not null, -- 16 random bytes
   email text not null unique,
-  joined timestamp not null default statement_timestamp()
+  joined timestamp not null default statement_timestamp(),
+  deleted boolean not null default false
 );
 
 -- Tokens
