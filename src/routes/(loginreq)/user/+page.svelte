@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import Header from "$lib/components/header.svelte";
 
   const { data } = $props();
@@ -16,7 +16,7 @@
       body: JSON.stringify({ username, displayname: displayname || username })
     });
     if (!resp.ok) {
-      // Display an error message
+      // TODO: Display an error message
     }
     else {
       lastsavedusername = username;
@@ -76,6 +76,16 @@
   }
 
   let saveshown = $derived(username == lastsavedusername && displayname == lastsaveddisplayname);
+
+  let confirmdeleteopen = $state(false);
+
+  async function deleteAccount() {
+    const resp = await fetch('/api/deleteacc', { method: 'DELETE' });
+    if (!resp.ok) {
+
+    }
+    else goto('/');
+  }
 </script>
 
 <svelte:head>
@@ -131,10 +141,19 @@
       <section>
         <h2>Danger</h2>
         <button class="red" onclick={() => logout()}>Log out</button>
+        <button class="red" onclick={() => confirmdeleteopen = true}>Delete account</button>
       </section>
       <div class="bottom">
         <div class="outerbutton">
           <button onclick={() => save()} class="save red {saveshown ? 'hidden' : 'shown'}">Unsaved Changes</button>
+        </div>
+      </div>
+      <div class="outerdeleteacc {confirmdeleteopen ? 'shown' : 'hidden'}">
+        <div class="deleteacc">
+          <h3>Are you sure?</h3>
+          <p>This action is <span class="emphasis">irreverisble</span>. You will be logged out of this account, and all your speedruns will be hidden.</p>
+          <button onclick={() => confirmdeleteopen = false}>No, take me back</button>
+          <button onclick={() => deleteAccount()} class="red">Yes, I know what I'm doing</button>
         </div>
       </div>
     </main>
@@ -251,5 +270,45 @@
     display: flex;
     flex-direction: column;
     gap: .5rem;
+  }
+  .outerdeleteacc {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(1rem);
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: height .5s ease;
+
+    padding: 0 2rem;
+
+    &.hidden {
+      height: 0%;
+    }
+
+    overflow: hidden;
+  }
+  .deleteacc {
+    padding: 1rem;
+    background-color: var(--bg2);
+    width: 500px;
+    box-sizing: border-box;
+    max-width: 100%;
+
+    gap: .5rem;
+
+    display: flex;
+    flex-direction: column;
+  }
+  span.emphasis {
+    color: var(--emphasis);
+    text-decoration: .125rem solid underline;
   }
 </style>
