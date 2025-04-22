@@ -1,5 +1,6 @@
 <script lang="ts">
   import Header from "$lib/components/header.svelte";
+    import { handleForm } from "$lib/forms.js";
 
   const { data } = $props();
   let { client } = $state(data);
@@ -67,7 +68,7 @@
         </div>
       {/if}
       <div class="outeradd">
-        <form onsubmit={addTag} class="add tag">
+        <form onsubmit={ev => handleForm(ev, addTag)} class="add tag">
           <input type="text" bind:value={newTagContent} placeholder="tag">
         </form>
       </div>

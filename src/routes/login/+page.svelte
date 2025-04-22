@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
-  import Header from "$lib/components/header.svelte";
+  import { handleForm } from "$lib/forms";
 
   const redirect = page.url.searchParams.get('redirect') || '/';
   
@@ -35,7 +35,7 @@
 
 <div class="page">
   <main class="innerpage">
-    <form onsubmit={submit}>
+    <form onsubmit={ev => handleForm(ev, submit)}>
       <h2>Login</h2>
       {#if error}
         <span class="error">

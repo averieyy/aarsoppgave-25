@@ -2,6 +2,7 @@
     import { goto } from "$app/navigation";
   import Header from "$lib/components/header.svelte";
   import Timeinput from "$lib/components/timeinput.svelte";
+    import { handleForm } from "$lib/forms.js";
 
   const { data } = $props();
 
@@ -34,7 +35,7 @@
 <div class="page">
   <Header {client} />
   <main class="innerpage">
-    <form onsubmit={submit}>
+    <form onsubmit={ev => handleForm(ev, submit)}>
       <Timeinput bind:value={time}></Timeinput>
       <textarea class="input" bind:value={description}></textarea>
       <input type="submit" value="Register run" />
