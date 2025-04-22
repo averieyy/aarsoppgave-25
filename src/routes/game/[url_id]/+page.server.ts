@@ -29,6 +29,7 @@ export const load: PageServerLoad = async ({ parent }) => {
       s.verified = true
       and s.deleted = false
       and s.game_id = $1::integer
+      and c.deleted = false
     order by s.score asc
     limit 50`, game.id);
   
