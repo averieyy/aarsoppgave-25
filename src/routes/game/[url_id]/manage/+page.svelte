@@ -117,6 +117,15 @@
       }
     });
   });
+
+  let descError = $state('');
+
+  async function saveDescription () {
+    await fetch('/api/game/description', {
+      method: 'POST',
+      body: JSON.stringify({ description: game.description, game: game.url_id })
+    });
+  }
 </script>
 
 <svelte:head>
@@ -147,6 +156,13 @@
           </div>
         </label>
         <input bind:files={files} hidden type="file" id="gameimageselector" class="fileselector">
+        {#if descError}
+          <span class="error">
+            {descError}
+          </span>
+        {/if}
+        <textarea class="input" bind:value={game.description}></textarea>
+        <button onclick={() => saveDescription()}>Save</button>
       </section>
       <section>
         <h2>Speedruns</h2>
@@ -320,5 +336,9 @@
       height: 100%;
       object-fit: cover;
     }
+  }
+  textarea {
+    resize: vertical;
+    height: 5rem;
   }
 </style>

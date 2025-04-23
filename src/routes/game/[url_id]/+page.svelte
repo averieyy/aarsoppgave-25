@@ -23,9 +23,7 @@
             <h1>{game.name}</h1>
             <div class="pair">
               <h3>Description</h3>
-              <p>
-                {game.description}
-              </p>
+              <pre>{game.description}</pre>
             </div>
           </div>
           {#if game.image}
@@ -119,7 +117,7 @@
           flex-direction: column;
           gap: 0.5rem;
     
-          & > p {
+          &>pre {
             padding-left: 1rem;
             border-left: 0.125rem solid var(--emphasis);
             border-radius: 0.125rem;
