@@ -145,7 +145,7 @@
       <section>
         <h2>Appearance</h2>
         <input type="text" placeholder="Name" bind:value={game.name}>
-        <label for="gameimageselector">
+        <label>
           <div class="chosenimage">
             {#if game.image}
               <img src="/api/uploads/{game.image}" alt="{game.name}">
@@ -154,8 +154,8 @@
               +
             </div>
           </div>
+          <input bind:files={files} hidden type="file" class="fileselector">
         </label>
-        <input bind:files={files} hidden type="file" id="gameimageselector" class="fileselector">
         {#if descError}
           <span class="error">
             {descError}
@@ -312,6 +312,7 @@
     border: .125rem solid var(--emphasis);
     border-radius: .5rem;
     position: relative;
+    overflow: hidden;
 
     &>.plusoverlay {
       width: 100%;

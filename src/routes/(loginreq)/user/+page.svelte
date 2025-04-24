@@ -108,15 +108,15 @@
         {/if}
         <div class="profilepic">
           <div class="outerpic">
-            <label for="profilepic">
+            <label>
               {#if profile_pic}
                 <img src="/api/uploads/{profile_pic}" alt="">
               {:else}  
                 <div class="label">{'+'}</div>
               {/if}
+              <input bind:files={files} type="file" max="1" hidden>
             </label>
           </div>
-          <input bind:files={files} type="file" id="profilepic" max="1" hidden>
           {#if profile_pic}
             <button onclick={() => removeProfilePic()}>Remove profile picture</button>
           {/if}
@@ -234,7 +234,7 @@
     flex-direction: column;
     align-items: center;
   }
-  label[for="profilepic"] {
+  label:has(input[type="file"]) {
     width: 10rem;
     height: 10rem;
     background-color: var(--bg3);
