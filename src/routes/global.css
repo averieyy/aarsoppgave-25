@@ -106,7 +106,7 @@ input:not([type="submit"]), .input {
 
   box-sizing: border-box;
 
-  &:hover, &:focus {
+  &:hover, &:focus-visible {
     background-color: var(--emphasis);
     color: var(--fg-emphasis);
     
