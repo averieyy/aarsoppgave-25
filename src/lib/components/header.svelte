@@ -16,6 +16,8 @@
   ];
 
   let currenturl = $state(page.url.pathname);
+
+  let phonenavshown = $state(false);
 </script>
 
 <header>
@@ -33,26 +35,46 @@
       </a>      
     {/each}
   </nav>
-  <div class="client">
-    {#if client}
-      <a href="/user" class="button {client.profile_pic ? 'withprofilepic' : 'withoutprofilepic'}">
-        {#if client.profile_pic}
-          <img src="/api/uploads/{client.profile_pic}" title="My page" alt="My page">
-        {:else}
-          My page
-        {/if}
-      </a>
-    {:else}
-      <a href="/login?redirect={page.url.pathname}" class="button">Login</a>
-      <a href="/register?redirect={page.url.pathname}" class="button">Register</a>
-    {/if}
+  <div class="right">
+    <div class="client">
+      {#if client}
+        <a href="/user" class="button {client.profile_pic ? 'withprofilepic' : 'withoutprofilepic'}">
+          {#if client.profile_pic}
+            <img src="/api/uploads/{client.profile_pic}" title="My page" alt="My page">
+          {:else}
+            My page
+          {/if}
+        </a>
+      {:else}
+        <a href="/login?redirect={page.url.pathname}" class="button">Login</a>
+        <a href="/register?redirect={page.url.pathname}" class="button">Register</a>
+      {/if}
+    </div>
+    <button class="hamburger {phonenavshown ? 'navshown' : ''}" onclick={() => phonenavshown = !phonenavshown} aria-label="Show navigation menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </div>
 </header>
+<div class="phonenav {phonenavshown ? 'shown' : 'hidden'}" aria-hidden={!phonenavshown} style="height: {pages.length * 3 + .5}rem;">
+  <nav>
+    {#each pages as page}
+      <a href={page.url} class={page.url == currenturl ? 'selected' : ''}>{page.display}</a>
+    {/each}
+  </nav>
+</div>
 
 <style>
   @media screen and (max-width: 500px) {
     .smallhidden {
       display: none !important;
+    }
+    .hamburger {
+      display: flex !important;
+    }
+    .phonenav {
+      display: flex !important;
     }
   }
 
@@ -155,6 +177,92 @@
       
       &.selected {
         width: 2rem;
+      }
+    }
+  }
+  .right {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    align-items: center;
+  }
+  .hamburger {
+    border: none;
+    padding: .5rem;
+    width: 2.75rem;
+    height: 2.75rem;
+
+    border-radius: .25rem;
+
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: var(--bg3);
+
+    &:hover,&:focus-visible,&:active {
+      &>span {
+        background-color: var(--fg-emphasis);
+      }
+    }
+    
+    &>span {
+      height: .25rem;
+      display: flex;
+      background-color: var(--fg1);
+      width: 100%;
+
+      rotate: 0;
+      translate: 0;
+      transition: rotate .25s ease, height .25s ease, translate .25s ease;
+    }
+
+    &.navshown {
+      &>:nth-child(1) {
+        rotate: 45deg;
+        translate: 0 220%;
+      }
+      &>:nth-child(2) {
+        height: 0;
+      }
+      &>:nth-child(3) {
+        rotate: -45deg;
+        translate: 0 -220%;
+      }
+    }
+  }
+  .phonenav {
+    overflow: hidden;
+
+    transition: height .25s ease;
+
+    &.hidden {
+      height: 0 !important;
+    }
+    display: none;
+
+    &>nav {
+      display: flex;
+      flex-direction: column;
+      align-items: baseline;
+      gap: .5rem;
+      padding: .5rem;
+
+      &>a {
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        width: 100%;
+        box-sizing: border-box;
+        padding: .5rem;
+
+        border: 0 solid var(--emphasis);
+        
+        transition: border .125s ease;
+        
+        &.selected, &:hover, &:active, &:focus-visible {
+          border-left: .25rem solid var(--emphasis);
+        }
       }
     }
   }
