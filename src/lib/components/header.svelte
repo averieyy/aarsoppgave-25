@@ -18,6 +18,8 @@
   let currenturl = $state(page.url.pathname);
 
   let phonenavshown = $state(false);
+
+  let phonenavheight = $state(0);
 </script>
 
 <header>
@@ -57,8 +59,8 @@
     </button>
   </div>
 </header>
-<div class="phonenav {phonenavshown ? 'shown' : 'hidden'}" aria-hidden={!phonenavshown} style="height: {pages.length * (2.5 + .125 + .5) + .5 + (client ? 3 : 6)}rem;">
-  <nav>
+<div class="phonenav {phonenavshown ? 'shown' : 'hidden'}" aria-hidden={!phonenavshown} style="height: {phonenavheight}px;">
+  <nav bind:clientHeight={phonenavheight}>
     {#each pages as page}
       <a href={page.url} class="phonenavbutton">
         <span class="display">
@@ -270,6 +272,7 @@
       gap: .5rem;
       padding: .5rem;
       width: 100%;
+      height: fit-content;
 
       &>.sep {
         height: .125rem;
@@ -281,7 +284,7 @@
     }
   }
   .phonenavbutton {
-    flex: 1;
+    height: 2.5rem;
     display: flex;
     text-decoration: none;
     width: 100%;
@@ -323,7 +326,7 @@
     }
   }
   .phoneuser {
-    flex: 1;
+    height: 2.5rem;
     width: 100%;
     
     display: flex;
@@ -333,7 +336,6 @@
     border-radius: 1.5rem;
     background-color: var(--bg2);
     text-decoration: none;
-    overflow: hidden;
     
     &>.display {
       flex: 1;
