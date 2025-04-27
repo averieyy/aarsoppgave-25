@@ -36,7 +36,7 @@
     {/each}
   </nav>
   <div class="right">
-    <div class="client">
+    <div class="client smallhidden">
       {#if client}
         <a href="/user" class="button {client.profile_pic ? 'withprofilepic' : 'withoutprofilepic'}">
           {#if client.profile_pic}
@@ -57,11 +57,34 @@
     </button>
   </div>
 </header>
-<div class="phonenav {phonenavshown ? 'shown' : 'hidden'}" aria-hidden={!phonenavshown} style="height: {pages.length * 3 + .5}rem;">
+<div class="phonenav {phonenavshown ? 'shown' : 'hidden'}" aria-hidden={!phonenavshown} style="height: {pages.length * (2.5 + .125 + .5) + .5 + (client ? 3 : 6)}rem;">
   <nav>
     {#each pages as page}
-      <a href={page.url} class={page.url == currenturl ? 'selected' : ''}>{page.display}</a>
+      <a href={page.url} class="phonenavbutton">
+        <span class="display">
+          {page.display}
+        </span>
+        <span class="underline {currenturl == page.url ? 'selected' : 'unselected'}"></span>
+      </a>
     {/each}
+    <span class="sep"></span>
+    {#if client}
+      <a href="/user" class="phoneuser">
+        <span class="display">{client.displayname}</span>
+        <img src="/api/uploads/{client.profile_pic}" title="My page" alt="Profile pic">
+      </a>
+      {:else}
+        <a href="/login?redirect={page.url.pathname}" class="phonenavbutton">
+          <span class="display">
+            Log in
+          </span>
+        </a>
+        <a href="/register?redirect={page.url.pathname}" class="phonenavbutton">
+          <span class="display">
+            Register
+          </span>
+        </a>
+      {/if}
   </nav>
 </div>
 
@@ -243,27 +266,90 @@
     &>nav {
       display: flex;
       flex-direction: column;
-      align-items: baseline;
+      align-items: center;
       gap: .5rem;
       padding: .5rem;
+      width: 100%;
 
-      &>a {
-        height: 2.5rem;
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        width: 100%;
-        box-sizing: border-box;
-        padding: .5rem;
-
-        border: 0 solid var(--emphasis);
-        
-        transition: border .125s ease;
-        
-        &.selected, &:hover, &:active, &:focus-visible {
-          border-left: .25rem solid var(--emphasis);
-        }
+      &>.sep {
+        height: .125rem;
+        width: 30%;
+        background-color: var(--emphasis);
+        margin: 0;
+        border-radius: .125rem;
       }
+    }
+  }
+  .phonenavbutton {
+    flex: 1;
+    display: flex;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: center;
+
+    &>.display {
+      padding: .5rem;
+      box-sizing: border-box;
+
+      flex: 1;
+      width: 100%;
+      
+      border-radius: .25rem;
+      background-color: var(--bg2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &:hover, &:active, &:focus-visible {
+      &>.underline {
+        width: 3rem;
+      }
+    }
+
+    &>.underline {
+      height: .125rem;
+      width: 0rem;
+      border-radius: .125rem;
+      background-color: var(--emphasis);
+      
+      transition: width .25s ease;
+      
+      &.selected {
+        width: 3rem;
+      }
+    }
+  }
+  .phoneuser {
+    flex: 1;
+    width: 100%;
+    
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+
+    border-radius: 1.5rem;
+    background-color: var(--bg2);
+    text-decoration: none;
+    overflow: hidden;
+    
+    &>.display {
+      flex: 1;
+      text-decoration: none;
+      padding: .5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    &>img {
+      height: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      box-sizing: border-box;
+      border-radius: 50%;
+      border: .125rem solid var(--emphasis);
     }
   }
 </style>
