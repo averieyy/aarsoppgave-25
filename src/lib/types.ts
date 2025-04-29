@@ -50,3 +50,9 @@ export interface file {
   client_id: number,
   uploaded: Date,
 }
+
+export interface speedrun_category {
+  game_id: number,
+  category_id: string,
+  id: number
+}
