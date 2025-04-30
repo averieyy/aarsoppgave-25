@@ -1,4 +1,5 @@
 import { db } from "$lib/db";
+import type { speedrun_category } from "$lib/types";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ parent }) => {
@@ -11,6 +12,7 @@ export const load: PageServerLoad = async ({ parent }) => {
     verified: boolean,
     deleted: boolean,
     username: string,
+    category_id: string,
     id: number
   }>(`select
       s.submitted,
@@ -19,6 +21,7 @@ export const load: PageServerLoad = async ({ parent }) => {
       s.description,
       s.verified,
       s.deleted,
+      s.category_id,
       c.displayname as username,
       p.file as profile_pic
     from
@@ -33,5 +36,7 @@ export const load: PageServerLoad = async ({ parent }) => {
     order by s.score asc
     limit 50`, game.id);
   
-  return { member, client, game, speedruns }
+  const categories = await db.queryAll<speedrun_category>('select * from speedrun_categories where game_id = $1::int', game.id);
+
+  return { member, client, game, speedruns, categories }
 };

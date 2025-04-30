@@ -1,5 +1,5 @@
 import { db } from "$lib/db";
-import type { speedrun } from "$lib/types";
+import type { speedrun, speedrun_category } from "$lib/types";
 import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
@@ -17,6 +17,8 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 
       return acc;
     }, {});
+  
+  const game_categories = await db.queryAll<speedrun_category>('select distinct on (sc) sc.* from speedrun_categories sc inner join speedrun s on s.game_id = sc.game_id and s.category_id = sc.category_id where s.client_id = $1::int', user.id);
 
-  return { user: { username: user.displayname, joined: user.joined, profile_pic: user.profile_pic }, client, speedruns }
+  return { user: { username: user.displayname, joined: user.joined, profile_pic: user.profile_pic }, client, speedruns, categories: game_categories }
 };

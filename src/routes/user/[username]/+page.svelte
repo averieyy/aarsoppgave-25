@@ -4,7 +4,7 @@
   import { toTimeSince } from "$lib/timedisplay";
 
   const { data } = $props();
-  let { client, user, speedruns } = $state(data);
+  let { client, user, speedruns, categories } = $state(data);
 
   let speedrunninggames: [string, number][] = [];
   
@@ -45,7 +45,7 @@
               <button class="speedrunninggame {selectedgame == game[1] ? 'selected' : ''}" onclick={() => selectedgame = game[1]}>{game[0]}</button>
             {/each}
           </div>
-          <Speedrunlist speedruns={speedruns[selectedgame] || []} />
+          <Speedrunlist speedruns={speedruns[selectedgame] || []} categories={categories.map(c => c.category_id)} />
         </div>
       </section>
     </main>
