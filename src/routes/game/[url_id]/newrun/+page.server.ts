@@ -1,5 +1,5 @@
 import { db } from "$lib/db";
-import type { game, gamemember } from "$lib/types";
+import { type speedrun_category, type game, type gamemember } from "$lib/types";
 import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
@@ -15,5 +15,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
   const gamemember = await db.queryOne<gamemember>('select * from game_members where client_id = $1::integer and game_id = $2::integer', client.id, game.id);
   if (gamemember?.banned) redirect(302, `/game/${params.url_id}`);
 
-  return { client, game };
+  const categories = await db.queryAll<speedrun_category>('select * from speedrun_categories where game_id = $1::int', game.id);
+
+  return { client, game, categories };
 };

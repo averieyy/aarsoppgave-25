@@ -1,22 +1,29 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import Header from "$lib/components/header.svelte";
   import Timeinput from "$lib/components/timeinput.svelte";
-    import { handleForm } from "$lib/forms.js";
+  import { handleForm } from "$lib/forms.js";
 
   const { data } = $props();
 
-  let { game, client } = $state(data);
+  let { game, client, categories } = $state(data);
 
   let time = $state(0);
   let description = $state('');
+
+  let selectedCategory: number = $state(categories[0].id);
 
   let error: string = $state('');
 
   async function submit() {
     const resp = await fetch('/api/game/submit', {
       method: 'POST',
-      body: JSON.stringify({ game_id: game?.id, duration: time, description })
+      body: JSON.stringify({
+        game_id: game?.id,
+        duration: time,
+        description,
+        category: selectedCategory
+      })
     });
 
     if (!resp.ok) {
@@ -44,6 +51,15 @@
           <h1><a class="emphasis" href="/game/{game.url_id}">{game.name}</a></h1>
           <p>{game.description}</p>
         </div>
+      </div>
+      <div class="categories">
+        {#each categories as category}
+          <button
+            class="category {selectedCategory == category.id ? 'selected' : ''}"
+            onclick={() => selectedCategory = category.id}>
+              {category.category_id}
+          </button>
+        {/each}
       </div>
       <form onsubmit={ev => handleForm(ev, submit)}>
         <Timeinput bind:value={time}></Timeinput>
@@ -104,6 +120,20 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
+      }
+    }
+  }
+  .categories {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .5rem;
+
+    &>.category {
+      &.selected {
+        background-color: var(--emphasis);
+        color: var(--bg1);
       }
     }
   }
