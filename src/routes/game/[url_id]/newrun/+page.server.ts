@@ -15,7 +15,5 @@ export const load: PageServerLoad = async ({ parent, params }) => {
   const gamemember = await db.queryOne<gamemember>('select * from game_members where client_id = $1::integer and game_id = $2::integer', client.id, game.id);
   if (gamemember?.banned) redirect(302, `/game/${params.url_id}`);
 
-  const categories = await db.queryAll<speedrun_category>('select * from speedrun_categories where game_id = $1::int', game.id);
-
-  return { client, game, categories };
+  return { client, game };
 };

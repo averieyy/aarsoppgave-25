@@ -1,5 +1,5 @@
 import { db } from "$lib/db";
-import type { game, gamemember } from "$lib/types";
+import type { game, gamemember, speedrun_category } from "$lib/types";
 import { redirect } from "@sveltejs/kit";
 import type { LayoutServerLoad } from "./$types";
 
@@ -16,5 +16,7 @@ export const load: LayoutServerLoad = async ({ parent, params }) => {
       || await db.queryOne<gamemember>('insert into game_members (client_id, game_id) values ($1::int, $2::int) returning *', client.id, game.id) // Create a new member for this client
     : undefined;
 
-  return { member, game }
+  const categories = await db.queryAll<speedrun_category>('select * from speedrun_categories where game_id = $1::int', game.id);
+
+  return { member, game, categories }
 };

@@ -36,7 +36,5 @@ export const load: PageServerLoad = async ({ parent }) => {
     order by s.score asc
     limit 50`, game.id);
   
-  const categories = await db.queryAll<speedrun_category>('select * from speedrun_categories where game_id = $1::int', game.id);
-
-  return { member, client, game, speedruns, categories }
+  return { member, client, game, speedruns }
 };
