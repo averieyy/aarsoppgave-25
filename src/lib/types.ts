@@ -36,6 +36,18 @@ export interface speedrun {
   id: number,
   client_id: number,
   game_id: number,
+  category_id: number,
+  submitted: Date,
+  score: number,
+  description: string,
+  verified: boolean,
+  deleted: boolean
+}
+
+export interface frontend_speedrun {
+  id: number,
+  username: string,
+  category_id: string,
   submitted: Date,
   score: number,
   description: string,
@@ -49,4 +61,10 @@ export interface file {
   pathname: string,
   client_id: number,
   uploaded: Date,
+}
+
+export interface speedrun_category {
+  game_id: number,
+  category_id: string,
+  id: number
 }

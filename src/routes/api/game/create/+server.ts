@@ -17,11 +17,13 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
     return json({ message: 'Body not JSON' }, { status: 400 });
   }
 
-  const { title, description, tags } = body;
+  const { title, description, tags, categories } = body;
 
   if (!title || typeof title != 'string' || title.length > 48) return json({ message: 'Bad title' }, { status: 400 });
   if (!description || typeof description != 'string') return json({ message: 'Bad descripton' }, { status: 400 });
   if (!(tags instanceof Array)) return json({ message: 'Invalid tags' }, { status: 400 });
+  if (!(categories instanceof Array)) return json({ message: 'Invalid categories' }, { status: 400 });
+  if (categories.length < 1) return json({ message: 'At least one category is required' }, { status: 400 });
 
   const urlTitle = title
     .toLowerCase()
@@ -41,6 +43,11 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
     // Add tags
     for (let tag of tags) {
       await c.execute('insert into game_tags (game_id, tag) values ($1::integer, $2::text)', idresponse.id, tag);
+    }
+
+    // Add categories
+    for (let category of categories) {
+      await c.execute('insert into speedrun_categories (game_id, category_id) values ($1::int, $2::text)', idresponse.id, category);
     }
 
     // Add user as game admin

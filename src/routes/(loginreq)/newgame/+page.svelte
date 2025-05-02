@@ -1,6 +1,6 @@
 <script lang="ts">
   import Header from "$lib/components/header.svelte";
-    import { handleForm } from "$lib/forms.js";
+  import { handleForm } from "$lib/forms.js";
 
   const { data } = $props();
   let { client } = $state(data);
@@ -11,6 +11,9 @@
   let newTagContent: string = $state('');
 
   let error: string = $state('');
+
+  let categories: string[] = $state(['any%']);
+  let newCategoryContent: string = $state('');
 
   function removeTag (tag: string) {
     const index = tags.indexOf(tag);
@@ -26,6 +29,24 @@
     tags = tags;
   }
 
+  function removeCategory (category: string) {
+    if (categories.length == 1) {
+      error = 'You have to have at least one category';
+      return;
+    }
+    const index = categories.indexOf(category);
+    if (index == -1) return;
+    categories.splice(index, 1);
+    categories = categories;
+  }
+
+  function addCategory () {
+    if (!newCategoryContent) return;
+    categories.push(newCategoryContent);
+    newCategoryContent = ''
+    categories = categories;
+  }
+
   async function submit () {
     const resp = await fetch('/api/game/create', {
       method: 'POST',
@@ -33,6 +54,7 @@
         tags,
         title,
         description,
+        categories,
       }),
     });
 
@@ -72,6 +94,22 @@
           <input type="text" bind:value={newTagContent} placeholder="tag">
         </form>
       </div>
+      <h3>Categories</h3>
+      {#if categories.length > 0}
+        <div class="categories">
+          {#each categories as category}
+            <div class="category">
+              <span class="content">{category}</span>
+              <button class="remove" onclick={() => removeCategory(category)}>x</button>
+            </div>
+          {/each}
+        </div>
+      {/if}
+      <div class="outeradd">
+        <form onsubmit={ev => handleForm(ev, addCategory)} class="add category">
+          <input type="text" bind:value={newCategoryContent} placeholder="category">
+        </form>
+      </div>
       <button onclick={submit}>Confirm</button>
     </main>
   </div>
@@ -83,22 +121,26 @@
     min-height: 5rem;
     padding: 1rem .5rem;
   }
-  .tags {
+  .tags, .categories {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     gap: .5rem;
   }
-  .tag {
+  .tag, .category {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: .5rem;
 
-    &::before {
+    &.tag::before {
       content: '#';
+    }
+
+    &.category::before {
+      content: '/';
     }
 
     box-sizing: border-box;

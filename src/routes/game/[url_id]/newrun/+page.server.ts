@@ -1,5 +1,5 @@
 import { db } from "$lib/db";
-import type { game, gamemember } from "$lib/types";
+import { type speedrun_category, type game, type gamemember } from "$lib/types";
 import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 

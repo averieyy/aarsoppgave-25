@@ -3,7 +3,7 @@
   import Speedrunlist from "$lib/components/speedrunlist.svelte";
 
   const { data } = $props();
-  let { client, game, member, speedruns } = $state(data);
+  let { client, game, member, speedruns, categories } = $state(data);
 </script>
 
 <svelte:head>
@@ -15,7 +15,7 @@
   <div class="innerpage">
     <main>
       <div class="speedruns">
-        <Speedrunlist {speedruns} />
+        <Speedrunlist {speedruns} categories={categories.map(c => c.category_id)} />
       </div>
       <div class="info">
         <div class="basic">
