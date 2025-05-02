@@ -1,20 +1,11 @@
 import { db } from "$lib/db";
-import type { speedrun_category } from "$lib/types";
+import type { frontend_speedrun } from "$lib/types";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ parent }) => {
   const { client, game, member } = await parent();
   
-  const speedruns = await db.queryAll<{
-    submitted: Date,
-    score: number,
-    description: string,
-    verified: boolean,
-    deleted: boolean,
-    username: string,
-    category_id: string,
-    id: number
-  }>(`select
+  const speedruns = await db.queryAll<frontend_speedrun>(`select
       s.submitted,
       s.score,
       s.id,

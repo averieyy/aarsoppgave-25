@@ -29,7 +29,7 @@
             {#each lastspeedrungames as speedrun}
               <a class="recent" href="/speedrun/{speedrun.id}">
                 <h3>
-                  {speedrun.name}
+                  {speedrun.name} - {speedrun.category_id}
                 </h3>
                 <span>{toTimeSince(speedrun.submitted)}</span>
                 <span class="flexexpand"></span>

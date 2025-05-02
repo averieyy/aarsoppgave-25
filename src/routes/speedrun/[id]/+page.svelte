@@ -27,6 +27,7 @@
             {speedrun.game}
           </a>
         </h2>
+        <span class="category">{speedrun.category_id}</span>
         <p>{speedrun.game_desc}</p>
       </div>
       <div class="run">

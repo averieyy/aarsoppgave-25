@@ -44,6 +44,17 @@ export interface speedrun {
   deleted: boolean
 }
 
+export interface frontend_speedrun {
+  id: number,
+  username: string,
+  category_id: string,
+  submitted: Date,
+  score: number,
+  description: string,
+  verified: boolean,
+  deleted: boolean
+}
+
 export interface file {
   displayname: string,
   mime: string,
