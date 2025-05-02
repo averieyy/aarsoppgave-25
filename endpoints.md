@@ -56,6 +56,53 @@ Response
 
 ---
 
+#### POST /api/game/category/add
+
+Adds a game category
+
+Request
+
+```ts
+{
+  category_id: string,
+  game: number,
+}
+```
+
+Response
+
+```ts
+{
+  message: "Added category"
+}
+```
+
+---
+
+#### POST /api/game/category/edit
+
+Edits a game category
+
+Request
+
+```ts
+{
+  category_id: string,
+  new_category_id: string,
+  game: number,
+}
+```
+
+Response
+
+```ts
+{
+  message: "Edited category"
+}
+```
+
+---
+
 #### POST /api/game/create
 
 Creates a game
@@ -66,7 +113,8 @@ Request
 {
   title: string,
   description: string,
-  tags: string[]
+  tags: string[],
+  categories: string[],
 }
 ```
 
