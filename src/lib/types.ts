@@ -36,7 +36,7 @@ export interface speedrun {
   id: number,
   client_id: number,
   game_id: number,
-  category_id: string,
+  category_id: number,
   submitted: Date,
   score: number,
   description: string,

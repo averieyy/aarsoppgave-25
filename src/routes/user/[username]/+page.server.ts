@@ -10,10 +10,11 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 
   if (!user) redirect(302, '/');
 
-  const speedruns = (await db.queryAll<speedrun & { name: string, profile_pic: string | null }>('select s.*, g.name, p.file as profile_pic from speedrun s join games g on g.id = s.game_id left outer join profile_pics p on p.client_id = s.client_id where s.client_id = $1::integer', user.id))
-    .reduce<{[id: number]: (speedrun & { name: string, username: string })[] }>((acc, curr) => {
-      if (acc[curr.game_id]) acc[curr.game_id].push({...curr, username: user.displayname});
-      else acc[curr.game_id] = [{...curr, username: user.displayname}];
+  const speedruns = (await db.queryAll<speedrun & { category_label: string, name: string, profile_pic: string | null }>('select s.*, g.name, p.file as profile_pic from speedrun s join games g on g.id = s.game_id left outer join profile_pics p on p.client_id = s.client_id where s.client_id = $1::integer', user.id))
+    .reduce<{[id: number]: ({ id: number, client_id: number, game_id: number, submitted: Date, score: number, description: string, verified: boolean, deleted: boolean, category_id: string, name: string, username: string })[] }>((acc, curr) => {
+      const edited = {...curr, username: user.displayname, category_id: curr.category_label }
+      if (acc[curr.game_id]) acc[curr.game_id].push(edited);
+      else acc[curr.game_id] = [ edited ];
 
       return acc;
     }, {});

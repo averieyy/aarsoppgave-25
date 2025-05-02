@@ -21,13 +21,14 @@ export const load: PageServerLoad = async ({ parent }) => {
       s.description,
       s.verified,
       s.deleted,
-      s.category_id,
+      sc.category_id,
       c.displayname as username,
       p.file as profile_pic
     from
       speedrun s
       join clients c on s.client_id = c.id
       left outer join profile_pics p on p.client_id = s.client_id
+      inner join speedrun_categories sc on sc.id = s.category_id
     where
       s.verified = true
       and s.deleted = false

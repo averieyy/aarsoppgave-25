@@ -1,6 +1,5 @@
 <script lang="ts">
   import { toTimeSince, toTime } from '$lib/timedisplay';
-  import { onMount } from 'svelte';
   
   const { speedruns, categories }: { speedruns: {score: number, username: string, submitted: Date, id: number, profile_pic?: string | null, category_id: string }[], categories: string[] } = $props();
 

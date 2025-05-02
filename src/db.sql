@@ -70,8 +70,8 @@ drop table if exists speedrun_categories;
 create table speedrun_categories (
   game_id int not null references games(id),
   category_id text not null,
-  id serial not null, -- For URLs
-  primary key (game_id, category_id)
+  id serial not null primary key,
+  unique (game_id, category_id)
 );
 
 -- Speedruns
@@ -81,13 +81,12 @@ create table speedrun (
   id serial not null primary key,
   client_id int not null references clients(id),
   game_id int not null,
-  category_id text not null,
+  category_id int not null references speedrun_categories(id),
   submitted timestamp not null default statement_timestamp(),
   score int not null,
   description text,
   verified boolean not null default false,
-  deleted boolean not null default false,
-  foreign key (game_id, category_id) references speedrun_categories(game_id, category_id)
+  deleted boolean not null default false
 );
 
 drop table if exists profile_pics;

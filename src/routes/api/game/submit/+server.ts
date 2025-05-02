@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   if (!existingcategory) return json({ message: 'Category not found' }, { status: 404 });
 
   // Register speedrun
-  await db.execute('insert into speedrun (client_id, game_id, score, description, category_id) values ($1::integer, $2::integer, $3::integer, $4::text, $5::text)', client.id, game.id, duration, description, existingcategory.category_id);
+  await db.execute('insert into speedrun (client_id, game_id, score, description, category_id) values ($1::integer, $2::integer, $3::integer, $4::text, $5::int)', client.id, game.id, duration, description, existingcategory.id);
   
   return json({ message: 'Your speedrun has been submitted and is waiting for verification' }, { status: 200 });
 }
