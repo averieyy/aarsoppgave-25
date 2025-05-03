@@ -1,0 +1,33 @@
+name: speedrun
+
+services:
+  db:
+    build: 
+      context: .
+      dockerfile: postgres.Dockerfile
+    env_file:
+      - docker.env
+    container_name: speedrun-postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - data_sql:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+  speedrun:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - docker.env
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+
+volumes:
+  data_sql:
