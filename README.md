@@ -20,12 +20,40 @@ Have docker and docker-compose installed.
 
 This will be used to configure the postgres database and user.
 
-Create a file called `.env` in the project's root directory.
+Create a file called `docker.env` in the project's root directory.
 
 ```sh
-POSTGRES_USER=<username>
-POSTGRES_DB=speedrun
 POSTGRES_PASSWORD=<password>
+```
+
+To build the program, you need to set the environment variables `POSTGRES_PASSWORD` and `POSTGRES_USER`.
+
+`POSTGRES_PASSWORD` has to match what you set it to in `docker.env`, and `POSTGRES_USER` has to be `speedrun`.
+
+You can do this either by creating a file called `.env` with the following contents:
+
+```sh
+POSTGRES_PASSWORD=<password>
+POSTGRES_USER=speedrun
+```
+
+Or you can run prefix the command with
+
+`POSTGRES_PASSWORD=<password> POSTGRES_USER=speedrun ...`
+
+Then, run the command
+
+```sh
+docker compose up -d --build
+```
+
+This will build and start the containers
+
+If you ever want to just run the programs, use
+
+
+```sh
+docker compose run dev
 ```
 
 ### Without docker
