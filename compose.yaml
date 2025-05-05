@@ -6,8 +6,9 @@ services:
       context: .
       dockerfile: postgres.Dockerfile
     environment:
-      POSTGRES_DB: speedrun
-      POSTGRES_USER: postgres
+      - POSTGRES_DB=speedrun
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     container_name: postgres
     ports:
       - "5432"

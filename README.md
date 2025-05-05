@@ -26,34 +26,20 @@ Create a file called `docker.env` in the project's root directory.
 POSTGRES_PASSWORD=<password>
 ```
 
-To build the program, you need to set the environment variables `POSTGRES_PASSWORD` and `POSTGRES_USER`.
-
-`POSTGRES_PASSWORD` has to match what you set it to in `docker.env`, and `POSTGRES_USER` has to be `speedrun`.
-
-You can do this either by creating a file called `.env` with the following contents:
-
-```sh
-POSTGRES_PASSWORD=<password>
-POSTGRES_USER=speedrun
-```
-
-Or you can run prefix the command with
-
-`POSTGRES_PASSWORD=<password> POSTGRES_USER=speedrun ...`
+You also have to copy the file to `.env`
 
 Then, run the command
 
 ```sh
-docker compose up -d --build
+sudo docker compose up -d --build
 ```
 
 This will build and start the containers
 
 If you ever want to just run the programs, use
 
-
 ```sh
-docker compose run dev
+sudo docker compose run web
 ```
 
 ### Without docker

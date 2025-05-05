@@ -1,8 +1,5 @@
 begin;
 
--- Create & enter database
-\c speedrun;
-
 -- Clients
 drop table if exists clients cascade;
 

@@ -24,4 +24,6 @@ vite.config.ts.timestamp-*
 
 /uploads/
 
+# Docker
 docker.env
+postgres-pass
