@@ -14,6 +14,39 @@
 
 ## Installation
 
+### With docker
+
+Have docker and docker-compose installed.
+
+This will be used to configure the postgres database and user.
+
+Create a file called `docker.env` in the project's root directory.
+
+```sh
+POSTGRES_PASSWORD=<password>
+```
+
+You also have to copy the file to `.env`
+
+> [!NOTE]
+> If you don't intend to just host locally, change the ORIGIN environment variable in compose.yaml BEFORE building.
+
+Then, run the command
+
+```sh
+sudo docker compose up -d --build
+```
+
+This will build and start the containers
+
+If you ever want to just run the programs, use
+
+```sh
+sudo docker compose run web
+```
+
+### Without docker
+
 Requirements
 
 |Package|DNF (fedora)|pacman (Arch)|
@@ -22,7 +55,7 @@ Requirements
 |Yarn|yarn|yarn|
 |git|git|git|
 
-### Clone this project
+#### Clone this project
 
 This one should be quite easy
 
@@ -32,7 +65,7 @@ git clone https://github.com/averieyy/aarsoppgave-25.git
 cd aarsopgave-25
 ```
 
-### Set up postgres
+#### Set up postgres
 
 If you haven't used postgres previously on this installation, you have to initiate the database.
 
@@ -46,7 +79,7 @@ Then, start the postgres service
 sudo systemctl start postgresql.service
 ```
 
-#### Create the database
+##### Create the database
 
 <details>
 
@@ -84,7 +117,7 @@ Copy-paste the contents of `src/db.sql` into a postgres terminal, or run the com
 cat src/db.sql | psql -U <username> <database>
 ```
 
-#### Configuration
+##### Configuration
 
 Create a file `.env` in the project's root directory.
 
@@ -95,7 +128,7 @@ PGDATABASE=<database>
 PGPASSWORD=<password>
 ```
 
-### Install dependencies
+#### Install dependencies
 
 ```sh
 yarn install
