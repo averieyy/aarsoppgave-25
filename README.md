@@ -28,6 +28,9 @@ POSTGRES_PASSWORD=<password>
 
 You also have to copy the file to `.env`
 
+> [!NOTE]
+> If you don't intend to just host locally, change the ORIGIN environment variable in compose.yaml BEFORE building.
+
 Then, run the command
 
 ```sh

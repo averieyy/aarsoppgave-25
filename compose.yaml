@@ -28,10 +28,14 @@ services:
       postgres:
         condition: service_healthy
         restart: true
+    volumes:
+      - uploads:/speedrun/uploads
     environment:
       - POSTGRES_DB=speedrun
       - POSTGRES_USER=postgres
       - POSTGRES_HOST=postgres
+      # - ORIGIN=http://localhost:3000
 
 volumes:
   data_sql:
+  uploads:

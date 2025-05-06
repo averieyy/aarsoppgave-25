@@ -26,4 +26,3 @@ vite.config.ts.timestamp-*
 
 # Docker
 docker.env
-postgres-pass
