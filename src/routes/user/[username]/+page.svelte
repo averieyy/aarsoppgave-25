@@ -4,15 +4,10 @@
   import { toTimeSince } from "$lib/timedisplay";
 
   const { data } = $props();
-  let { client, user, speedruns, categories } = $state(data);
+  let { client, user, speedruns, categories, games } = $state(data);
 
-  let speedrunninggames: [string, number][] = [];
+  let selectedgame: number = $state(games[0].id);
   
-  for (let i in speedruns) {
-    speedrunninggames.push([speedruns[i][0].name, speedruns[i][0].game_id]);
-  }
-
-  let selectedgame: number = $state(speedrunninggames[0][1]);
 </script>
 
 <svelte:head>
@@ -41,11 +36,11 @@
         <h2>Speedruns</h2>
         <div class="outerspeedruns">
           <div class="speedrungames">
-            {#each speedrunninggames as game}
-              <button class="speedrunninggame {selectedgame == game[1] ? 'selected' : ''}" onclick={() => selectedgame = game[1]}>{game[0]}</button>
+            {#each games as game}
+              <button class="speedrunninggame {selectedgame == game.id ? 'selected' : ''}" onclick={() => selectedgame = game.id}>{game.name}</button>
             {/each}
           </div>
-          <Speedrunlist speedruns={speedruns[selectedgame] || []} categories={categories.map(c => c.category_id)} />
+          <Speedrunlist speedruns={speedruns.filter(s => s.game_id == selectedgame) || []} categories={categories.filter(c => c.game_id == selectedgame).map(c => c.category_id)} />
         </div>
       </section>
     </main>

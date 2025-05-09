@@ -73,7 +73,9 @@
     {#if client}
       <a href="/user" class="phoneuser">
         <span class="display">{client.displayname}</span>
-        <img src="/api/uploads/{client.profile_pic}" title="My page" alt="Profile pic">
+        {#if client.profile_pic}
+          <img src="/api/uploads/{client.profile_pic}" title="My page" alt="Profile pic">
+        {/if}
       </a>
       {:else}
         <a href="/login?redirect={page.url.pathname}" class="phonenavbutton">
