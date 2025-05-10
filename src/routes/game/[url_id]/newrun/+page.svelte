@@ -16,13 +16,16 @@
   let error: string = $state('');
 
   async function submit() {
+    let proof_id = await uploadProof();
+
     const resp = await fetch('/api/game/submit', {
       method: 'POST',
       body: JSON.stringify({
         game_id: game?.id,
         duration: time,
         description,
-        category: selectedCategory
+        category: selectedCategory,
+        proof: proof_id
       })
     });
 
@@ -33,6 +36,22 @@
     }
     else goto(`/game/${game?.url_id}`);
   }
+
+  async function uploadProof (): Promise<string | undefined> {
+    const formdata = new FormData();
+    if (!proof) return;
+
+    formdata.set('file', proof);
+
+    const file = await fetch('/api/upload', { method: 'POST', body: formdata });
+  
+    if (!file.ok) return undefined;
+    
+    return (await file.json()).id;
+  }
+
+  let prooflist: FileList | undefined = $state();
+  let proof = $derived(prooflist && prooflist.length > 0 ? prooflist.item(0) : undefined)
 </script>
 
 <svelte:head>
@@ -63,7 +82,28 @@
       </div>
       <form onsubmit={ev => handleForm(ev, submit)}>
         <Timeinput bind:value={time}></Timeinput>
-        <textarea class="input" bind:value={description}></textarea>
+        <textarea class="input" bind:value={description} placeholder="Description"></textarea>
+        <h2>Proof</h2>
+        <label>
+          <div class="proofinput">
+            {#if proof}
+              <svg viewBox="0 0 10 10">
+                <path
+                  d="M2 1L6 1L8 3L8 9L2 9Z M3 3L7 3L7 4L3 4Z M3 5L7 5L7 6L3 6Z M3 7L7 7L7 8L3 8Z">
+                </path>
+              </svg>
+              <span>{proof.name}</span>
+            {:else}
+              <svg viewBox="0 0 10 10">  
+                <path
+                  d="M4 1L6 1L6 4L9 4L9 6L6 6L6 9L4 9L4 6L1 6L1 4L4 4Z">
+                </path>
+              </svg>
+              <span>Select file for proof</span>
+            {/if}
+          </div>
+          <input hidden bind:files={prooflist} max="1" type="file">
+        </label>
         <input type="submit" value="Register run" />
       </form>
     </main>
@@ -134,6 +174,34 @@
       &.selected {
         background-color: var(--emphasis);
         color: var(--bg1);
+      }
+    }
+  }
+  .proofinput {
+    height: 3rem;
+    border: .125rem solid var(--emphasis);
+    background-color: var(--bg2);
+    display: flex;
+    flex-direction: row;
+    padding: .5rem;
+    gap: .5rem;
+    box-sizing: border-box;
+    align-items: center;
+
+    &>span {
+      flex: 1;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    &>svg {
+      width: 2rem;
+      height: 2rem;
+      
+      &>path {
+        fill: var(--emphasis);
+        fill-rule: evenodd;
       }
     }
   }

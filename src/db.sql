@@ -85,6 +85,7 @@ create table speedrun (
   submitted timestamp not null default statement_timestamp(),
   score int not null,
   description text,
+  proof text references files(pathname),
   verified boolean not null default false,
   deleted boolean not null default false
 );
