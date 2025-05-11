@@ -40,6 +40,7 @@ export interface speedrun {
   submitted: Date,
   score: number,
   description: string,
+  proof: string,
   verified: boolean,
   deleted: boolean
 }

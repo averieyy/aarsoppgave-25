@@ -21,7 +21,7 @@
   <Header client={client} />
   <div class="innerpage">
     <main>
-      <div class="game">
+      <section class="game">
         <h2>
           <a href="/game/{speedrun.url_id}" class="gameurl">
             {speedrun.game}
@@ -29,8 +29,8 @@
         </h2>
         <span class="category">{speedrun.category_id}</span>
         <p>{speedrun.game_desc}</p>
-      </div>
-      <div class="run">
+      </section>
+      <section class="run">
         <h3>
           Speedrun in <span class="emphasis">{toTime(speedrun.score)}.{(speedrun.score % 1000).toString().padStart(3,'0')}</span>
         </h3>
@@ -46,7 +46,20 @@
           {/if}
         </div>
         <a href="/user/{speedrun.username}" class="button">View user profile</a>
-      </div>
+      </section>
+      {#if speedrun.proof}
+        <section>
+          <h3>Proof</h3>
+          {#if speedrun.proofmime.startsWith('image')}
+            <img class="proofimg" src="/api/uploads/{speedrun.proof}" alt="Proof for speedrun">
+          {:else if speedrun.proofmime.startsWith('video')}
+            <video class="proofimg" controls>
+              <track kind="captions">
+              <source src="/api/uploads/{speedrun.proof}">
+            </video>
+          {/if}
+        </section>
+      {/if}
     </main>
   </div>
 </div>
@@ -74,7 +87,7 @@
     gap: .5rem;
   }
 
-  .game, .run {
+  section {
     padding: 1rem;
     border-radius: .5rem;
     background-color: var(--bg2);
@@ -131,5 +144,11 @@
   .gameurl {
     color: var(--emphasis);
     text-decoration: .125rem solid underline;
+  }
+
+  .proofimg {
+    border-radius: .5rem;
+
+    border: .125rem solid var(--emphasis);
   }
 </style>
