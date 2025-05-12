@@ -72,27 +72,20 @@
       return;
     }
 
-    console.log('sadf');
-
     const file = files[0];
     if (file.size >= 33554432) {
       error = 'Files cannot be bigger than 32 GiB';
       return;
     }
 
-    console.log('asfd');
     if (!file.type.startsWith('image/')) {
       error = 'File has to be an image';
       return;
     }
-
-    console.log('saf');
     
     // Upload
     const form = new FormData();
     form.set('file', file);
-
-    console.log('poto');
 
     fetch('/api/upload', {
       method: 'POST',
@@ -101,15 +94,11 @@
       if (!resp.ok) { error = (await resp.json()).message; return; }
       game.image = (await resp.json()).id;
 
-      console.log('0920');
-
       // Update game image
       const r = await fetch('/api/game/image', {
         method: 'POST',
         body: JSON.stringify({ game: game.id, file: game.image })
       })
-
-      console.log('092');
 
       if (!r.ok) {
         error = (await r.json()).message;
@@ -275,37 +264,52 @@
           {:else}
             {#each speedruns as speedrun}
               <div class="speedrun">
-                <div class="info">
-                  <span>{toTime(speedrun.score)}.{(speedrun.score % 1000).toString().padStart(3, '0')}</span>
-                  <p class="speedrundesc">{speedrun.description}</p>
-                  <span>By <a href="/user/{speedrun.username}" class="link">{speedrun.displayname}</a></span>
+                <div class="infoactions">
+                  <div class="info">
+                    <span>{toTime(speedrun.score)}.{(speedrun.score % 1000).toString().padStart(3, '0')}</span>
+                    <p class="speedrundesc">{speedrun.description}</p>
+                    <span>By <a href="/user/{speedrun.username}" class="link">{speedrun.displayname}</a></span>
+                    <a href="/speedrun/{speedrun.id}" class="button">More information</a>
+                  </div>
+                  <div class="actions">
+                    <button title="Verify run" onclick={() => verify(speedrun.id)} aria-label="verify">
+                      <svg viewBox="0 0 1 1">
+                        <path
+                          d="M1 .2 L 0.9 0.1 L 0.3 0.7 L 0.1 0.5 L 0 0.6 L 0.3 0.9 Z">
+                        </path>
+                      </svg>
+                    </button>
+                    <button title="Deny run" class="red" onclick={() => deny(speedrun.id)} aria-label="deny">
+                      <svg viewBox="0 0 1 1">
+                        <path
+                          d="M.1 .2 L .2 .1 L .5 .4 L .8 .1 L .9 .2 L .6 .5 L .9 .8 L .8 .9 L .5 .6 L .2 .9 L .1 .8 L .4 .5 Z">
+                        </path>
+                      </svg>
+                    </button>
+                    <button title="Ban user" class="red" onclick={() => ban(speedrun.username)} aria-label="ban user">
+                      <svg viewBox="0 0 1 1">
+                        <path
+                          d="M.05 .85 L .4 .5 L .25 .35 L .45 .15 L .85 .55 L .65 .75 L .5 .6 L .15 .95Z">
+                        </path>
+                        <path
+                          d="M .4 1 L .5 .9 L .9 .9 L 1 1 Z">
+                        </path>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-                <div class="actions">
-                  <button title="Verify run" onclick={() => verify(speedrun.id)} aria-label="verify">
-                    <svg viewBox="0 0 1 1">
-                      <path
-                        d="M1 .2 L 0.9 0.1 L 0.3 0.7 L 0.1 0.5 L 0 0.6 L 0.3 0.9 Z">
-                      </path>
-                    </svg>
-                  </button>
-                  <button title="Deny run" class="red" onclick={() => deny(speedrun.id)} aria-label="deny">
-                    <svg viewBox="0 0 1 1">
-                      <path
-                        d="M.1 .2 L .2 .1 L .5 .4 L .8 .1 L .9 .2 L .6 .5 L .9 .8 L .8 .9 L .5 .6 L .2 .9 L .1 .8 L .4 .5 Z">
-                      </path>
-                    </svg>
-                  </button>
-                  <button title="Ban user" class="red" onclick={() => ban(speedrun.username)} aria-label="ban user">
-                    <svg viewBox="0 0 1 1">
-                      <path
-                        d="M.05 .85 L .4 .5 L .25 .35 L .45 .15 L .85 .55 L .65 .75 L .5 .6 L .15 .95Z">
-                      </path>
-                      <path
-                        d="M .4 1 L .5 .9 L .9 .9 L 1 1 Z">
-                      </path>
-                    </svg>
-                  </button>
-                </div>
+                {#if speedrun.proof}
+                  <div class="proof">
+                    {#if speedrun.proofmime!.startsWith('video')}
+                      <video>
+                        <source src="/api/uploads/{speedrun.proof}" type="{speedrun.proofmime}">
+                        <track kind="captions">
+                      </video>
+                    {:else if speedrun.proofmime!.startsWith('image')}
+                      <img src="/api/uploads/{speedrun.proof}" alt="Proof for speedrun">
+                    {/if}
+                  </div>
+                {/if}
               </div>
             {/each}
           {/if}
@@ -316,6 +320,17 @@
 </div>
 
 <style>
+  @media (max-width: 500px) {
+    .speedrun {
+      flex-direction: column !important;
+
+      &>.proof {
+        width: 100% !important;
+        height: 10rem !important;
+      }
+    }
+  }
+
   main {
     width: 750px;
     max-width: 100%;
@@ -336,24 +351,42 @@
   }
   .speedrun {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    
+    &>.infoactions {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      flex: 1;
+    }
     gap: .5rem;
     
     padding: .5rem;
     border-radius: .25rem;
 
     &:nth-child(odd) {
-      background-color: var(--bg2);
+      background-color: var(--bg3);
 
-      &>.info>p::before {
-        box-shadow: inset 0 -4rem 2rem -3rem var(--bg2);
+      & .info>p::before {
+        box-shadow: inset 0 -4rem 2rem -3rem var(--bg3);
       }
     }
     &:nth-child(even) {
-      background-color: var(--bg3);
+      background-color: var(--bg2);
 
-      &>.info>p::before {
-        box-shadow: inset 0 -4rem 2rem -3rem var(--bg3);
+      & .info>p::before {
+        box-shadow: inset 0 -4rem 2rem -3rem var(--bg2);
+      }
+    }
+
+    &>.proof {
+      height: auto;
+      width: 10rem;
+      
+      &>img, &>video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
       }
     }
   }

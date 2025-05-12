@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ parent }) => {
   if (!member || !member.admin || member.banned) redirect(302, `/game/${game.url_id}`);
 
   // Load everything
-  const speedruns = await db.queryAll<speedrun & { username: string, displayname: string }>('select s.*, c.username, c.displayname from speedrun s join clients c on s.client_id = c.id join game_members m on m.client_id = c.id and m.game_id = s.game_id where s.game_id = $1::int and s.verified = false and s.deleted = false and m.banned = false order by submitted asc', game.id);
+  const speedruns = await db.queryAll<speedrun & { username: string, displayname: string, proofmime?: string }>('select s.*, c.username, c.displayname, f.mime as proofmime from speedrun s join clients c on s.client_id = c.id join game_members m on m.client_id = c.id and m.game_id = s.game_id left outer join files f on f.pathname = s.proof where s.game_id = $1::int and s.verified = false and s.deleted = false and m.banned = false order by submitted asc', game.id);
 
   return { client, speedruns }
 };

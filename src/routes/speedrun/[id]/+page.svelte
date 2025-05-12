@@ -19,6 +19,11 @@
 
 <div class="page">
   <Header client={client} />
+  {#if !speedrun.verified}
+    <div class="unverified">
+      This speedrun has not been verified
+    </div>
+  {/if}
   <div class="innerpage">
     <main>
       <section class="game">
@@ -150,5 +155,18 @@
     border-radius: .5rem;
 
     border: .125rem solid var(--emphasis);
+  }
+  
+  .unverified {
+    display: flex;
+    padding: .5rem;
+    box-sizing: border-box;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--red);
+    margin: .5rem;
+    border-radius: .5rem;
+    color: var(--bg1);
   }
 </style>
