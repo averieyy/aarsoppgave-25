@@ -67,5 +67,7 @@ export interface file {
 export interface speedrun_category {
   game_id: number,
   category_id: string,
-  id: number
+  id: number,
+  require_proof: boolean,
+  proof_match: string,
 }

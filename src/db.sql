@@ -71,6 +71,8 @@ create table speedrun_categories (
   game_id int not null references games(id),
   category_id text not null,
   id serial not null primary key,
+  require_proof boolean not null default false,
+  proof_match text not null default '.*/.*',
   unique (game_id, category_id)
 );
 
