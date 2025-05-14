@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import CategoryManage from "$lib/components/categoryManage.svelte";
   import Header from "$lib/components/header.svelte";
   import { toTime } from "$lib/timedisplay.js";
 
@@ -118,13 +119,14 @@
 
   let editingCategory: string | undefined = $state(undefined);
   let editCategoryName: string = $state('');
+  let editReq: boolean = $state(false);
   let newCategory: boolean = $state(false);
   let newCategoryName: string = $state('');
 
   async function addCategory () {
     const oldcategories = $state.snapshot(categories);
 
-    categories = [...categories, { category_id: newCategoryName, game_id: game.id, id: -1 }];
+    categories = [...categories, { category_id: newCategoryName, game_id: game.id, id: -1, proof_match: '.*/.*', require_proof: false }];
 
     const resp = await fetch('/api/game/category/add', {
       method: 'POST',
@@ -194,38 +196,7 @@
         <h2>Categories</h2>
         <div class="categories">
           {#each categories as category}
-            {#if editingCategory == category.category_id}
-              <div class="category editing">
-                <input type="text" bind:value={editCategoryName} placeholder="Category name">
-                <button onclick={() => editingCategory = ''} aria-label="Cancel editing">
-                  <svg viewBox="0 0 10 10">
-                    <path
-                      d="M 0 1 L 1 0 L 5 4 L 9 0 L 10 1 L 6 5 L 10 9 L 9 10 L 5 6 L 1 10 L 0 9 L 4 5 Z">
-                    </path>
-                  </svg>
-                </button>
-                <button onclick={() => editCategory()} aria-label="Edit category">
-                  <svg viewBox="0 0 10 10">
-                    <path
-                      d="M 9 1 L 10 2 L 3 9 L 0 6 L 1 5 L 3 7 Z">
-                    </path>
-                  </svg>
-                </button>
-              </div>
-            {:else}
-              <div class="category">
-                <span>
-                  {category.category_id}
-                </span>
-                <button onclick={() => { editingCategory = category.category_id; editCategoryName = category.category_id; }} class="edit" aria-label="Edit category">
-                  <svg viewBox="0 0 10 10">
-                    <path
-                      d="M 8 0 L 10 2 L 3 9 L 1 9 L 1 7 Z">
-                    </path>
-                  </svg>
-                </button>
-              </div>
-            {/if}
+            <CategoryManage game={game.id} {category} />
           {/each}
           {#if newCategory}
             <div class="category editing">
@@ -517,70 +488,5 @@
     display: flex;
     flex-direction: column;
     gap: .5rem;
-  }
-  .category {
-    height: 3rem;
-    padding: .5rem;
-    display: flex;
-    flex-direction: row;
-    background-color: var(--bg3);
-    border-radius: .5rem;
-    align-items: center;
-
-    gap: .5rem;
-
-    box-sizing: border-box;
-
-    &>span {
-      flex: 1;
-      text-align: center;
-      user-select: none;
-      color: inherit;
-    }
-
-    &>.edit {
-      border: none;
-      height: 2rem;
-      width: 2rem;
-      padding: .375rem;
-      border-radius: .5rem;
-
-      & path {
-        fill: var(--emphasis);
-      }
-      &:hover, &:focus-visible, &:active {
-        & path { fill: var(--fg-emphasis); }
-      }
-    }
-
-    &.add {
-      border: none;
-    }
-  }
-  .editing {
-    &>input {
-      height: 2rem;
-      border: none;
-      border-radius: .5rem;
-      flex: 1;
-      margin: 0;
-    }
-
-    &>button {
-      height: 2rem;
-      width: 2rem;
-      border: none;
-      border-radius: .5rem;
-
-      & path {
-        fill: var(--emphasis);
-      }
-
-      &:hover, &:active, &:focus-visible {
-        & path {
-          fill: var(--fg-emphasis);
-        }
-      }
-    }
   }
 </style>
