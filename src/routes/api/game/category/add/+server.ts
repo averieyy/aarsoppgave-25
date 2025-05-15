@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   const existingcategory = await db.queryOne<speedrun_category>('select * from speedrun_categories where game_id = $1::int and category_id = $2::text', game, category_id);
   if (existingcategory) return json({ message: 'Category already exists' }, { status: 400 });
 
-  await db.execute('insert into speedrun_categories (category_id, game_id, require_proof, proof_match) values ($1::text, $2::int)', category_id, game, require_proof, proof_match);
+  await db.execute('insert into speedrun_categories (category_id, game_id, require_proof, proof_match) values ($1::text, $2::int, $3::boolean, $4::text)', category_id, game, require_proof, proof_match);
 
   return json({ message: 'Added category' }, { status: 200 });
 }

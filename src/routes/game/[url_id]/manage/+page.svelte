@@ -198,7 +198,8 @@
           {#each categories as category}
             <CategoryManage game={game.id} {category} />
           {/each}
-          {#if newCategory}
+          <CategoryManage game={game.id} addToList={(c,m,r) => categories.push({category_id: c, game_id: game.id, id: -1, proof_match: m, require_proof: r}) } />
+          <!-- {#if newCategory}
             <div class="category editing">
               <input type="text" bind:value={newCategoryName} placeholder="Category name">
               <button onclick={() => newCategory = false} aria-label="Cancel creation">
@@ -222,7 +223,7 @@
                 +
               </span>
             </button>
-          {/if}
+          {/if} -->
         </div>
       </section>
       <section>

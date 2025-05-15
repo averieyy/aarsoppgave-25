@@ -1,5 +1,5 @@
 <script lang="ts">
-  const { category, game }: { category?: { category_id: string, require_proof: boolean, proof_match: string }, game: number } = $props();
+  const { category, game, addToList }: { category?: { category_id: string, require_proof: boolean, proof_match: string }, game: number, addToList?: (category_id: string, proof_match: string, require_proof: boolean) => void } = $props();
 
   let editing: boolean = $state(false);
   let editName: string = $state(category?.category_id || '');
@@ -9,18 +9,40 @@
   const PROOF_TYPES: { [mime: string]: string } = { '.*/.*': 'Any', 'video/.*': 'Video', 'image/.*': 'Images', 'audio/.*': 'Audio', '': 'Custom' };
 
   async function editCategory() {
-    const resp = await fetch('/api/game/category/edit', {
-      method: 'POST',
-      body: JSON.stringify({
-        category_id: category?.category_id,
-        game,
-        new_category_id: editName,
-        proof_match: proofMatch,
-        require_proof: proofReq
-      })
-    });
+    if (category) {
+      const resp = await fetch('/api/game/category/edit', {
+        method: 'POST',
+        body: JSON.stringify({
+          category_id: category?.category_id,
+          game,
+          new_category_id: editName,
+          proof_match: proofMatch,
+          require_proof: proofReq
+        })
+      });
 
-    if (resp.ok) editing = false;
+      if (resp.ok) editing = false;
+    }
+    else {
+      const resp = await fetch('/api/game/category/add', {
+        method: 'POST',
+        body: JSON.stringify({
+          category_id: editName,
+          game,
+          proof_match: proofMatch,
+          require_proof: proofReq,
+        })
+      });
+
+      if (resp.ok) {
+        if (addToList)
+          addToList(editName, proofMatch, proofReq);
+        editName = '';
+        proofMatch = '';
+        proofReq = false;
+        editing = false;
+      }
+    }
   }
 </script>
 
@@ -104,9 +126,9 @@
       </button>
     </div>
   {:else}
-    <div class="category add">
+    <button class="category add" onclick={() => editing = true}>
       <span>+</span>
-    </div>
+    </button>
   {/if}
 {/if}
 
