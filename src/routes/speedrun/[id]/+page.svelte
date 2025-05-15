@@ -32,7 +32,7 @@
             {speedrun.game}
           </a>
         </h2>
-        <span class="category">{speedrun.category_id}</span>
+        <span class="category">{speedrun.category_label}</span>
         <p>{speedrun.game_desc}</p>
       </section>
       <section class="run">

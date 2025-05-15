@@ -1,11 +1,11 @@
 <script lang="ts">
   import { toTimeSince, toTime } from '$lib/timedisplay';
   
-  const { speedruns, categories }: { speedruns: {score: number, username: string, submitted: Date, id: number, profile_pic?: string | null, category_id: string }[], categories: string[] } = $props();
+  const { speedruns, categories }: { speedruns: {score: number, username: string, submitted: Date, id: number, profile_pic?: string | null, category_label: string }[], categories: string[] } = $props();
 
   let selectedCategory = $state(categories[0]);
 
-  let filteredSpeedruns = $derived(speedruns.filter(s => s.category_id == selectedCategory));
+  let filteredSpeedruns = $derived(speedruns.filter(s => s.category_label == selectedCategory));
 
 </script>
 

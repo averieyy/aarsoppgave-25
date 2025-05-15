@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ parent }) => {
       s.description,
       s.verified,
       s.deleted,
-      sc.category_id,
+      sc.category_label,
       c.displayname as username,
       p.file as profile_pic
     from

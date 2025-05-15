@@ -48,7 +48,7 @@ export interface speedrun {
 export interface frontend_speedrun {
   id: number,
   username: string,
-  category_id: string,
+  category_label: string,
   submitted: Date,
   score: number,
   description: string,
@@ -66,7 +66,7 @@ export interface file {
 
 export interface speedrun_category {
   game_id: number,
-  category_id: string,
+  category_label: string,
   id: number,
   require_proof: boolean,
   proof_match: string,

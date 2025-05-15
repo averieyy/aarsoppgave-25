@@ -18,9 +18,9 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
     return json({ message: 'Body not JSON' }, { status: 400 });
   }
 
-  const { category_id, game, new_category_id, proof_match, require_proof } = body;
+  const { category_label, game, new_category_label, proof_match, require_proof } = body;
 
-  if (typeof category_id != 'string') return json({ message: 'Bad category_id parameter' }, { status: 400 });
+  if (typeof category_label != 'string') return json({ message: 'Bad category_label parameter' }, { status: 400 });
   if (typeof game != 'number') return json({ message: 'Bad game id' }, { status: 400 });
   if (typeof proof_match != 'string') return json({ message: 'Bad proof_match parameter' }, { status: 400 });
   if (typeof require_proof != 'boolean') return json({ message: 'Bad require_proof parameter' }, { status: 400 }); 
@@ -36,13 +36,13 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   if (!gamemember?.admin) return json({ message: 'Unauthorized' }, { status: 403 });
 
-  const existingcategory = await db.queryOne<speedrun_category>('select * from speedrun_categories where game_id = $1::int and category_id = $2::text', game, category_id);
+  const existingcategory = await db.queryOne<speedrun_category>('select * from speedrun_categories where game_id = $1::int and category_label = $2::text', game, category_label);
   if (!existingcategory) return json({ message: 'Category does not exist' }, { status: 400 });
 
-  const newexistingcategory = await db.queryOne<speedrun_category>('select * from speedrun_categories where game_id = $1::int and category_id = $2::text', game, new_category_id);
+  const newexistingcategory = await db.queryOne<speedrun_category>('select * from speedrun_categories where game_id = $1::int and category_label = $2::text', game, new_category_label);
   if (newexistingcategory) return json({ message: 'Category with this name already exists' }, { status: 400 });
 
-  await db.execute('update speedrun_categories set category_id = $1::text, proof_match = $2::text, require_proof = $3::boolean where game_id = $4::int and category_id = $5::text', new_category_id, proof_match, require_proof, game, category_id);
+  await db.execute('update speedrun_categories set category_label = $1::text, proof_match = $2::text, require_proof = $3::boolean where game_id = $4::int and category_label = $5::text', new_category_label, proof_match, require_proof, game, category_label);
 
   return json({ message: 'Edited category' }, { status: 200 });
 }

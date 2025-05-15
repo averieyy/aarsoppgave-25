@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
       s.deleted,
       s.game_id,
       g.name,
-      sc.category_id,
+      sc.category_label,
       c.displayname as username,
       p.file as profile_pic
     from

@@ -18,9 +18,9 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
     return json({ message: 'Body not JSON' }, { status: 400 });
   }
 
-  const { category_id, game, require_proof, proof_match } = body;
+  const { category_label, game, require_proof, proof_match } = body;
 
-  if (typeof category_id != 'string') return json({ message: 'Bad category_id parameter' }, { status: 400 });
+  if (typeof category_label != 'string') return json({ message: 'Bad category_label parameter' }, { status: 400 });
   if (typeof game != 'number') return json({ message: 'Bad game id' }, { status: 400 });
   if (typeof require_proof != 'boolean') return json({ message: 'Bad require_proof parameter' }, { status: 400 });
   if (typeof proof_match != 'string') return json({ message: 'Bad proof_match parameter' }, { status: 400 });
@@ -36,10 +36,10 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   if (!gamemember?.admin) return json({ message: 'Unauthorized' }, { status: 403 });
 
-  const existingcategory = await db.queryOne<speedrun_category>('select * from speedrun_categories where game_id = $1::int and category_id = $2::text', game, category_id);
+  const existingcategory = await db.queryOne<speedrun_category>('select * from speedrun_categories where game_id = $1::int and category_label = $2::text', game, category_label);
   if (existingcategory) return json({ message: 'Category already exists' }, { status: 400 });
 
-  await db.execute('insert into speedrun_categories (category_id, game_id, require_proof, proof_match) values ($1::text, $2::int, $3::boolean, $4::text)', category_id, game, require_proof, proof_match);
+  await db.execute('insert into speedrun_categories (category_label, game_id, require_proof, proof_match) values ($1::text, $2::int, $3::boolean, $4::text)', category_label, game, require_proof, proof_match);
 
   return json({ message: 'Added category' }, { status: 200 });
 }

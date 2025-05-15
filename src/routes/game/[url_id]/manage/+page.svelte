@@ -116,44 +116,6 @@
       body: JSON.stringify({ description: game.description, game: game.url_id })
     });
   }
-
-  let editingCategory: string | undefined = $state(undefined);
-  let editCategoryName: string = $state('');
-  let editReq: boolean = $state(false);
-  let newCategory: boolean = $state(false);
-  let newCategoryName: string = $state('');
-
-  async function addCategory () {
-    const oldcategories = $state.snapshot(categories);
-
-    categories = [...categories, { category_id: newCategoryName, game_id: game.id, id: -1, proof_match: '.*/.*', require_proof: false }];
-
-    const resp = await fetch('/api/game/category/add', {
-      method: 'POST',
-      body: JSON.stringify({ category_id: newCategoryName, game: game.id }),
-    });
-
-    if (!resp.ok) {
-      categories = oldcategories;
-      error = (await resp.json()).message;
-    }
-  }
-
-  async function editCategory () {
-    const oldcategories = $state.snapshot(categories);
-
-    categories = categories.map(c => c.category_id == editingCategory ? {...c, category_id: editCategoryName } : c);
-
-    const resp = await fetch('/api/game/category/edit', {
-      method: 'POST',
-      body: JSON.stringify({ category_id: editingCategory, new_category_id: editCategoryName, game: game.id }),
-    });
-
-    if (!resp.ok) {
-      categories = oldcategories;
-      error = (await resp.json()).message;
-    }
-  }
 </script>
 
 <svelte:head>
@@ -198,32 +160,7 @@
           {#each categories as category}
             <CategoryManage game={game.id} {category} />
           {/each}
-          <CategoryManage game={game.id} addToList={(c,m,r) => categories.push({category_id: c, game_id: game.id, id: -1, proof_match: m, require_proof: r}) } />
-          <!-- {#if newCategory}
-            <div class="category editing">
-              <input type="text" bind:value={newCategoryName} placeholder="Category name">
-              <button onclick={() => newCategory = false} aria-label="Cancel creation">
-                <svg viewBox="0 0 10 10">
-                  <path
-                    d="M 0 1 L 1 0 L 5 4 L 9 0 L 10 1 L 6 5 L 10 9 L 9 10 L 5 6 L 1 10 L 0 9 L 4 5 Z">
-                  </path>
-                </svg>
-              </button>
-              <button onclick={() => addCategory()} aria-label="Create category">
-                <svg viewBox="0 0 10 10">
-                  <path
-                    d="M 9 1 L 10 2 L 3 9 L 0 6 L 1 5 L 3 7 Z">
-                  </path>
-                </svg>
-              </button>
-            </div>
-          {:else}
-            <button onclick={() => newCategory = true} class="add category">
-              <span>
-                +
-              </span>
-            </button>
-          {/if} -->
+          <CategoryManage game={game.id} addToList={(c,m,r) => categories.push({category_label: c, game_id: game.id, id: -1, proof_match: m, require_proof: r}) } />
         </div>
       </section>
       <section>

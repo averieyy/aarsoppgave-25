@@ -87,7 +87,7 @@
           <button
             class="category {selectedCategory == category.id ? 'selected' : ''}"
             onclick={() => selectedCategory = category.id}>
-              {category.category_id}
+              {category.category_label}
           </button>
         {/each}
       </div>

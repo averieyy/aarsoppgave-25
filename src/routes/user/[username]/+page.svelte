@@ -40,7 +40,7 @@
               <button class="speedrunninggame {selectedgame == game.id ? 'selected' : ''}" onclick={() => selectedgame = game.id}>{game.name}</button>
             {/each}
           </div>
-          <Speedrunlist speedruns={speedruns.filter(s => s.game_id == selectedgame) || []} categories={categories.filter(c => c.game_id == selectedgame).map(c => c.category_id)} />
+          <Speedrunlist speedruns={speedruns.filter(s => s.game_id == selectedgame) || []} categories={categories.filter(c => c.game_id == selectedgame).map(c => c.category_label)} />
         </div>
       </section>
     </main>

@@ -15,7 +15,7 @@
   <div class="innerpage">
     <main>
       <div class="speedruns">
-        <Speedrunlist {speedruns} categories={categories.map(c => c.category_id)} />
+        <Speedrunlist {speedruns} categories={categories.map(c => c.category_label)} />
       </div>
       <div class="info">
         <div class="basic">

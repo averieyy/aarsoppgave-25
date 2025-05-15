@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
     // Add categories
     for (let category of categories) {
-      await c.execute('insert into speedrun_categories (game_id, category_id) values ($1::int, $2::text)', idresponse.id, category);
+      await c.execute('insert into speedrun_categories (game_id, category_label) values ($1::int, $2::text)', idresponse.id, category);
     }
 
     // Add user as game admin

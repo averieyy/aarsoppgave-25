@@ -64,7 +64,7 @@ Request
 
 ```ts
 {
-  category_id: string,
+  category_label: string,
   game: number,
 }
 ```
@@ -87,8 +87,8 @@ Request
 
 ```ts
 {
-  category_id: string,
-  new_category_id: string,
+  category_label: string,
+  new_category_label: string,
   game: number,
 }
 ```

@@ -1,8 +1,8 @@
 <script lang="ts">
-  const { category, game, addToList }: { category?: { category_id: string, require_proof: boolean, proof_match: string }, game: number, addToList?: (category_id: string, proof_match: string, require_proof: boolean) => void } = $props();
+  const { category, game, addToList }: { category?: { category_label: string, require_proof: boolean, proof_match: string }, game: number, addToList?: (category_label: string, proof_match: string, require_proof: boolean) => void } = $props();
 
   let editing: boolean = $state(false);
-  let editName: string = $state(category?.category_id || '');
+  let editName: string = $state(category?.category_label || '');
   let proofMatch: string = $state(category?.proof_match || '.*/.*');
   let proofReq: boolean = $state(category?.require_proof || false);
 
@@ -13,9 +13,9 @@
       const resp = await fetch('/api/game/category/edit', {
         method: 'POST',
         body: JSON.stringify({
-          category_id: category?.category_id,
+          category_label: category?.category_label,
           game,
-          new_category_id: editName,
+          new_category_label: editName,
           proof_match: proofMatch,
           require_proof: proofReq
         })
@@ -27,7 +27,7 @@
       const resp = await fetch('/api/game/category/add', {
         method: 'POST',
         body: JSON.stringify({
-          category_id: editName,
+          category_label: editName,
           game,
           proof_match: proofMatch,
           require_proof: proofReq,
@@ -95,7 +95,7 @@
     <div class="category">
       <div class="content">
         <span>
-          {category.category_id}
+          {category.category_label}
         </span>
         <span class="sep"></span>
         <div class="proofreq">
