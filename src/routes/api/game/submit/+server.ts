@@ -37,8 +37,15 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   if (proof) {
     // Check if proof exists
     const prooffile = await db.queryOne<file>('select * from files where pathname = $1::text', proof);
+
     if (!prooffile) return json({ message: 'Proof file does not exist' }, { status: 400 });
+    
+    // Check if proof matches the categories constraint
+    if (!new RegExp(existingcategory.proof_match).test(prooffile?.mime))
+      return json({ message: 'Proof has the wrong type' }, { status: 400 });
   }
+  else if (existingcategory.require_proof)
+    return json({ message: 'Proof is required for this category' }, { status: 400 });
 
   // Register speedrun
   if (proof)

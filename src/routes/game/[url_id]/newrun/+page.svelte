@@ -16,6 +16,17 @@
   let error: string = $state('');
 
   async function submit() {
+    const cat = categories.find(c => c.id == selectedCategory);
+    
+    if (!proof && cat!.require_proof) {
+      error = 'Proof is required';
+      return;
+    }
+    if (proof && !(new RegExp(cat!.proof_match).test(proof!.type))) {
+      error = 'Proof does not have the correct type';
+      return;
+    }
+
     let proof_id = await uploadProof();
 
     const resp = await fetch('/api/game/submit', {
@@ -104,6 +115,9 @@
           </div>
           <input hidden bind:files={prooflist} max="1" type="file">
         </label>
+        {#if error}
+          <span class="error">{error}</span>
+        {/if}
         <input type="submit" value="Register run" />
       </form>
     </main>
