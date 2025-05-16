@@ -1,5 +1,6 @@
 <script lang="ts">
   import Header from "$lib/components/header.svelte";
+  import Proof from "$lib/components/proof.svelte";
   import { toTime } from "$lib/timedisplay";
 
   const { data } = $props();
@@ -55,14 +56,7 @@
       {#if speedrun.proof}
         <section>
           <h3>Proof</h3>
-          {#if speedrun.proofmime.startsWith('image')}
-            <img class="proofimg" src="/api/uploads/{speedrun.proof}" alt="Proof for speedrun">
-          {:else if speedrun.proofmime.startsWith('video')}
-            <video class="proofimg" controls>
-              <track kind="captions">
-              <source src="/api/uploads/{speedrun.proof}">
-            </video>
-          {/if}
+          <Proof mime={speedrun.proofmime} url={speedrun.proof} />
         </section>
       {/if}
     </main>
@@ -149,12 +143,6 @@
   .gameurl {
     color: var(--emphasis);
     text-decoration: .125rem solid underline;
-  }
-
-  .proofimg {
-    border-radius: .5rem;
-
-    border: .125rem solid var(--emphasis);
   }
   
   .unverified {

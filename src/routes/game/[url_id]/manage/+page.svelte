@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import CategoryManage from "$lib/components/categoryManage.svelte";
   import Header from "$lib/components/header.svelte";
+  import Proof from "$lib/components/proof.svelte";
   import { toTime } from "$lib/timedisplay.js";
 
   const { data } = $props();
@@ -182,41 +183,30 @@
                   </div>
                   <div class="actions">
                     <button title="Verify run" onclick={() => verify(speedrun.id)} aria-label="verify">
-                      <svg viewBox="0 0 1 1">
+                      <svg viewBox="0 0 10 10">
                         <path
-                          d="M1 .2 L 0.9 0.1 L 0.3 0.7 L 0.1 0.5 L 0 0.6 L 0.3 0.9 Z">
-                        </path>
+                          d="M10 2L9 1L3 7L1 5L0 6L3 9Z"></path>
                       </svg>
                     </button>
                     <button title="Deny run" class="red" onclick={() => deny(speedrun.id)} aria-label="deny">
-                      <svg viewBox="0 0 1 1">
+                      <svg viewBox="0 0 10 10">
                         <path
-                          d="M.1 .2 L .2 .1 L .5 .4 L .8 .1 L .9 .2 L .6 .5 L .9 .8 L .8 .9 L .5 .6 L .2 .9 L .1 .8 L .4 .5 Z">
-                        </path>
+                          d="M1 2L2 1L5 4L8 1L9 2L6 5L9 8L8 9L5 6L2 9L1 8L4 5Z"></path>
                       </svg>
                     </button>
                     <button title="Ban user" class="red" onclick={() => ban(speedrun.username)} aria-label="ban user">
-                      <svg viewBox="0 0 1 1">
+                      <svg viewBox="0 0 20 20">
                         <path
-                          d="M.05 .85 L .4 .5 L .25 .35 L .45 .15 L .85 .55 L .65 .75 L .5 .6 L .15 .95Z">
-                        </path>
+                          d="M1 17L8 10L5 7L9 3L17 11L13 15L10 12L3 19Z"></path>
                         <path
-                          d="M .4 1 L .5 .9 L .9 .9 L 1 1 Z">
-                        </path>
+                          d="M8 20L10 18L18 18L20 20Z"></path>
                       </svg>
                     </button>
                   </div>
                 </div>
                 {#if speedrun.proof}
                   <div class="proof">
-                    {#if speedrun.proofmime!.startsWith('video')}
-                      <video>
-                        <source src="/api/uploads/{speedrun.proof}" type="{speedrun.proofmime}">
-                        <track kind="captions">
-                      </video>
-                    {:else if speedrun.proofmime!.startsWith('image')}
-                      <img src="/api/uploads/{speedrun.proof}" alt="Proof for speedrun">
-                    {/if}
+                    <Proof mime={speedrun.proofmime as string} url={speedrun.proof}/>
                   </div>
                 {/if}
               </div>
@@ -291,12 +281,6 @@
     &>.proof {
       height: auto;
       width: 10rem;
-      
-      &>img, &>video {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-      }
     }
   }
   .info {
