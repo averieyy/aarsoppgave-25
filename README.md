@@ -18,7 +18,6 @@
 
 Have docker and docker-compose installed.
 
-This will be used to configure the postgres database and user.
 
 Create a file called `docker.env` in the project's root directory.
 

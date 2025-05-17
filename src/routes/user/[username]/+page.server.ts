@@ -10,6 +10,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 
   if (!user) redirect(302, '/');
 
+  // Get the top 50 speedruns the user has submitted
   const speedruns = await db.queryAll<frontend_speedrun & { game_id: number }>(`select
       s.submitted,
       s.score,
@@ -36,8 +37,10 @@ export const load: PageServerLoad = async ({ parent, params }) => {
     order by s.score asc
     limit 50`, user.id);
 
+  // Fetch the games the user has submitted to
   const games = await db.queryAll<{ name: string, id: number }>('select g.name, g.id from games g inner join speedrun s on s.game_id = g.id where s.client_id = $1::integer and s.verified = true and s.deleted = false', user.id)
   
+  // Fetch the categories the user has submitted to
   const game_categories = await db.queryAll<speedrun_category>('select distinct on (sc) sc.* from speedrun_categories sc inner join speedrun s on s.game_id = sc.game_id and s.category_id = sc.id where s.client_id = $1::int and s.deleted = false and s.verified = true', user.id);
 
   return { user: { username: user.displayname, joined: user.joined, profile_pic: user.profile_pic }, client, speedruns, categories: game_categories, games }

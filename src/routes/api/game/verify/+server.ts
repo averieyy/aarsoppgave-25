@@ -19,8 +19,8 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   const { speedrun }: { speedrun: number } = body;
 
+  // Check if the member is administrator
   const member = await db.queryOne<gamemember>('select m.* from speedrun s join games g on s.game_id = g.id join game_members m on m.game_id = g.id where s.id = $1::integer and m.admin = true', speedrun);
-  
   if (!member) return json({ message: 'Unauthorized' }, { status: 403 });
   if (member.banned) return json({ message: 'You have been banned' }, { status: 403 });
 

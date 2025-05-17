@@ -7,6 +7,7 @@
   let { username, displayname } = $state(client);
   let { username: lastsavedusername, displayname: lastsaveddisplayname, profile_pic } = $state(client);
 
+  // For uploading profile picture
   let files: FileList | undefined = $state(undefined);
   let fileError: string = $state('');
 

@@ -8,23 +8,14 @@ export const GET: RequestHandler = async ({ url }) => {
   const rawtags = url.searchParams.get('tags');
   const tags = rawtags ? rawtags.split(',') : [];
 
-  console.log(tags);
-
-  const test = await db.queryAll<any>('select array_length($1::text[], 1)', tags);
-
-  console.log(test);
-  
-
+  // Fetch the games based on the requested search parameters
   const games = await db.queryAll<game>(`select
       distinct g.* from games g
     join game_tags t on g.id = t.game_id
     where
       (t.tag = ANY($1::text[]) or array_length($1::text[], 1) is null)
     and
-      (g.name ILIKE \'%\' || $2::text || \'%\' or g.description ILIKE \'%\' || $2::text || \'%\')`, tags, query);
-
-  console.log(games);
-  
+      (g.name ILIKE '%' || $2::text || '%' or g.description ILIKE '%' || $2::text || '%')`, tags, query);  
 
   return json({games: games.map(g => {return {name: g.name, image: g.image, description: g.description, url_id: g.url_id}})})
 }

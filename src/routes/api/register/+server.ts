@@ -15,10 +15,12 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   const { username, password, email }: { username: string, password: string, email: string } = body;
 
+  // Check the validity of the parameters
   if (typeof username != 'string' || username.length < 3 || username.length > 24) return json({ message: 'Bad username' }, { status: 400 });
   if (typeof password != 'string' || password.length < 8) return json({ message: 'Bad password' }, { status: 400 });
   if (typeof email != 'string' || !email.match(emailregex)) return json({ message: 'Bad password' }, { status: 400 });
 
+  // Create the new client
   const client = await Client.registerNewClient(username, password, email);
   if (!client) return json({ message: 'Username or email already in use' }, { status: 409 });
 

@@ -17,12 +17,15 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
     return json({ message: 'Body not JSON' }, { status: 400 });
   }
 
+  // Fetch & validate parameters
   const { uuid } = body;
   if (!uuid || typeof uuid != 'string') return json({ message: 'UUID missing or badly formatted' }, { status: 400 });
 
+  // Check if the uuid matches a file
   const file = await db.queryOne<file>('select * from files where pathname = $1::text', uuid);
   if (!file) return json({ message: 'File not found' }, { status: 404 });
 
+  // Update or create new profile picture entry
   const existing = await db.queryOne<{ client_id: number, file: string }>('select * from profile_pics where client_id = $1::integer', client.id);
 
   if (!existing) {
@@ -39,6 +42,7 @@ export const DELETE: RequestHandler = async ({ cookies }) => {
   const client = await Client.getClientFromCookies(cookies);
   if (!client) return json({ message: 'Unauthorized' }, { status: 403 });
 
+  // Delete the profile picture entry
   await db.execute('delete from profile_pics where client_id = $1::integer', client.id);
 
   return json({ message: 'Removed profile picture' }, { status: 200 });

@@ -27,9 +27,11 @@ export class Client {
   }
 
   static async getClientFromCookies (cookies: Cookies): Promise<Client | null> {
+    // Assert that the client has a token
     const token = cookies.get('token');
     if (!token) return null;
 
+    // Get the client
     const client = await db.queryOne<client & { profile_pic: string | null }>(`
       update tokens t
       set expires = now() + interval '7 days'
@@ -41,12 +43,13 @@ export class Client {
       returning c.*, p.file as profile_pic`, token);
     if (!client) return null;
 
+    // Renew the token & return the client instance
     this.setToken(cookies, token);
-
     return this.fromStruct(client);
   }
 
   static fromStruct(client: client & { profile_pic?: string | null }): Client {
+    // Create client class instance from object (struct)
     return new Client(
       client.username,
       client.hash,
@@ -64,6 +67,7 @@ export class Client {
   }
 
   async newToken (cookies: Cookies) {
+    // Create and assign new token
     const token = Client.genToken();
 
     await db.execute('insert into tokens (content, client_id) values ($1::text, $2::integer)', token, this.id);
@@ -72,6 +76,7 @@ export class Client {
   }
 
   static async setToken (cookies: Cookies, token: string) {
+    // Set the Client token
     cookies.set('token', token, {
       path: '/',        // Valid for the entire page
       maxAge: ONE_WEEK, // Valid for one week (resets upon page reload)
@@ -104,6 +109,7 @@ export class Client {
 
     if (existing) return null;
     
+    // Register in the database
     const client = await db.queryOne<client>(`
       insert into
         clients (username, hash, salt, email, displayname)
@@ -115,6 +121,7 @@ export class Client {
   }
 
   toJSON(): frontendclient {
+    // Return the client as a frontendclient object
     return {
       username: this.username,
       id: this.id,

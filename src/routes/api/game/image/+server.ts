@@ -19,16 +19,17 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   const { game: gameid, file } = body;
 
-  if (!(typeof gameid == 'number') || !gameid) return json({ message: 'Invalid or missing game parameter' }, { status: 400 });
-  if (!(typeof file == 'string') || !file) return json({ message: 'Invalid or missing file parameter' }, { status: 400 });
+  // Check if the parameters are valid
+  if (typeof gameid != 'number' || !gameid) return json({ message: 'Invalid or missing game parameter' }, { status: 400 });
+  if (typeof file != 'string' || !file) return json({ message: 'Invalid or missing file parameter' }, { status: 400 });
 
+  // Check if the game exists, and if the client is authorized to edit it
   const game = await db.queryOne<game & gamemember>('select * from game_members m join games g on m.game_id = g.id where g.id = $1::integer and m.client_id = $2::integer', gameid, client.id);
-  
   if (!game) return json({ message: 'Could not find game' }, { status: 404 });
   if (!game.admin) return json({ message: 'Unauthorized' }, { status: 403 });
 
+  // Check if the file exists, and if it is an image
   const existingfile = await db.queryOne<file>('select * from files where pathname = $1::text', file);
-  
   if (!existingfile) return json({ message: 'Could not find image' }, { status: 404 });
   if (!existingfile.mime.startsWith('image')) return json({ message: 'File is not an image' }, { status: 400 });
 

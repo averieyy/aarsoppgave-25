@@ -1,6 +1,7 @@
 import pg from 'pg';
 import 'dotenv/config';
 
+// Custom abstraction for Database connection
 export class Connection {
   connection: pg.PoolClient | pg.Client;
 
@@ -20,6 +21,7 @@ export class Connection {
     await this.connection.query(query, args);
   }
 
+  // Do a transaction (so that everything happends in one command)
   async doTransaction(transaction: (cursor: Connection) => Promise<boolean | void>): Promise<boolean> {
     this.execute('begin');
     
@@ -39,6 +41,7 @@ export class Connection {
   }
 }
 
+// This does the same as the Connection class, but it uses cursors
 export class PoolConnection extends Connection {
   pool: pg.Pool;
 
@@ -65,6 +68,7 @@ export class PoolConnection extends Connection {
   }
 }
 
+// The default database connection
 export const db: PoolConnection = await PoolConnection.fromConfig({
   host: process.env.POSTGRES_HOST,
   user: process.env.POSTGRES_USER,

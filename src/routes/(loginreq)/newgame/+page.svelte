@@ -5,15 +5,15 @@
   const { data } = $props();
   let { client } = $state(data);
 
+  // State variables for the new game
   let title: string = $state('');
   let description: string = $state('');
   let tags: string[] = $state([]);
   let newTagContent: string = $state('');
-
-  let error: string = $state('');
-
   let categories: string[] = $state(['any%']);
   let newCategoryContent: string = $state('');
+
+  let error: string = $state('');
 
   function removeTag (tag: string) {
     const index = tags.indexOf(tag);
@@ -47,6 +47,7 @@
     categories = categories;
   }
 
+  // Create the game
   async function submit () {
     const resp = await fetch('/api/game/create', {
       method: 'POST',

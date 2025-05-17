@@ -32,15 +32,19 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
     return json({ message: 'proof_match is not a regular expression (regex)' });
   }
 
+  // Check if the client is authorized
   const gamemember = await db.queryOne<gamemember>('select * from game_members where game_id = $1::int and client_id = $2::int', game, client.id);
-
   if (!gamemember?.admin) return json({ message: 'Unauthorized' }, { status: 403 });
 
+  // Check if the category exists
   const existingcategory = await db.queryOne<speedrun_category>('select * from speedrun_categories where game_id = $1::int and category_label = $2::text', game, category_label);
   if (!existingcategory) return json({ message: 'Category does not exist' }, { status: 400 });
 
-  const newexistingcategory = await db.queryOne<speedrun_category>('select * from speedrun_categories where game_id = $1::int and category_label = $2::text', game, new_category_label);
-  if (newexistingcategory) return json({ message: 'Category with this name already exists' }, { status: 400 });
+  if (category_label != new_category_label) {
+    // Check if a category with the same name exists for the specified game
+    const newexistingcategory = await db.queryOne<speedrun_category>('select * from speedrun_categories where game_id = $1::int and category_label = $2::text', game, new_category_label);
+    if (newexistingcategory) return json({ message: 'Category with this name already exists' }, { status: 400 });
+  }
 
   await db.execute('update speedrun_categories set category_label = $1::text, proof_match = $2::text, require_proof = $3::boolean where game_id = $4::int and category_label = $5::text', new_category_label, proof_match, require_proof, game, category_label);
 

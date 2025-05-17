@@ -5,6 +5,7 @@ import type { PageServerLoad } from "./$types";
 export const load: PageServerLoad = async ({ parent }) => {
   const { client, game, member } = await parent();
   
+  // Get the first 50 speedruns
   const speedruns = await db.queryAll<frontend_speedrun>(`select
       s.submitted,
       s.score,

@@ -18,19 +18,23 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   const { game_id, description, duration, category, proof } = body;
 
+  // Check if the parameters are valid
   if (typeof game_id != 'number') return json({ message: 'Game id invalid' }, { status: 400 });
   if (typeof description != 'string') return json({ message: 'Description invalid' }, { status: 400 });
   if (typeof duration != 'number') return json({ message: 'Duration invalid' }, { status: 400 });
   if (typeof category != 'number') return json({ message: 'Category invalid' }, { status: 400 });
   if (proof != undefined && typeof proof != 'string') return json({ message: 'Proof does not have a valid type' }, { status: 400 });
 
+  // Check if the game exists
   const game = await db.queryOne<game>('select * from games where id = $1::integer', game_id);
   if (!game) return json({ message: 'Game not found' }, { status: 404 });
 
+  // Check if the client is allowed to submit to the game
   const gamemember = await db.queryOne<gamemember>('select * from game_members where game_id = $1::integer and client_id = $2::integer', game.id, client.id);
   if (!gamemember) return json({ message: 'Unauthorized' }, { status: 403 });
   if (gamemember.banned) return json({ message: 'You have been banned' }, { status: 403 });
 
+  // Check if the category exists
   const existingcategory = await db.queryOne<speedrun_category>('select * from speedrun_categories where game_id = $1::int and id = $2::int', game_id, category);
   if (!existingcategory) return json({ message: 'Category not found' }, { status: 404 });
 

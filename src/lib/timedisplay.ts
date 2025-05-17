@@ -1,3 +1,5 @@
+// Display the time since a timestamp in text form
+// ex: 10 hours ago, 1 month ago
 export function toTimeSince(date: Date): string {
   const numeric = Date.now() - date.getTime();
 
@@ -14,6 +16,7 @@ export function toTimeSince(date: Date): string {
   else return `${Math.floor(numeric / (1000 * 60 * 60 * 24 * 365))} year${Math.floor(numeric / (1000 * 60 * 60 * 24 * 365)) == 0 ? '' : 's'} ago` // Years
 }
 
+// Turns milliseconds into text in the format Hours:Minutes:Seconds(.Milliseconds)
 export function toTime(score: number, milliseconds?: boolean): string {
   return `${score > 3600000 ? Math.floor(score / 3600000) + ':' : ''}${(Math.floor(score / 60000) % 60).toString().padStart(2, '0')}:${(Math.floor(score / 1000) % 60).toString().padStart(2, '0')}` + (milliseconds ? '.' + score % 1000 : '');
 }

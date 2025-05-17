@@ -1,3 +1,5 @@
+// This file is mostly a TypeScriptification of db.sql, with some custom frontend versions
+
 export interface client {
   username: string;
   hash: string;

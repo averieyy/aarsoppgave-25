@@ -17,14 +17,17 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
     return json({ message: 'Body not JSON' }, { status: 400 });
   }
 
+  // Get all the required information from the request body
   const { title, description, tags, categories } = body;
 
+  // Check if the parameters are valid
   if (!title || typeof title != 'string' || title.length > 48) return json({ message: 'Bad title' }, { status: 400 });
   if (!description || typeof description != 'string') return json({ message: 'Bad descripton' }, { status: 400 });
   if (!(tags instanceof Array)) return json({ message: 'Invalid tags' }, { status: 400 });
   if (!(categories instanceof Array)) return json({ message: 'Invalid categories' }, { status: 400 });
   if (categories.length < 1) return json({ message: 'At least one category is required' }, { status: 400 });
 
+  // Create the url version of the title
   const urlTitle = title
     .toLowerCase()
     .replaceAll(/ +/g, '_')
