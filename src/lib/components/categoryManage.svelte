@@ -1,12 +1,20 @@
 <script lang="ts">
   const { category, game, addToList }: { category?: { category_label: string, require_proof: boolean, proof_match: string }, game: number, addToList?: (category_label: string, proof_match: string, require_proof: boolean) => void } = $props();
 
+  const PROOF_TYPES: { [mime: string]: string } = { '.*/.*': 'Any', 'video/.*': 'Video', 'image/.*': 'Images', 'audio/.*': 'Audio', '': 'Custom' };
+  
   let editing: boolean = $state(false);
   let editName: string = $state(category?.category_label || '');
   let proofMatch: string = $state(category?.proof_match || '.*/.*');
   let proofReq: boolean = $state(category?.require_proof || false);
+  let selectedPreset = $state((category?.proof_match && category?.proof_match in PROOF_TYPES) ? category?.proof_match : '');
 
-  const PROOF_TYPES: { [mime: string]: string } = { '.*/.*': 'Any', 'video/.*': 'Video', 'image/.*': 'Images', 'audio/.*': 'Audio', '': 'Custom' };
+  $effect(() => {
+    selectedPreset;
+  
+    if (selectedPreset != '')
+      proofMatch = selectedPreset;
+  });
 
   async function editCategory() {
     if (category) {
@@ -67,12 +75,18 @@
       </label>
       <label class="kvpair">
         <span class="k">Type</span>
-        <select class="v">
+        <select class="v" bind:value={selectedPreset}>
           {#each Object.keys(PROOF_TYPES) as k}
-            <option value="k">{PROOF_TYPES[k]}</option>
+            <option class="k" value={k}>{PROOF_TYPES[k]}</option>
           {/each}
         </select>
       </label>
+      {#if selectedPreset == ''}
+        <label class="kvpair">
+          <span class="k">Constraint</span>
+          <input type="text" class="v" bind:value={proofMatch}>
+        </label>
+      {/if}
     </div>
   </div>
   <button onclick={() => editing = false} aria-label="Cancel editing">
@@ -95,7 +109,7 @@
     <div class="category">
       <div class="content">
         <span>
-          {category.category_label}
+          {editName}
         </span>
         <span class="sep"></span>
         <div class="proofreq">
@@ -104,7 +118,7 @@
               Required
             </span>
             <span class="v">
-              {category.require_proof ? 'Yes' : 'No'}
+              {proofReq ? 'Yes' : 'No'}
             </span>
           </div>
           <div class="kvpair">
@@ -112,7 +126,7 @@
               Type
             </span>
             <span class="type">
-              {PROOF_TYPES[category.proof_match] || category.proof_match}
+              {PROOF_TYPES[proofMatch] || proofMatch}
             </span>
           </div>
         </div>
