@@ -1,4 +1,6 @@
 <script lang="ts">
+  import IconButton from "./iconButton.svelte";
+
   const { category, game, addToList }: { category?: { category_label: string, require_proof: boolean, proof_match: string }, game: number, addToList?: (category_label: string, proof_match: string, require_proof: boolean) => void } = $props();
 
   const PROOF_TYPES: { [mime: string]: string } = { '.*/.*': 'Any', 'video/.*': 'Video', 'image/.*': 'Images', 'audio/.*': 'Audio', '': 'Custom' };
@@ -89,20 +91,10 @@
       {/if}
     </div>
   </div>
-  <button onclick={() => editing = false} aria-label="Cancel editing">
-    <svg viewBox="0 0 10 10">
-      <path
-        d="M 0 1 L 1 0 L 5 4 L 9 0 L 10 1 L 6 5 L 10 9 L 9 10 L 5 6 L 1 10 L 0 9 L 4 5 Z">
-      </path>
-    </svg>
-  </button>
-  <button onclick={() => editCategory()} aria-label="Edit category">
-    <svg viewBox="0 0 10 10">
-      <path
-        d="M 9 1 L 10 2 L 3 9 L 0 6 L 1 5 L 3 7 Z">
-      </path>
-    </svg>
-  </button>
+  <IconButton onclick={() => editing = false} label="Cancel editing"
+    path="M0 1L1 0L5 4L9 0L10 1L6 5L10 9L9 10L5 6L1 10L0 9L4 5Z"/>
+  <IconButton onclick={() => editCategory()} label="Edit category"
+    path="M9 1L10 2L3 9L0 6L1 5L3 7Z"/>
 </div>
 {:else}
   {#if category}
@@ -131,13 +123,8 @@
           </div>
         </div>
       </div>
-      <button onclick={() => editing = true} class="edit" aria-label="Edit category">
-        <svg viewBox="0 0 10 10">
-          <path
-            d="M 8 0 L 10 2 L 3 9 L 1 9 L 1 7 Z">
-          </path>
-        </svg>
-      </button>
+      <IconButton label="Edit category" onclick={() => editing = true}
+        path="M8 0L10 2L3 9L1 9L1 7Z" />
     </div>
   {:else}
     <button class="category add" onclick={() => editing = true}>
@@ -203,21 +190,6 @@
       }
     }
 
-    &>.edit {
-      border: none;
-      height: 2rem;
-      width: 2rem;
-      padding: .375rem;
-      border-radius: .5rem;
-
-      & path {
-        fill: var(--emphasis);
-      }
-      &:hover, &:focus-visible, &:active {
-        & path { fill: var(--fg-emphasis); }
-      }
-    }
-
     &.add {
       border: none;
     }
@@ -254,23 +226,6 @@
           &>svg>path {
             fill: var(--emphasis);
           }
-        }
-      }
-    }
-
-    &>button {
-      height: 2rem;
-      width: 2rem;
-      border: none;
-      border-radius: .5rem;
-
-      & path {
-        fill: var(--emphasis);
-      }
-
-      &:hover, &:active, &:focus-visible {
-        & path {
-          fill: var(--fg-emphasis);
         }
       }
     }

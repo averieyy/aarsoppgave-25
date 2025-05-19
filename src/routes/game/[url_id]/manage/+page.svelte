@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import CategoryManage from "$lib/components/categoryManage.svelte";
   import Header from "$lib/components/header.svelte";
+    import IconButton from "$lib/components/iconButton.svelte";
   import Proof from "$lib/components/proof.svelte";
   import { toTime } from "$lib/timedisplay.js";
 
@@ -182,26 +183,12 @@
                     <a href="/speedrun/{speedrun.id}" class="button">More information</a>
                   </div>
                   <div class="actions">
-                    <button title="Verify run" onclick={() => verify(speedrun.id)} aria-label="verify">
-                      <svg viewBox="0 0 10 10">
-                        <path
-                          d="M10 2L9 1L3 7L1 5L0 6L3 9Z"></path>
-                      </svg>
-                    </button>
-                    <button title="Deny run" class="red" onclick={() => deny(speedrun.id)} aria-label="deny">
-                      <svg viewBox="0 0 10 10">
-                        <path
-                          d="M1 2L2 1L5 4L8 1L9 2L6 5L9 8L8 9L5 6L2 9L1 8L4 5Z"></path>
-                      </svg>
-                    </button>
-                    <button title="Ban user" class="red" onclick={() => ban(speedrun.username)} aria-label="ban user">
-                      <svg viewBox="0 0 20 20">
-                        <path
-                          d="M1 17L8 10L5 7L9 3L17 11L13 15L10 12L3 19Z"></path>
-                        <path
-                          d="M8 20L10 18L18 18L20 20Z"></path>
-                      </svg>
-                    </button>
+                    <IconButton label="Verify run" bg={3} onclick={() => verify(speedrun.id)}
+                      path="M10 2L9 1L3 7L1 5L0 6L3 9Z"/>
+                    <IconButton label="Deny run" bg={3} onclick={() => deny(speedrun.id)}
+                      path="M1 2L2 1L5 4L8 1L9 2L6 5L9 8L8 9L5 6L2 9L1 8L4 5Z"/>
+                    <IconButton label="Ban user" bg={3} red viewBox="0 0 20 20" onclick={() => ban(speedrun.username)}
+                      path="M1 17L8 10L5 7L9 3L17 11L13 15L10 12L3 19Z M8 20L10 18L18 18L20 20Z"/>
                   </div>
                 </div>
                 {#if speedrun.proof}
@@ -331,35 +318,6 @@
     gap: .5rem;
 
     justify-content: center;
-
-    &>button {
-      padding: .25rem;
-      width: 2.75rem;
-      height: 2.75rem;
-      margin: 0;
-
-      &>svg>path {
-        fill: var(--emphasis);
-      }
-
-      &.red {
-        &>svg>path {
-          fill: var(--red);
-        }
-      }
-
-      &:hover, &:active, &:focus-visible {
-        &>svg>path {
-          fill: var(--fg-emphasis);
-        }
-
-        &.red {
-          &>svg>path {
-            fill: var(--fg-emphasis);
-          }
-        }
-      }
-    }
   }
   .missing {
     color: var(--fg3);

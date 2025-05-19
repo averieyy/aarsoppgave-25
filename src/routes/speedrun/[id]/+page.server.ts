@@ -19,6 +19,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
   // Get the placement of the speedrun
   const placement = await db.queryOne<{count: string}>('select count(*) as count from speedrun where game_id = $1::integer and score < $2::integer', s.game_id, s.score);
 
+  // Tighten up the speedrun
   const speedrun: frontend_speedrun & { proof: string, proofmime: string, url_id: string, game: string, game_desc: string } = { category_label: s.category_label, deleted: s.deleted, description: s.description, id: s.id, score: s.score, submitted: s.submitted, username: s.username, verified: s.verified, url_id: s.url_id, game: s.game, game_desc: s.game_desc, proof: s.proof, proofmime: s.proofmime };
 
   return { client, speedrun, placement: parseInt(placement?.count || '0') + 1 }
