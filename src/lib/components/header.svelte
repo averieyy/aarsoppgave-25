@@ -4,6 +4,7 @@
 
   const { client }: { client: undefined | frontendclient } = $props();
 
+  // Tha pages, in JSON to be more extendable
   const pages: {url: string, display: string}[] = [
     {
       display: 'About',
@@ -17,8 +18,8 @@
 
   let currenturl = $state(page.url.pathname);
 
+  // For the phone navigation menu
   let phonenavshown = $state(false);
-
   let phonenavheight = $state(0);
 </script>
 

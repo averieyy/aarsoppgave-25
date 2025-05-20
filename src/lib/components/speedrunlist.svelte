@@ -5,8 +5,8 @@
 
   let selectedCategory = $state(categories[0]);
 
+  // Filter speedruns for the selected category
   let filteredSpeedruns = $derived(speedruns.filter(s => s.category_label == selectedCategory));
-
 </script>
 
 <div class="speedruns">

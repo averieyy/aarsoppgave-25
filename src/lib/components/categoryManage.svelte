@@ -11,6 +11,7 @@
   let proofReq: boolean = $state(category?.require_proof || false);
   let selectedPreset = $state((category?.proof_match && category?.proof_match in PROOF_TYPES) ? category?.proof_match : '');
 
+  // Update proof regex when the selected preset updates
   $effect(() => {
     selectedPreset;
   
@@ -18,8 +19,10 @@
       proofMatch = selectedPreset;
   });
 
+  // Send request to the API to update or create the category
   async function editCategory() {
     if (category) {
+      // Update category
       const resp = await fetch('/api/game/category/edit', {
         method: 'POST',
         body: JSON.stringify({
@@ -34,6 +37,7 @@
       if (resp.ok) editing = false;
     }
     else {
+      // Create category
       const resp = await fetch('/api/game/category/add', {
         method: 'POST',
         body: JSON.stringify({
@@ -44,6 +48,7 @@
         })
       });
 
+      // Add the category to the list
       if (resp.ok) {
         if (addToList)
           addToList(editName, proofMatch, proofReq);

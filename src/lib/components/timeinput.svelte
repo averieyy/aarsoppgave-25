@@ -6,6 +6,7 @@
   let minutes = $state('00');
   let hours = $state('00');
 
+  // Turn hours, minutes, seconds and milliseconds into milliseconds
   function toMilliseconds(): number {
     const nmilliseconds = Math.min(Math.max(parseInt(milliseconds), 0), 999);
     const nseconds = Math.min(Math.max(parseInt(seconds), 0), 59);
@@ -18,6 +19,7 @@
       + nhours * 3600000;
   }
 
+  // Update the millisecond total when any of the individual values get updated
   $effect(() => {
     milliseconds;
     seconds;
