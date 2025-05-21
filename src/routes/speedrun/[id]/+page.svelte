@@ -6,6 +6,7 @@
   const { data } = $props();
   let { client, speedrun, placement } = $state(data);
 
+  // For the "Show more" button
   let outerheight = $state(0);
   let innerheight = $state(0);
 

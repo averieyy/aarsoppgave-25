@@ -8,9 +8,11 @@
 
   let error: string = $state('');
 
+  // The query variables
   let query: string = $state('');
   let selectedtags: string[] = $state([]);
 
+  // Add tag to the tags variable, or remove it if its already there
   function selectTag(tag: string) {
     if (!selectedtags.includes(tag))
       selectedtags.push(tag);
@@ -18,12 +20,13 @@
       selectedtags.splice(selectedtags.indexOf(tag), 1);
   }
 
+  // Send search query
   async function search () {
+    // Send request
     const resp = await fetch(`/api/games?query=${query}&tags=${selectedtags.join(',')}`);
 
-    if (!resp.ok) {
-      error = (await resp.json()).message;
-    }
+    // Show error or update games list
+    if (!resp.ok) error = (await resp.json()).message;
     else games = (await resp.json()).games;
   }
 </script>

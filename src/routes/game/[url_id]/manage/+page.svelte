@@ -2,7 +2,7 @@
   import { goto } from "$app/navigation";
   import CategoryManage from "$lib/components/categoryManage.svelte";
   import Header from "$lib/components/header.svelte";
-    import IconButton from "$lib/components/iconButton.svelte";
+  import IconButton from "$lib/components/iconButton.svelte";
   import Proof from "$lib/components/proof.svelte";
   import { toTime } from "$lib/timedisplay.js";
 
@@ -12,81 +12,101 @@
   let error = $state('');
 
   async function verify (speedrun: number) {
-    // remove
+    // Remove the speedrun from the local list
     let oldspeedruns = $state.snapshot(speedruns);
     speedruns.splice(speedruns.findIndex(s => s.id == speedrun), 1);
+    // Update the display
     speedruns = speedruns;
 
+    // Send POST request
     const resp = await fetch('/api/game/verify', {
       method: 'POST',
       body: JSON.stringify({ speedrun }),
     });
 
+    // Redirect to the game page if the client is unauthorized
     if (resp.status == 403) await goto(`/game/${game.url_id}`);
     if (!resp.ok) {
+      // Return to the old speedruns locally
       speedruns = oldspeedruns;
+      // Show the error message
       error = (await resp.json()).message;
     }
   }
 
   async function deny (speedrun: number) {
-    // remove
+    // Remove the speedrun from the local list
     let oldspeedruns = $state.snapshot(speedruns);
     speedruns.splice(speedruns.findIndex(s => s.id == speedrun), 1);
+    // Reload the display
     speedruns = speedruns;
 
+    // Send POST request
     const resp = await fetch('/api/game/deny', {
       method: 'POST',
       body: JSON.stringify({ speedrun }),
     });
 
+    // Redirect to the game page if the client is unauthorized
     if (resp.status == 403) await goto(`/game/${game.url_id}`);
     if (!resp.ok) {
+      // Return to the old speedruns
       speedruns = oldspeedruns;
+      // Show the error message
       error = (await resp.json()).message;
     }
   }
 
   async function ban(username: string) {
-    // remove
+    // Remove the speedrun locally
     let oldspeedrus = $state.snapshot(speedruns);
     speedruns = speedruns.filter(s => s.username != username);
     
+    // Send POST request
     const resp = await fetch('/api/game/ban', {
       method: 'POST',
       body: JSON.stringify({ game: game.url_id, target: username })
     });
     
+    // Redirect to the game page if the client is unauthorized
     if (resp.status == 403) await goto(`/game/${game.url_id}`);
     if (!resp.ok) {
+      // Return to the old speedruns
       speedruns = oldspeedrus;
+      // Show the error message
       error = (await resp.json()).message;
     }
   }
 
+  // The selected image file
   let files: FileList | undefined = $state(undefined);
 
+  // When the input file gets updated, update the games image
   $effect(() => {
     files;
 
+    // Make sure one file is selected
     if (!files || files.length == 0) return;
     if (files.length > 1) {
       error = 'You can only select one file';
       return;
     }
 
+    // Get the file
     const file = files[0];
+    // Check if it is larger than 32MiB
     if (file.size >= 33554432) {
-      error = 'Files cannot be bigger than 32 GiB';
+      error = 'Files cannot be bigger than 32 MiB';
       return;
     }
 
+    // Check if the file is an image
     if (!file.type.startsWith('image/')) {
       error = 'File has to be an image';
       return;
     }
     
-    // Upload
+    // Upload the image
     const form = new FormData();
     form.set('file', file);
 
@@ -113,10 +133,12 @@
   let descError = $state('');
 
   async function saveDescription () {
-    await fetch('/api/game/description', {
+    const resp = await fetch('/api/game/description', {
       method: 'POST',
       body: JSON.stringify({ description: game.description, game: game.url_id })
     });
+
+    if (!resp.ok) descError = (await resp.json()).message;
   }
 </script>
 

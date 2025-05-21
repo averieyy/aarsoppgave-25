@@ -8,27 +8,36 @@
 
   let { game, client, categories } = $state(data);
 
+  // The speedrun time (milliseconds)
   let time = $state(0);
+  // The speedrun description
   let description = $state('');
 
+  // The currently selected category
   let selectedCategory: number = $state(categories[0].id);
 
   let error: string = $state('');
 
+  // Submit the speedrun
   async function submit() {
     const cat = categories.find(c => c.id == selectedCategory);
     
+    // Check if proof is required and missing
     if (!proof && cat!.require_proof) {
       error = 'Proof is required';
       return;
     }
+
+    // Check if the type is correct
     if (proof && !(new RegExp(cat!.proof_match).test(proof!.type))) {
       error = 'Proof does not have the correct type';
       return;
     }
 
+    // Upload the proof, and get its uuid
     let proof_id = await uploadProof();
 
+    // Send POST Request
     const resp = await fetch('/api/game/submit', {
       method: 'POST',
       body: JSON.stringify({
@@ -41,26 +50,32 @@
     });
 
     if (!resp.ok) {
+      // Show the error message
       const { message } = await resp.json();
 
       error = message;
     }
+    // Redirect back to the game page if everything went well
     else goto(`/game/${game?.url_id}`);
   }
 
+  // Upload proof, returning uuid
   async function uploadProof (): Promise<string | undefined> {
+    // Form for with the file
     const formdata = new FormData();
     if (!proof) return;
 
     formdata.set('file', proof);
 
+    // Send POST Request
     const file = await fetch('/api/upload', { method: 'POST', body: formdata });
   
+    // Return the file uuid if it exists, or undefined
     if (!file.ok) return undefined;
-    
     return (await file.json()).id;
   }
 
+  // Variable for the proof file
   let prooflist: FileList | undefined = $state();
   let proof = $derived(prooflist && prooflist.length > 0 ? prooflist.item(0) : undefined)
 </script>

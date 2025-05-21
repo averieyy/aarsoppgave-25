@@ -3,15 +3,24 @@
   import { page } from "$app/state";
   import { handleForm } from "$lib/forms";
 
+  // Get the redirect website parameter (?redirect=...). Default to /
   const redirect = page.url.searchParams.get('redirect') || '/';
   
   let error: string = $state('');
 
+  // State variables
   let username: string = $state('');
   let password: string = $state('');
   let email: string = $state('');
 
+  // Sign in
   async function submit () {
+    // Check that the username and password input have contents
+    if (!username || !password || !email) {
+      error = 'Username, password or email missing';
+      return;
+    }
+    // Send POST Request
     const resp = await fetch('/api/register', {
       method: 'POST',
       body: JSON.stringify({
@@ -22,10 +31,12 @@
     });
 
     if (!resp.ok) {
+      // Show error message
       const { message } = await resp.json();
 
       error = message;
     }
+    // Redirect if everything went well
     else goto(redirect);
   }
 </script>

@@ -11,32 +11,44 @@
   let files: FileList | undefined = $state(undefined);
   let fileError: string = $state('');
 
+  // General error
+  let error: string = $state('');
+
   async function save () {
     const resp = await fetch('/api/settings', {
       method: 'POST',
       body: JSON.stringify({ username, displayname: displayname || username })
     });
     if (!resp.ok) {
-      // TODO: Display an error message
+      // Show error
+      const { message } = await resp.json();
+      error = message;
     }
     else {
+      // Hide the save bytton
       lastsavedusername = username;
       lastsaveddisplayname = displayname;
       return;
     }
   }
 
+  // Upload the files when it updates
   $effect(() => {
+    // Update when files gets updated
     files;
+
+    // Check there is one file selected
     if (!files) return;
     if (files.length > 1) {
       fileError = 'You can only select 1 file.';
       return;
     }
 
+    // Get the first file
     const file = files.item(0);
     if (!file) return;
     
+    // Check its size, to make sure its within 32MB
     if (file.size > 33554432) {
       fileError = 'Files cannot be larger than 32MB.';
       return;

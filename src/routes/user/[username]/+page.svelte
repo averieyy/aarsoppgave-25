@@ -6,8 +6,8 @@
   const { data } = $props();
   let { client, user, speedruns, categories, games } = $state(data);
 
+  // For the game tabs
   let selectedgame: number = $state(games[0].id);
-  
 </script>
 
 <svelte:head>

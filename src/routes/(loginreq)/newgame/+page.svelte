@@ -8,46 +8,66 @@
   // State variables for the new game
   let title: string = $state('');
   let description: string = $state('');
+
+  // Tags
   let tags: string[] = $state([]);
   let newTagContent: string = $state('');
+  
+  // Categories
   let categories: string[] = $state(['any%']);
   let newCategoryContent: string = $state('');
 
+  // The error value shown on the page
   let error: string = $state('');
 
+  // Remove tag
   function removeTag (tag: string) {
+    // Get the index
     const index = tags.indexOf(tag);
     if (index == -1) return;
+    // Remove the tag
     tags.splice(index,1);
+    // Reload
     tags = tags;
   }
 
+  // Add tag
   function addTag () {
     if (!newTagContent) return;
     tags.push(newTagContent);
+    // Clear the input feild
     newTagContent = '';
+    // Reload the display
     tags = tags;
   }
 
+  // Remove category from the game
   function removeCategory (category: string) {
+    // You have to have at least one category
     if (categories.length == 1) {
       error = 'You have to have at least one category';
       return;
     }
+    // Get the index of the category
     const index = categories.indexOf(category);
     if (index == -1) return;
+    // Remove it
     categories.splice(index, 1);
+    // Reload the display
     categories = categories;
   }
 
+  // Add category from the game
   function addCategory () {
     if (!newCategoryContent) return;
     categories.push(newCategoryContent);
-    newCategoryContent = ''
+    // Clear the input feild
+    newCategoryContent = '';
+    // Reload the categories display
     categories = categories;
   }
 
-  // Create the game
+  // Create the game with the tags, title, description and categories
   async function submit () {
     const resp = await fetch('/api/game/create', {
       method: 'POST',
@@ -59,6 +79,7 @@
       }),
     });
 
+    // If there is any error, show the error message
     if (!resp.ok) {
       const { message } = await resp.json();
       error = message;
