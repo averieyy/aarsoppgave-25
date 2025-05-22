@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
   import Header from "$lib/components/header.svelte";
   import { handleForm } from "$lib/forms.js";
 
@@ -83,6 +84,11 @@
     if (!resp.ok) {
       const { message } = await resp.json();
       error = message;
+    }
+    else {
+      // Redirect to the game page
+      const { url_id } = await resp.json();
+      goto(`/game/${url_id}`);
     }
   }
 </script>

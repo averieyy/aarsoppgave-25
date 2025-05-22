@@ -61,5 +61,5 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   if (!ok) return json({ message: 'Internal error' }, { status: 500 });
 
-  return json({ message: 'Added game', id: idresponse?.id }, { status: 200 });
+  return json({ message: 'Added game', id: idresponse?.id, url_id: urlTitle }, { status: 200 });
 }
