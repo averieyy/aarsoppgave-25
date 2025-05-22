@@ -23,6 +23,8 @@ Create a file called `docker.env` in the project's root directory.
 
 ```sh
 POSTGRES_PASSWORD=<password>
+POSTGRES_DB=speedrun
+POSTGRES_USER=postgres
 ```
 
 You also have to copy the file to `.env`

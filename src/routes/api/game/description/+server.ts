@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   if (!game || typeof game != 'string') return json({ message: 'Game not string' }, { status: 400 });
 
   // Check if the client is authorized (doubles as a check if the game exists)
-  const member = await db.queryOne<gamemember>('select m.* from game_members m join games g on g.id = m.game_id where g.url_id = $1::text and m.id = $2::integer and m.admin = true', game, client.id);
+  const member = await db.queryOne<gamemember>('select m.* from game_members m join games g on g.id = m.game_id where g.url_id = $1::text and m.client_id = $2::integer and m.admin = true', game, client.id);
   if (!member) return json({ message: 'Unauthorized' }, { status: 403 });
 
   // Update description
