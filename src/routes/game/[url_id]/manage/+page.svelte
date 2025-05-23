@@ -5,6 +5,7 @@
   import IconButton from "$lib/components/iconButton.svelte";
   import Proof from "$lib/components/proof.svelte";
   import { toTime } from "$lib/timedisplay.js";
+    import { createRawSnippet } from "svelte";
 
   const { data } = $props();
   let { client, game, speedruns, categories } = $state(data);
@@ -140,6 +141,20 @@
 
     if (!resp.ok) descError = (await resp.json()).message;
   }
+
+  async function saveTitle () {
+    const resp = await fetch('/api/game/title', {
+      method: 'POST',
+      body: JSON.stringify({
+        game: game.url_id,
+        name: game.name
+      })
+    });
+
+    if (!resp.ok) {
+      error = (await resp.json()).message;
+    }
+  }
 </script>
 
 <svelte:head>
@@ -158,7 +173,11 @@
       {/if}
       <section>
         <h2>Appearance</h2>
-        <input type="text" placeholder="Name" bind:value={game.name}>
+        <div class="title">
+          <input type="text" placeholder="Name" bind:value={game.name}>
+          <IconButton label="Edit category" onclick={() => saveTitle()}
+            path="M8 0L10 2L3 9L1 9L1 7Z" />
+        </div>
         <label>
           <div class="chosenimage">
             {#if game.image}
@@ -390,5 +409,16 @@
     display: flex;
     flex-direction: column;
     gap: .5rem;
+  }
+  .title {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    gap: .5rem;
+
+    &>input {
+      flex: 1;
+    }
   }
 </style>

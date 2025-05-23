@@ -18,7 +18,6 @@
 
 Have docker and docker-compose installed.
 
-
 Create a file called `docker.env` in the project's root directory.
 
 ```sh
