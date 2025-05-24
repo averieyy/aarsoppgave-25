@@ -198,6 +198,29 @@ Response
 
 ---
 
+#### POST /api/game/title
+
+Edit game title
+
+Request
+
+```ts
+{
+  game: string,
+  name: string
+}
+```
+
+Response
+
+```ts
+{
+  message: "Name updated"
+}
+```
+
+---
+
 #### POST /api/game/verify
 
 Verify a speedrun

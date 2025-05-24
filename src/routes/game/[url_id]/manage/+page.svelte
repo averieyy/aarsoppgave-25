@@ -5,7 +5,6 @@
   import IconButton from "$lib/components/iconButton.svelte";
   import Proof from "$lib/components/proof.svelte";
   import { toTime } from "$lib/timedisplay.js";
-    import { createRawSnippet } from "svelte";
 
   const { data } = $props();
   let { client, game, speedruns, categories } = $state(data);
