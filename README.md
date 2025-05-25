@@ -1,22 +1,26 @@
 # Clone of Speedrun.com
 
-## Requirements
+This is a website for sharing speedruns, just like [speedrun.com](https://www.speedrun.com).
 
-- [x] Login & registering
-- [x] List of available games (and categories)
-- [x] Per-game speedrunning ranking
-- [x] Submitting speedruns
-  - [x] Review process?
-- [x] Creating game categories (tags)
-- [x] Banning game members
-- [x] Searching
-  - [x] By tag
+It consists of two parts:
+
+- The web server using Node.js with SvelteKit & Typescript
+- The database using PostgreSQL
+
+
 
 ## Installation
 
 ### With docker
 
 Have docker and docker-compose installed.
+
+Clone this repository.
+
+```sh
+git clone https://github.com/averieyy/aarsoppgave-25 speedrun # Clone to ./speedrun
+cd speedrun
+```
 
 Create a file called `docker.env` in the project's root directory.
 
@@ -147,4 +151,10 @@ node build/index.js
 
 ```
 yarn dev
+```
+
+### Docker
+
+```sh
+sudo docker compose run web
 ```
