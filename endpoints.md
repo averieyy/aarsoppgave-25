@@ -29,6 +29,20 @@ HTTP 403
 
 This list is broken down in categories. This reflects the API endpoints path.
 
+### DELETE /api/deleteacc
+
+Deletes the account of the person who submitted the request
+
+Response
+
+```ts
+{
+  message: 'Account Deleted'
+}
+```
+
+---
+
 ### Game
 
 /api/game/...
@@ -66,6 +80,8 @@ Request
 {
   category_label: string,
   game: number,
+  require_proof: boolean,
+  proof_math: string
 }
 ```
 
@@ -90,6 +106,8 @@ Request
   category_label: string,
   new_category_label: string,
   game: number,
+  require_proof: boolean,
+  proof_math: string
 }
 ```
 
@@ -151,6 +169,29 @@ Response
 
 ---
 
+#### POST /api/game/description
+
+Set the game's description
+
+Request
+
+```ts
+{
+  description: string,
+  game: string
+}
+```
+
+Response
+
+```ts
+{
+  message: 'Updated description'
+}
+```
+
+---
+
 #### POST /api/game/image
 
 Set the game's image
@@ -184,7 +225,9 @@ Request
 {
   game: number,
   description: string,
-  duration: number
+  duration: number,
+  category: number,
+  proof: string
 }
 ```
 
@@ -295,6 +338,20 @@ Response
 
 ---
 
+### POST /api/logout
+
+Log out of your account
+
+No request body
+
+Response
+
+```ts
+Logged out
+```
+
+---
+
 ### POST /api/profilepic
 
 Set profile picture
@@ -349,7 +406,7 @@ Response
 
 ```ts
 {
-  message: "Registered user"
+  message: "Registered"
 }
 ```
 

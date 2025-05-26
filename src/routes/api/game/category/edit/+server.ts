@@ -21,6 +21,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   const { category_label, game, new_category_label, proof_match, require_proof } = body;
 
   if (typeof category_label != 'string') return json({ message: 'Bad category_label parameter' }, { status: 400 });
+  if (typeof new_category_label != 'string') return json({ message: 'Bad new_category_label parameter' }, { status: 400 });
   if (typeof game != 'number') return json({ message: 'Bad game id' }, { status: 400 });
   if (typeof proof_match != 'string') return json({ message: 'Bad proof_match parameter' }, { status: 400 });
   if (typeof require_proof != 'boolean') return json({ message: 'Bad require_proof parameter' }, { status: 400 }); 

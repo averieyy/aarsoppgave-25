@@ -18,7 +18,10 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   }
 
   // Fetch the game and the ban target from the request
-  const { game: game_id, target }: { game: string, target: string } = body;
+  const { game: game_id, target } = body;
+
+  if (typeof game_id != 'string') return json({ message: 'Invalid game parameter' }, { status: 400 });
+  if (typeof target != 'string') return json({ message: 'Invalid target parameter' }, { status: 400 });
 
   // Check that the game exists
   const game = await db.queryOne<game>('select * from games where url_id = $1::text', game_id);
