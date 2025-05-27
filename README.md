@@ -2,12 +2,12 @@
 
 This is a website for sharing speedruns, just like [speedrun.com](https://www.speedrun.com).
 
+My goal for this project was to have members create games and categories, to which others could submit speedruns. I wanted administrator roles for each game, so that speedruns have to be verified before they're shown in the listings.
+
 It consists of two parts:
 
 - The web server using Node.js with SvelteKit & Typescript
 - The database using PostgreSQL
-
-
 
 ## Installation
 
@@ -53,11 +53,9 @@ sudo docker compose run web
 
 Requirements
 
-|Package|DNF (fedora)|pacman (Arch)|
-|-|-|-|
-|PostgreSQL|postgresql|postgresql|
-|Yarn|yarn|yarn|
-|git|git|git|
+- PostgreSQL
+- Yarn
+- git
 
 #### Clone this project
 
