@@ -121,6 +121,7 @@
             padding-left: 1rem;
             border-left: 0.125rem solid var(--emphasis);
             border-radius: 0.125rem;
+            text-wrap: wrap;
           }
         }
       }

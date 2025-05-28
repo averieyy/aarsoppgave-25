@@ -35,6 +35,18 @@ You also have to copy the file to `.env`
 > [!NOTE]
 > If you don't intend to just host locally, change the ORIGIN environment variable in compose.yaml BEFORE building.
 
+Start the docker daemon process with
+
+```sh
+sudo systemctl start docker.service
+```
+
+To have it start on boot, run
+
+```sh
+sudo systemcstl enable docker.service
+```
+
 Then, run the command
 
 ```sh
