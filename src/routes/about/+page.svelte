@@ -23,8 +23,19 @@
         </Summarydetails>
         <Summarydetails summary="How do I submit a speedruns?">
           <p class="center">Go to the game's page. Under its description, click the button labelled "Submit run"</p>
-          <p class="center">When you're on the page, put in the time and add a description.</p>
-          <p class="center">This will put your speedrun up for validation by an administrator.</p>
+          <p class="center">
+            When you're on the page, input the time, choose your category and add a description.
+            You can upload proof to help administrators validate your speedrun. For some categories, this will be required.
+          </p>
+          <p class="center">Click<i>Register run.</i>This will put your speedrun up for validation by an administrator.</p>
+        </Summarydetails>
+        <Summarydetails summary="How do I create a speedrun category?">
+          <p class="center">Go the game page and click on the "Manage game" button. You will need to be logged in as a game administrator to do this.</p>
+          <p class="center">You will see a list over the categories with some data on each category. Click on the button labelled "+" at the bottom of this list.</p>
+          <p class="center">A new element will added to the list. There, you can edit its name and proof details. The name has to be unique.</p>
+          <p class="center">The checkbox controls whether proof is required to submit a speedrun in the category. The type constraint will be upheld no matter if proof is required or not. To create a type other than video, audio or image, you can choose "Custom", and type in a Regex matching function.</p>
+          <p class="center">When you're satisfied, click the checkmark to save.</p>
+          <p class="center">If you want to edit a category, simply click the edit button to the right of each category.</p>
         </Summarydetails>
       </section>
     </main>
