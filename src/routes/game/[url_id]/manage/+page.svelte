@@ -7,7 +7,7 @@
   import { toTime } from "$lib/timedisplay.js";
 
   const { data } = $props();
-  let { client, game, speedruns, categories } = $state(data);
+  let { client, game, speedruns, categories, administrators } = $state(data);
 
   let error = $state('');
 
@@ -204,6 +204,29 @@
           {/each}
           <CategoryManage game={game.id} addToList={(c,m,r) => categories.push({category_label: c, game_id: game.id, id: -1, proof_match: m, require_proof: r}) } />
         </div>
+      </section>
+      <section>
+        <h2>Users</h2>
+        <ul class="administrators">
+          {#each administrators as admin}
+            <li class="admin">
+              <div class="name">
+                {#if admin.profile_pic}
+                  <img class="profilepic" src="/api/uploads/{admin.profile_pic}" alt="{admin.displayname}">
+                {/if}
+                <h3>{admin.displayname}</h3>
+              </div>
+              <div class="actions">
+                <IconButton bg={3} label="Remove as administrator" path="M1 2L2 1L5 4L8 1L9 2L6 5L9 8L8 9L5 6L2 9L1 8L4 5Z" />
+                <IconButton label="Ban user" bg={3} red viewBox="0 0 20 20"
+                  path="M1 17L8 10L5 7L9 3L17 11L13 15L10 12L3 19Z M8 20L10 18L18 18L20 20Z"/>
+              </div>
+            </li>
+          {/each}
+          <li class="add">
+            <IconButton label="Add administrator" path="M4 1 L 6 1 L 6 4 L 9 4 L 9 6 L 6 6 L 6 9 L 4 9 L 4 6 L 1 6 L 1 4 L 4 4 Z" />
+          </li>
+        </ul>
       </section>
       <section>
         <h2>Speedruns</h2>
@@ -418,6 +441,56 @@
 
     &>input {
       flex: 1;
+    }
+  }
+  .administrators {
+    display: flex;
+    flex-direction: column;
+
+    margin: 0;
+    padding: 0;
+
+    &>li {
+      height: 2.75rem;
+      display: flex;
+      flex-direction: row;
+      gap: .5rem;
+      align-items: center;
+      padding: .5rem;
+      border-radius: .5rem;
+
+      justify-content: space-between;
+
+      &:nth-child(odd) {
+        background-color: var(--bg3);
+      }
+      
+      &.add {
+        justify-content: center;
+        background-color: inherit;
+      }
+      
+      &>.name {
+        display: flex;
+        flex-direction: row;
+        gap: .5rem;
+        align-items: center;
+
+        >img {
+          height: 2.5rem;
+          width: 2.5rem;
+          object-fit: cover;
+          border-radius: 100%;
+          border: .125rem solid var(--emphasis);
+        }
+      }
+
+      &>.actions {
+        display: flex;
+        flex-direction: row;
+        gap: .5rem;
+        align-items: center;
+      }
     }
   }
 </style>
