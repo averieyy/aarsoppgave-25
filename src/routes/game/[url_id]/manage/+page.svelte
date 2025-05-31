@@ -4,6 +4,7 @@
   import Header from "$lib/components/header.svelte";
   import IconButton from "$lib/components/iconButton.svelte";
   import Proof from "$lib/components/proof.svelte";
+    import { handleForm } from "$lib/forms.js";
   import { toTime } from "$lib/timedisplay.js";
 
   const { data } = $props();
@@ -154,6 +155,9 @@
       error = (await resp.json()).message;
     }
   }
+
+  let editingNewAdmin: boolean = $state(false);
+  let newAdmin: string = $state('');
 </script>
 
 <svelte:head>
@@ -223,9 +227,20 @@
               </div>
             </li>
           {/each}
-          <li class="add">
-            <IconButton label="Add administrator" path="M4 1 L 6 1 L 6 4 L 9 4 L 9 6 L 6 6 L 6 9 L 4 9 L 4 6 L 1 6 L 1 4 L 4 4 Z" />
-          </li>
+          {#if editingNewAdmin}
+            <li class="new">
+              <input type="text" bind:value={newAdmin}>
+              <IconButton path="M4 1L6 1L6 4L9 4L9 6L6 6L6 9L4 9L4 6L1 6L1 4L4 4Z" label="Add administrator" />
+            </li>
+          {:else}
+            <button class="add" onclick={() => editingNewAdmin = true} aria-label="Add administrator">
+              <svg viewBox="0 0 10 10">
+                <path
+                  d="M4 1L6 1L6 4L9 4L9 6L6 6L6 9L4 9L4 6L1 6L1 4L4 4Z">
+                </path>
+              </svg>
+            </button>
+          {/if}
         </ul>
       </section>
       <section>
@@ -450,7 +465,7 @@
     margin: 0;
     padding: 0;
 
-    &>li {
+    &>li, &>form {
       height: 2.75rem;
       display: flex;
       flex-direction: row;
@@ -463,11 +478,6 @@
 
       &:nth-child(odd) {
         background-color: var(--bg3);
-      }
-      
-      &.add {
-        justify-content: center;
-        background-color: inherit;
       }
       
       &>.name {
@@ -490,6 +500,54 @@
         flex-direction: row;
         gap: .5rem;
         align-items: center;
+      }
+    }
+
+    &>.add {
+      height: 3.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      padding: .5rem;
+
+      border-radius: .5rem;
+
+      &:nth-child(odd) {
+        background-color: var(--bg3);
+      }
+
+      &:hover, &:active, &:focus-visible {
+        &>svg>path {
+          fill: var(--bg1);
+        }
+      }
+
+      &>svg {
+        width: 1.5rem;
+        height: 1.5rem;
+
+        &>path {
+          fill: var(--emphasis);
+        }
+      }
+    }
+
+    &>.new {
+
+      &:nth-child(odd) {
+        &>input { background-color: var(--bg4); }
+      }
+
+      &:nth-child(even) {
+        &>input { background-color: var(--bg3); }
+      }
+
+      &>* {
+        flex: 1;
+        border: none;
+        border-radius: .5rem;
+        height: 2rem;
       }
     }
   }
