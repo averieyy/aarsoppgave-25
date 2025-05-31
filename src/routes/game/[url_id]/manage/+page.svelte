@@ -4,11 +4,11 @@
   import Header from "$lib/components/header.svelte";
   import IconButton from "$lib/components/iconButton.svelte";
   import Proof from "$lib/components/proof.svelte";
-    import { handleForm } from "$lib/forms.js";
   import { toTime } from "$lib/timedisplay.js";
+    import type { frontendclient } from "$lib/types.js";
 
   const { data } = $props();
-  let { client, game, speedruns, categories, administrators } = $state(data);
+  let { client, game, speedruns, categories, administrators, members } = $state(data);
 
   let error = $state('');
 
@@ -158,6 +158,32 @@
 
   let editingNewAdmin: boolean = $state(false);
   let newAdmin: string = $state('');
+
+  let sortedMembers = $derived(sortMembers(newAdmin));
+
+  function sortMembers(searchString: string): frontendclient[] {
+    return $state.snapshot(members).sort((a,b) => {
+      let as = 0, bs = 0;
+
+      // These parameters can be changed to whatever, found these work fine for me
+      let usernameweight = 2;
+      let displaynameweight = 1;
+
+      if (a.displayname.includes(searchString)) as += displaynameweight;
+      if (b.displayname.includes(searchString)) bs += displaynameweight;
+
+      if (a.username.includes(searchString)) as += usernameweight;
+      if (b.username.includes(searchString)) bs += usernameweight;
+      
+      if (a.displayname.startsWith(searchString)) as += displaynameweight;
+      if (b.displayname.startsWith(searchString)) bs += displaynameweight;
+
+      if (a.username.startsWith(searchString)) as += usernameweight;
+      if (b.username.startsWith(searchString)) bs += usernameweight;
+
+      return bs - as;
+    });
+  }
 </script>
 
 <svelte:head>
@@ -229,7 +255,18 @@
           {/each}
           {#if editingNewAdmin}
             <li class="new">
-              <input type="text" bind:value={newAdmin}>
+              <div class="admininput">
+                <input type="text" bind:value={newAdmin}>
+                <div class="outersuggestions">
+                  <div class="suggestions">
+                    {#each sortedMembers as member}
+                      <button class="suggestion" onclick={() => newAdmin = member.username}>
+                        {member.displayname}
+                      </button>
+                    {/each}
+                  </div>
+                </div>
+              </div>
               <IconButton path="M4 1L6 1L6 4L9 4L9 6L6 6L6 9L4 9L4 6L1 6L1 4L4 4Z" label="Add administrator" />
             </li>
           {:else}
@@ -369,8 +406,6 @@
       text-overflow: clip;
       max-height: 5rem;
 
-      position: relative;
-
       &::before {
         content: '';
         top: 0;
@@ -465,7 +500,7 @@
     margin: 0;
     padding: 0;
 
-    &>li, &>form {
+    &>li {
       height: 2.75rem;
       display: flex;
       flex-direction: row;
@@ -536,18 +571,54 @@
     &>.new {
 
       &:nth-child(odd) {
-        &>input { background-color: var(--bg4); }
+        & input { background-color: var(--bg4); }
       }
 
       &:nth-child(even) {
-        &>input { background-color: var(--bg3); }
+        & input { background-color: var(--bg3); }
       }
 
-      &>* {
+      &>.admininput {
+        display: flex;
         flex: 1;
-        border: none;
-        border-radius: .5rem;
-        height: 2rem;
+        flex-direction: column;
+
+        &>input {
+          border: none;
+          border-radius: .5rem;
+          height: 2rem;
+        }
+
+        &>.outersuggestions {
+          height: 0;
+          position: relative;
+          display: none;
+
+          &>.suggestions {
+            box-sizing: border-box;
+            padding: .5rem;
+            border-radius: .5rem;
+            width: 100%;
+            max-height: 10rem;
+            overflow-y: auto;
+            background-color: var(--bg2);
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+
+            &>.suggestion {
+              padding: .5rem;
+              height: 3rem;
+              box-sizing: border-box;
+              border: none;
+              border-radius: .5rem;
+            }
+          }
+        }
+
+        &>input:focus+.outersuggestions, &>.outersuggestions:hover {
+          display: block;
+        }
       }
     }
   }
