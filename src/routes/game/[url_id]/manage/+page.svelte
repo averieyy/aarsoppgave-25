@@ -184,6 +184,52 @@
       return bs - as;
     });
   }
+
+  async function promoteUser() {
+    const adminsbackup = $state.snapshot(administrators);
+
+    const newAdminObj = members.find(m => m.username == newAdmin);
+    if (!newAdminObj) { return; }
+
+    administrators.push(newAdminObj);
+    administrators = administrators;
+
+    const resp = await fetch('/api/game/promote', {
+      method: 'POST',
+      body: JSON.stringify({
+        game: game.url_id,
+        target: newAdmin
+      })
+    });
+
+    if (!resp.ok) {
+      administrators = adminsbackup;
+      error = (await resp.json()).message;
+    }
+  }
+
+  async function demoteUser(admin: string) {
+    const adminsbackup = $state.snapshot(administrators);
+
+    const adminIndex = members.findIndex(m => m.username == admin);
+    if (adminIndex == -1) { return; }
+
+    administrators.splice(adminIndex, 1);
+    administrators = administrators;
+
+    const resp = await fetch('/api/game/demote', {
+      method: 'POST',
+      body: JSON.stringify({
+        game: game.url_id,
+        target: admin
+      })
+    });
+
+    if (!resp.ok) {
+      administrators = adminsbackup;
+      error = (await resp.json()).message;
+    }
+  }
 </script>
 
 <svelte:head>
@@ -247,7 +293,7 @@
                 <h3>{admin.displayname}</h3>
               </div>
               <div class="actions">
-                <IconButton bg={3} label="Remove as administrator" path="M1 2L2 1L5 4L8 1L9 2L6 5L9 8L8 9L5 6L2 9L1 8L4 5Z" />
+                <IconButton bg={3} label="Remove as administrator" path="M1 2L2 1L5 4L8 1L9 2L6 5L9 8L8 9L5 6L2 9L1 8L4 5Z" onclick={() => demoteUser(admin.username)} />
                 <IconButton label="Ban user" bg={3} red viewBox="0 0 20 20"
                   path="M1 17L8 10L5 7L9 3L17 11L13 15L10 12L3 19Z M8 20L10 18L18 18L20 20Z"/>
               </div>
@@ -267,7 +313,7 @@
                   </div>
                 </div>
               </div>
-              <IconButton path="M4 1L6 1L6 4L9 4L9 6L6 6L6 9L4 9L4 6L1 6L1 4L4 4Z" label="Add administrator" />
+              <IconButton path="M4 1L6 1L6 4L9 4L9 6L6 6L6 9L4 9L4 6L1 6L1 4L4 4Z" label="Add administrator" onclick={() => promoteUser() } />
             </li>
           {:else}
             <button class="add" onclick={() => editingNewAdmin = true} aria-label="Add administrator">
