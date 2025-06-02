@@ -5,7 +5,7 @@
   import IconButton from "$lib/components/iconButton.svelte";
   import Proof from "$lib/components/proof.svelte";
   import { toTime } from "$lib/timedisplay.js";
-    import type { frontendclient } from "$lib/types.js";
+  import type { frontendclient } from "$lib/types.js";
 
   const { data } = $props();
   let { client, game, speedruns, categories, administrators, members } = $state(data);
@@ -211,7 +211,7 @@
   async function demoteUser(admin: string) {
     const adminsbackup = $state.snapshot(administrators);
 
-    const adminIndex = members.findIndex(m => m.username == admin);
+    const adminIndex = administrators.findIndex(a => a.username == admin);
     if (adminIndex == -1) { return; }
 
     administrators.splice(adminIndex, 1);
@@ -292,11 +292,13 @@
                 {/if}
                 <h3>{admin.displayname}</h3>
               </div>
-              <div class="actions">
-                <IconButton bg={3} label="Remove as administrator" path="M1 2L2 1L5 4L8 1L9 2L6 5L9 8L8 9L5 6L2 9L1 8L4 5Z" onclick={() => demoteUser(admin.username)} />
-                <IconButton label="Ban user" bg={3} red viewBox="0 0 20 20"
-                  path="M1 17L8 10L5 7L9 3L17 11L13 15L10 12L3 19Z M8 20L10 18L18 18L20 20Z"/>
-              </div>
+              {#if client?.username != admin.username}
+                <div class="actions">
+                  <IconButton bg={3} label="Remove as administrator" path="M1 2L2 1L5 4L8 1L9 2L6 5L9 8L8 9L5 6L2 9L1 8L4 5Z" onclick={() => demoteUser(admin.username)} />
+                  <IconButton label="Ban user" bg={3} red viewBox="0 0 20 20"
+                    path="M1 17L8 10L5 7L9 3L17 11L13 15L10 12L3 19Z M8 20L10 18L18 18L20 20Z"/>
+                </div>
+              {/if}
             </li>
           {/each}
           {#if editingNewAdmin}
