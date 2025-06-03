@@ -134,15 +134,18 @@
   let descError = $state('');
 
   async function saveDescription () {
+    // Send request to edit description
     const resp = await fetch('/api/game/description', {
       method: 'POST',
       body: JSON.stringify({ description: game.description, game: game.url_id })
     });
 
+    // Show an error if it failed
     if (!resp.ok) descError = (await resp.json()).message;
   }
 
   async function saveTitle () {
+    // Send a request to edit the title (name)
     const resp = await fetch('/api/game/title', {
       method: 'POST',
       body: JSON.stringify({
@@ -151,41 +154,51 @@
       })
     });
 
-    if (!resp.ok) {
-      error = (await resp.json()).message;
-    }
+    // Show an error if it failed
+    if (!resp.ok) error = (await resp.json()).message;
   }
 
+  // The current name in the add admin input feild
   let editingNewAdmin: boolean = $state(false);
+  // Whether the admin input feild is shown
   let newAdmin: string = $state('');
 
+  // Members sorted by relevance to the inputted admin (for suggestions)
   let sortedMembers = $derived(sortMembers(newAdmin));
 
+  // Sort members by how good their name matches the input admin username
   function sortMembers(searchString: string): frontendclient[] {
     return $state.snapshot(members).sort((a,b) => {
+      // A's score, B's score
       let as = 0, bs = 0;
 
       // These parameters can be changed to whatever, found these work fine for me
       let usernameweight = 2;
       let displaynameweight = 1;
 
+      // Check if the displaynames include the search string
       if (a.displayname.includes(searchString)) as += displaynameweight;
       if (b.displayname.includes(searchString)) bs += displaynameweight;
 
+      // Check if the usernames include the search string
       if (a.username.includes(searchString)) as += usernameweight;
       if (b.username.includes(searchString)) bs += usernameweight;
       
+      // Check if the displaynames start with the search string
       if (a.displayname.startsWith(searchString)) as += displaynameweight;
       if (b.displayname.startsWith(searchString)) bs += displaynameweight;
 
+      // Check if the usernames start with the search string
       if (a.username.startsWith(searchString)) as += usernameweight;
       if (b.username.startsWith(searchString)) bs += usernameweight;
 
+      // Return them so the one with the highest score comes first
       return bs - as;
     });
   }
 
   async function promoteUser() {
+    // Take a backup of the current admin listing, before updating
     const adminsbackup = $state.snapshot(administrators);
 
     const newAdminObj = members.find(m => m.username == newAdmin);
@@ -194,6 +207,7 @@
     administrators.push(newAdminObj);
     administrators = administrators;
 
+    // Send a request to promote the selected user
     const resp = await fetch('/api/game/promote', {
       method: 'POST',
       body: JSON.stringify({
@@ -202,6 +216,7 @@
       })
     });
 
+    // If it failed, revert to the backup and show error message
     if (!resp.ok) {
       administrators = adminsbackup;
       error = (await resp.json()).message;
@@ -209,6 +224,7 @@
   }
 
   async function demoteUser(admin: string) {
+    // Take a backup of the current admin listing, before updating
     const adminsbackup = $state.snapshot(administrators);
 
     const adminIndex = administrators.findIndex(a => a.username == admin);
@@ -217,6 +233,7 @@
     administrators.splice(adminIndex, 1);
     administrators = administrators;
 
+    // Send a request to demote the selected user
     const resp = await fetch('/api/game/demote', {
       method: 'POST',
       body: JSON.stringify({
@@ -224,7 +241,8 @@
         target: admin
       })
     });
-
+    
+    // If it failed, revert to the backup and show error message
     if (!resp.ok) {
       administrators = adminsbackup;
       error = (await resp.json()).message;
