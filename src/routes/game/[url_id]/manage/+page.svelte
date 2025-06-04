@@ -8,7 +8,7 @@
   import type { frontendclient } from "$lib/types.js";
 
   const { data } = $props();
-  let { client, game, speedruns, categories, administrators, members } = $state(data);
+  let { client, game, speedruns, categories, members } = $state(data);
 
   let error = $state('');
 
@@ -158,6 +158,9 @@
     if (!resp.ok) error = (await resp.json()).message;
   }
 
+  // List of administrators
+  let administrators = $state(members.filter(m => m.admin));
+
   // The current name in the add admin input feild
   let editingNewAdmin: boolean = $state(false);
   // Whether the admin input feild is shown
@@ -248,6 +251,9 @@
       error = (await resp.json()).message;
     }
   }
+
+  // Banned members
+  let bannedmembers = $state(members.filter(m => m.banned));
 </script>
 
 <svelte:head>
@@ -301,6 +307,7 @@
       </section>
       <section>
         <h2>Users</h2>
+        <h3>Administrators</h3>
         <ul class="administrators">
           {#each administrators as admin}
             <li class="admin">
@@ -308,7 +315,7 @@
                 {#if admin.profile_pic}
                   <img class="profilepic" src="/api/uploads/{admin.profile_pic}" alt="{admin.displayname}">
                 {/if}
-                <h3>{admin.displayname}</h3>
+                <span class="adminname">{admin.displayname}</span>
               </div>
               {#if client?.username != admin.username}
                 <div class="actions">
@@ -344,6 +351,22 @@
               </svg>
             </button>
           {/if}
+        </ul>
+        <h3>Banned members</h3>
+        <ul class="bannedmembers">
+          {#each bannedmembers as member}
+            <li class="admin">
+              <div class="name">
+                {#if member.profile_pic}
+                  <img class="profilepic" src="/api/uploads/{member.profile_pic}" alt="{member.displayname}">
+                {/if}
+                <span class="membername">{member.displayname}</span>
+              </div>
+              <div class="actions">
+                <IconButton bg={3} label="Pardon" path="M10 2L9 1L3 7L1 5L0 6L3 9Z" viewBox="0 0 10 10" />
+              </div>
+            </li>
+          {/each}
         </ul>
       </section>
       <section>
@@ -559,7 +582,8 @@
       flex: 1;
     }
   }
-  .administrators {
+  .administrators, .bannedmembers {
+    list-style: none;
     display: flex;
     flex-direction: column;
 
