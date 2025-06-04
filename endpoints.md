@@ -264,6 +264,29 @@ Response
 
 ---
 
+#### POST /api/game/unban
+
+Unban a member
+
+Request
+
+```ts
+{
+  game: string,
+  username: string
+}
+```
+
+Response
+
+```ts
+{
+  message: "Unbanned member"
+}
+```
+
+---
+
 #### POST /api/game/verify
 
 Verify a speedrun
