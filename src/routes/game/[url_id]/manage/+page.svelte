@@ -119,6 +119,8 @@
       body: JSON.stringify({ description: game.description, game: game.url_id })
     });
 
+    // Redirect if the user is unauthorized
+    if (resp.status == 403) await goto(`/game/${game.url_id}`);
     // Show an error if it failed
     if (!resp.ok) descError = (await resp.json()).message;
   }
@@ -133,6 +135,8 @@
       })
     });
 
+    // Redirect if the user is unauthorized
+    if (resp.status == 403) await goto(`/game/${game.url_id}`);
     // Show an error if it failed
     if (!resp.ok) error = (await resp.json()).message;
   }
@@ -195,6 +199,8 @@
       })
     });
 
+    // Redirect if the user is unauthorized
+    if (resp.status == 403) await goto(`/game/${game.url_id}`);
     // If it failed, revert to the backup and show error message
     if (!resp.ok) {
       administrators = adminsbackup;
@@ -221,6 +227,8 @@
       })
     });
     
+    // Redirect if the user is unauthorized
+    if (resp.status == 403) await goto(`/game/${game.url_id}`);
     // If it failed, revert to the backup and show error message
     if (!resp.ok) {
       administrators = adminsbackup;
@@ -250,7 +258,8 @@
       })
     });
 
-    if (resp.status == 403) await goto(`/game/${game.url_id}`)
+    // Redirect if the user is unauthorized
+    if (resp.status == 403) await goto(`/game/${game.url_id}`);
     if (!resp.ok) {
       // Show error message
       error = (await resp.json()).message;
