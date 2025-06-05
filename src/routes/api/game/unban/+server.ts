@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   if (!username || typeof username != 'string') return json({ message: 'Invalid username parameter' }, { status: 400 });
 
   // Check if the client is administrator
-  const member = await db.queryOne<gamemember>('select * from game_member where client_id = $1::integer', client.id);
+  const member = await db.queryOne<gamemember>('select * from game_members where client_id = $1::integer', client.id);
   if (!member?.admin) return json({ message: 'Unauthorized' }, { status: 403 });
 
   // Check if the target is banned (and exists) 

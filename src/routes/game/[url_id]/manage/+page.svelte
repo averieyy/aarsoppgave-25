@@ -254,6 +254,29 @@
 
   // Banned members
   let bannedmembers = $state(members.filter(m => m.banned));
+
+  async function unban (username: string) {
+
+    // Take backup of the current banned members and edit the list
+    const bannedbackup = $state.snapshot(bannedmembers);
+    const bannedindex = bannedmembers.findIndex(m => m.username == username);
+    if (bannedindex == -1) return;
+    bannedmembers.splice(bannedindex, 1);
+    bannedmembers = bannedmembers;
+
+    const resp = await fetch('/api/game/unban', {
+      method: 'POST',
+      body: JSON.stringify({
+        game: game.url_id,
+        username
+      })
+    });
+
+    if (!resp.ok) {
+      error = (await resp.json()).message;
+      bannedmembers = bannedbackup;
+    }
+  }
 </script>
 
 <svelte:head>
@@ -354,19 +377,23 @@
         </ul>
         <h3>Banned members</h3>
         <ul class="bannedmembers">
-          {#each bannedmembers as member}
-            <li class="admin">
-              <div class="name">
-                {#if member.profile_pic}
-                  <img class="profilepic" src="/api/uploads/{member.profile_pic}" alt="{member.displayname}">
-                {/if}
-                <span class="membername">{member.displayname}</span>
-              </div>
-              <div class="actions">
-                <IconButton bg={3} label="Pardon" path="M10 2L9 1L3 7L1 5L0 6L3 9Z" viewBox="0 0 10 10" />
-              </div>
-            </li>
-          {/each}
+          {#if bannedmembers.length == 0}
+            <span class="emptylist">No banned members</span>
+          {:else}
+            {#each bannedmembers as member}
+              <li class="admin">
+                <div class="name">
+                  {#if member.profile_pic}
+                    <img class="profilepic" src="/api/uploads/{member.profile_pic}" alt="{member.displayname}">
+                  {/if}
+                  <span class="membername">{member.displayname}</span>
+                </div>
+                <div class="actions">
+                  <IconButton bg={3} label="Pardon" path="M10 2L9 1L3 7L1 5L0 6L3 9Z" viewBox="0 0 10 10" onclick={() => unban(member.username)} />
+                </div>
+              </li>
+            {/each}
+          {/if}
         </ul>
       </section>
       <section>
@@ -710,6 +737,16 @@
           display: block;
         }
       }
+    }
+
+    &>.emptylist {
+      height: 2.75rem;
+      padding: .5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-style: italic;
+      color: var(--emphasis);
     }
   }
 </style>
