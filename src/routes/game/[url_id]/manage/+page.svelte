@@ -58,27 +58,6 @@
     }
   }
 
-  async function ban(username: string) {
-    // Remove the speedrun locally
-    let oldspeedrus = $state.snapshot(speedruns);
-    speedruns = speedruns.filter(s => s.username != username);
-    
-    // Send POST request
-    const resp = await fetch('/api/game/ban', {
-      method: 'POST',
-      body: JSON.stringify({ game: game.url_id, target: username })
-    });
-    
-    // Redirect to the game page if the client is unauthorized
-    if (resp.status == 403) await goto(`/game/${game.url_id}`);
-    if (!resp.ok) {
-      // Return to the old speedruns
-      speedruns = oldspeedrus;
-      // Show the error message
-      error = (await resp.json()).message;
-    }
-  }
-
   // The selected image file
   let files: FileList | undefined = $state(undefined);
 
@@ -161,13 +140,10 @@
   // List of administrators
   let administrators = $state(members.filter(m => m.admin));
 
-  // The current name in the add admin input feild
-  let editingNewAdmin: boolean = $state(false);
   // Whether the admin input feild is shown
+  let editingNewAdmin: boolean = $state(false);
+  // The current name in the add admin input feild
   let newAdmin: string = $state('');
-
-  // Members sorted by relevance to the inputted admin (for suggestions)
-  let sortedMembers = $derived(sortMembers(newAdmin));
 
   // Sort members by how good their name matches the input admin username
   function sortMembers(searchString: string): frontendclient[] {
@@ -254,6 +230,7 @@
 
   // Banned members
   let bannedmembers = $state(members.filter(m => m.banned));
+  let newBan = $state('');
 
   async function unban (username: string) {
 
@@ -264,6 +241,7 @@
     bannedmembers.splice(bannedindex, 1);
     bannedmembers = bannedmembers;
 
+    // Send POST request to unban member
     const resp = await fetch('/api/game/unban', {
       method: 'POST',
       body: JSON.stringify({
@@ -272,9 +250,40 @@
       })
     });
 
+    if (resp.status == 403) await goto(`/game/${game.url_id}`)
     if (!resp.ok) {
+      // Show error message
       error = (await resp.json()).message;
+      // Revert to backup
       bannedmembers = bannedbackup;
+    }
+  }
+
+  async function ban(username: string) {
+    // Remove the speedrun locally
+    const oldspeedrus = $state.snapshot(speedruns);
+    speedruns = speedruns.filter(s => s.username != username);
+    // Backup and add to banned list
+    const bannedbackup = $state.snapshot(bannedmembers);
+    const member = members.find(m => m.username == username);
+    if (!member) return;
+    bannedmembers.push(member);
+    bannedmembers = bannedmembers;
+    
+    // Send POST request
+    const resp = await fetch('/api/game/ban', {
+      method: 'POST',
+      body: JSON.stringify({ game: game.url_id, target: username })
+    });
+    
+    // Redirect to the game page if the client is unauthorized
+    if (resp.status == 403) await goto(`/game/${game.url_id}`);
+    if (!resp.ok) {
+      // Return to the old speedruns
+      speedruns = oldspeedrus;
+      bannedmembers = bannedbackup;
+      // Show the error message
+      error = (await resp.json()).message;
     }
   }
 </script>
@@ -355,7 +364,7 @@
                 <input type="text" bind:value={newAdmin}>
                 <div class="outersuggestions">
                   <div class="suggestions">
-                    {#each sortedMembers as member}
+                    {#each sortMembers(newAdmin) as member}
                       <button class="suggestion" onclick={() => newAdmin = member.username}>
                         {member.displayname}
                       </button>
@@ -394,6 +403,21 @@
               </li>
             {/each}
           {/if}
+          <li class="new">
+            <div class="baninput">
+              <input type="text" bind:value={newBan}>
+              <div class="outersuggestions">
+                <div class="suggestions">
+                  {#each sortMembers(newBan).slice(0,10) as member}
+                    <button class="suggestion" onclick={() => newBan = member.username}>
+                      {member.displayname}
+                    </button>
+                  {/each}
+                </div>
+              </div>
+            </div>
+            <IconButton red viewBox="0 0 20 20" path="M1 17L8 10L5 7L9 3L17 11L13 15L10 12L3 19Z M8 20L10 18L18 18L20 20Z" label="Ban member" onclick={() => ban(newBan) } />
+          </li>
         </ul>
       </section>
       <section>
@@ -695,7 +719,7 @@
         & input { background-color: var(--bg3); }
       }
 
-      &>.admininput {
+      &>.admininput, &>.baninput {
         display: flex;
         flex: 1;
         flex-direction: column;
