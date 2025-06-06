@@ -1,12 +1,11 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import CategoryManage from "$lib/components/categoryManage.svelte";
-  import Administrators from "$lib/components/gamemanage/Administrators.svelte";
-    import BannedMembers from "$lib/components/gamemanage/BannedMembers.svelte";
+  import CategoryManage from "$lib/components/gamemanage/categoryManage.svelte";
+  import Administrators from "$lib/components/gamemanage/administrators.svelte";
+  import BannedMembers from "$lib/components/gamemanage/bannedMembers.svelte";
   import Header from "$lib/components/header.svelte";
   import IconButton from "$lib/components/iconButton.svelte";
   import Proof from "$lib/components/proof.svelte";
-  import { sortMembers } from "$lib/members.js";
   import { toTime } from "$lib/timedisplay.js";
 
   const { data } = $props();

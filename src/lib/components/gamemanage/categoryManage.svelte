@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IconButton from "./iconButton.svelte";
+  import IconButton from "../iconButton.svelte";
 
   const { category, game, addToList }: { category?: { category_label: string, require_proof: boolean, proof_match: string }, game: number, addToList?: (category_label: string, proof_match: string, require_proof: boolean) => void } = $props();
 
