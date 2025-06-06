@@ -1,11 +1,12 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import CategoryManage from "$lib/components/categoryManage.svelte";
+  import Administrators from "$lib/components/gamemanage/Administrators.svelte";
   import Header from "$lib/components/header.svelte";
   import IconButton from "$lib/components/iconButton.svelte";
   import Proof from "$lib/components/proof.svelte";
+  import { sortMembers } from "$lib/members.js";
   import { toTime } from "$lib/timedisplay.js";
-  import type { frontendclient } from "$lib/types.js";
 
   const { data } = $props();
   let { client, game, speedruns, categories, members } = $state(data);
@@ -144,97 +145,6 @@
   // List of administrators
   let administrators = $state(members.filter(m => m.admin));
 
-  // Whether the admin input feild is shown
-  let editingNewAdmin: boolean = $state(false);
-  // The current name in the add admin input feild
-  let newAdmin: string = $state('');
-
-  // Sort members by how good their name matches the input admin username
-  function sortMembers(searchString: string): frontendclient[] {
-    return $state.snapshot(members).sort((a,b) => {
-      // A's score, B's score
-      let as = 0, bs = 0;
-
-      // These parameters can be changed to whatever, found these work fine for me
-      let usernameweight = 2;
-      let displaynameweight = 1;
-
-      // Check if the displaynames include the search string
-      if (a.displayname.includes(searchString)) as += displaynameweight;
-      if (b.displayname.includes(searchString)) bs += displaynameweight;
-
-      // Check if the usernames include the search string
-      if (a.username.includes(searchString)) as += usernameweight;
-      if (b.username.includes(searchString)) bs += usernameweight;
-      
-      // Check if the displaynames start with the search string
-      if (a.displayname.startsWith(searchString)) as += displaynameweight;
-      if (b.displayname.startsWith(searchString)) bs += displaynameweight;
-
-      // Check if the usernames start with the search string
-      if (a.username.startsWith(searchString)) as += usernameweight;
-      if (b.username.startsWith(searchString)) bs += usernameweight;
-
-      // Return them so the one with the highest score comes first
-      return bs - as;
-    });
-  }
-
-  async function promoteUser() {
-    // Take a backup of the current admin listing, before updating
-    const adminsbackup = $state.snapshot(administrators);
-
-    const newAdminObj = members.find(m => m.username == newAdmin);
-    if (!newAdminObj) { return; }
-
-    administrators.push(newAdminObj);
-    administrators = administrators;
-
-    // Send a request to promote the selected user
-    const resp = await fetch('/api/game/promote', {
-      method: 'POST',
-      body: JSON.stringify({
-        game: game.url_id,
-        target: newAdmin
-      })
-    });
-
-    // Redirect if the user is unauthorized
-    if (resp.status == 403) await goto(`/game/${game.url_id}`);
-    // If it failed, revert to the backup and show error message
-    if (!resp.ok) {
-      administrators = adminsbackup;
-      error = (await resp.json()).message;
-    }
-  }
-
-  async function demoteUser(admin: string) {
-    // Take a backup of the current admin listing, before updating
-    const adminsbackup = $state.snapshot(administrators);
-
-    const adminIndex = administrators.findIndex(a => a.username == admin);
-    if (adminIndex == -1) { return; }
-
-    administrators.splice(adminIndex, 1);
-    administrators = administrators;
-
-    // Send a request to demote the selected user
-    const resp = await fetch('/api/game/demote', {
-      method: 'POST',
-      body: JSON.stringify({
-        game: game.url_id,
-        target: admin
-      })
-    });
-    
-    // Redirect if the user is unauthorized
-    if (resp.status == 403) await goto(`/game/${game.url_id}`);
-    // If it failed, revert to the backup and show error message
-    if (!resp.ok) {
-      administrators = adminsbackup;
-      error = (await resp.json()).message;
-    }
-  }
 
   // Banned members
   let bannedmembers = $state(members.filter(m => m.banned));
@@ -348,51 +258,7 @@
       </section>
       <section>
         <h2>Users</h2>
-        <h3>Administrators</h3>
-        <ul class="administrators">
-          {#each administrators as admin}
-            <li class="admin">
-              <div class="name">
-                {#if admin.profile_pic}
-                  <img class="profilepic" src="/api/uploads/{admin.profile_pic}" alt="{admin.displayname}">
-                {/if}
-                <span class="adminname">{admin.displayname}</span>
-              </div>
-              {#if client?.username != admin.username}
-                <div class="actions">
-                  <IconButton bg={3} label="Remove as administrator" path="M1 2L2 1L5 4L8 1L9 2L6 5L9 8L8 9L5 6L2 9L1 8L4 5Z" onclick={() => demoteUser(admin.username)} />
-                  <IconButton label="Ban user" bg={3} red viewBox="0 0 20 20"
-                    path="M1 17L8 10L5 7L9 3L17 11L13 15L10 12L3 19Z M8 20L10 18L18 18L20 20Z"/>
-                </div>
-              {/if}
-            </li>
-          {/each}
-          {#if editingNewAdmin}
-            <li class="new">
-              <div class="admininput">
-                <input type="text" bind:value={newAdmin}>
-                <div class="outersuggestions">
-                  <div class="suggestions">
-                    {#each sortMembers(newAdmin) as member}
-                      <button class="suggestion" onclick={() => newAdmin = member.username}>
-                        {member.displayname}
-                      </button>
-                    {/each}
-                  </div>
-                </div>
-              </div>
-              <IconButton path="M4 1L6 1L6 4L9 4L9 6L6 6L6 9L4 9L4 6L1 6L1 4L4 4Z" label="Add administrator" onclick={() => promoteUser() } />
-            </li>
-          {:else}
-            <button class="add" onclick={() => editingNewAdmin = true} aria-label="Add administrator">
-              <svg viewBox="0 0 10 10">
-                <path
-                  d="M4 1L6 1L6 4L9 4L9 6L6 6L6 9L4 9L4 6L1 6L1 4L4 4Z">
-                </path>
-              </svg>
-            </button>
-          {/if}
-        </ul>
+        <Administrators administrators={administrators} members={members} client={client} error={error} game={game}/>
         <h3>Banned members</h3>
         <ul class="bannedmembers">
           {#if bannedmembers.length == 0}
@@ -417,7 +283,7 @@
               <input type="text" bind:value={newBan}>
               <div class="outersuggestions">
                 <div class="suggestions">
-                  {#each sortMembers(newBan).slice(0,10) as member}
+                  {#each sortMembers(newBan, $state.snapshot(members)).slice(0,10) as member}
                     <button class="suggestion" onclick={() => newBan = member.username}>
                       {member.displayname}
                     </button>
@@ -516,17 +382,9 @@
 
     &:nth-child(odd) {
       background-color: var(--bg3);
-
-      & .info>p::before {
-        box-shadow: inset 0 -4rem 2rem -3rem var(--bg3);
-      }
     }
     &:nth-child(even) {
       background-color: var(--bg2);
-
-      & .info>p::before {
-        box-shadow: inset 0 -4rem 2rem -3rem var(--bg2);
-      }
     }
 
     &>.proof {
@@ -642,7 +500,7 @@
       flex: 1;
     }
   }
-  .administrators, .bannedmembers {
+  .bannedmembers {
     list-style: none;
     display: flex;
     flex-direction: column;
@@ -688,36 +546,6 @@
       }
     }
 
-    &>.add {
-      height: 3.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: none;
-      padding: .5rem;
-
-      border-radius: .5rem;
-
-      &:nth-child(odd) {
-        background-color: var(--bg3);
-      }
-
-      &:hover, &:active, &:focus-visible {
-        &>svg>path {
-          fill: var(--bg1);
-        }
-      }
-
-      &>svg {
-        width: 1.5rem;
-        height: 1.5rem;
-
-        &>path {
-          fill: var(--emphasis);
-        }
-      }
-    }
-
     &>.new {
 
       &:nth-child(odd) {
@@ -728,7 +556,7 @@
         & input { background-color: var(--bg3); }
       }
 
-      &>.admininput, &>.baninput {
+      &>.baninput {
         display: flex;
         flex: 1;
         flex-direction: column;
