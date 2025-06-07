@@ -18,7 +18,22 @@
       selectedtags.push(tag);
     else
       selectedtags.splice(selectedtags.indexOf(tag), 1);
+
+    search();
   }
+
+  async function wait(milliseconds: number): Promise<void> {
+    return new Promise(r => {
+      setTimeout(r, milliseconds);
+    });
+  }
+  
+  $effect(() => {
+    query;
+
+    let localquery = $state.snapshot(query)
+    wait(250).then(() => { if (localquery == query) search()});
+  });
 
   // Send search query
   async function search () {
@@ -41,8 +56,7 @@
     <main>
       <div class="outersearch">
         <div class="searchbar">
-          <input type="text" bind:value={query}>
-          <button onclick={search}>Search</button>
+          <input type="text" placeholder="Search" bind:value={query}>
         </div>
         <div class="tags">
           {#each tags as tag}
