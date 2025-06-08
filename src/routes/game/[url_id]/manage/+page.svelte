@@ -60,36 +60,51 @@
   }
 
   // The selected image file
-  let files: FileList | undefined = $state(undefined);
+  let files: FileList | undefined = $state();
+  let selectedFile: File | undefined = $derived(files?.[0]);
+
+  async function getDataUrl(file: File): Promise<string | undefined> {
+    return new Promise((res, _) => {
+      // Create a file reader (this will be able to read the file data url)
+      const fr = new FileReader();
+
+      fr.onload = () => {
+        // When finished, return the data URL
+        res(fr.result?.toString());
+      }
+
+      // Get the data url
+      if (!file) res(undefined);
+      else fr.readAsDataURL(file);
+    });
+  }
 
   // When the input file gets updated, update the games image
   $effect(() => {
-    files;
+    selectedFile;
 
     // Make sure one file is selected
-    if (!files || files.length == 0) return;
-    if (files.length > 1) {
-      error = 'You can only select one file';
-      return;
-    }
+    if (!selectedFile) return;
 
-    // Get the file
-    const file = files[0];
     // Check if it is larger than 32MiB
-    if (file.size >= 33554432) {
+    if (selectedFile.size >= 33554432) {
       error = 'Files cannot be bigger than 32 MiB';
       return;
     }
 
     // Check if the file is an image
-    if (!file.type.startsWith('image/')) {
+    if (!selectedFile.type.startsWith('image/')) {
       error = 'File has to be an image';
       return;
     }
-    
+  });
+
+  async function saveImage () {
+    if (!selectedFile) return;
+
     // Upload the image
     const form = new FormData();
-    form.set('file', file);
+    form.set('file', selectedFile);
 
     fetch('/api/upload', {
       method: 'POST',
@@ -109,7 +124,7 @@
         return;
       }
     });
-  });
+  }
 
   let descError = $state('');
 
@@ -201,7 +216,13 @@
         </div>
         <label>
           <div class="chosenimage">
-            {#if game.image}
+            {#if files && files.length == 1}
+              {#await getDataUrl(files[0])}
+                <span>Loading...</span>
+              {:then url}
+                <img src={url} alt="">
+              {/await}
+            {:else if game.image}
               <img src="/api/uploads/{game.image}" alt="{game.name}">
             {/if}
             <div class="plusoverlay">
