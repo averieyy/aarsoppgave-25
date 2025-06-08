@@ -220,7 +220,7 @@
               {#await getDataUrl(files[0])}
                 <span>Loading...</span>
               {:then url}
-                <img src={url} alt="">
+                <img src={url} alt="{game.name}">
               {/await}
             {:else if game.image}
               <img src="/api/uploads/{game.image}" alt="{game.name}">
@@ -231,6 +231,9 @@
           </div>
           <input bind:files={files} hidden type="file" class="fileselector">
         </label>
+        {#if selectedFile && !game.image}
+          <button onclick={() => saveImage()}>Save</button>
+        {/if}
         {#if descError}
           <span class="error">
             {descError}
