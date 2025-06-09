@@ -8,8 +8,16 @@
   let { username: lastsavedusername, displayname: lastsaveddisplayname, profile_pic } = $state(client);
 
   // For uploading profile picture
-  let files: FileList | undefined = $state(undefined);
+  let files: FileList | undefined = $state();
+  let firstFile: File | undefined = $derived(files && files.length != 0 ? files[0] : undefined);
+  let fileURL: string | undefined = $state();
   let fileError: string = $state('');
+
+  $effect(() => {
+    firstFile;
+
+    getImageURL(firstFile).then(v => fileURL = v);
+  });
 
   // General error
   let error: string = $state('');
@@ -28,35 +36,19 @@
       // Hide the save bytton
       lastsavedusername = username;
       lastsaveddisplayname = displayname;
-      return;
-    }
-  }
-
-  // Upload the files when it updates
-  $effect(() => {
-    // Update when files gets updated
-    files;
-
-    // Check there is one file selected
-    if (!files) return;
-    if (files.length > 1) {
-      fileError = 'You can only select 1 file.';
-      return;
     }
 
-    // Get the first file
-    const file = files.item(0);
-    if (!file) return;
-    
-    // Check its size, to make sure its within 32MB
-    if (file.size > 33554432) {
+    if (!firstFile) return;
+
+    // Check the file size, to make sure its within 32MB
+    if (firstFile.size > 33554432) {
       fileError = 'Files cannot be larger than 32MB.';
       return;
     }
-
-    // Upload
+    
+    // Upload profile pic
     const formdata = new FormData();
-    formdata.set('file', file);
+    formdata.set('file', firstFile);
     
     fetch('/api/upload', {
       method: 'POST',
@@ -70,10 +62,31 @@
         method: 'POST',
         body: JSON.stringify({ uuid: profile_pic })
       });
+
+      files = undefined;
     });
-  });
+  }
+
+  async function getImageURL (file: File | undefined): Promise<string | undefined> {
+    if (!file) return undefined;
+
+    return new Promise((res, _) => {
+      const fr = new FileReader();
+
+      fr.onload = () => res(fr.result as string);
+      fr.onerror = () => res(undefined);
+
+      fr.readAsDataURL(file);
+    });
+  }
 
   async function removeProfilePic () {
+    if (fileURL) {
+      files = undefined;
+      fileURL = undefined;
+      return;
+    }
+
     const resp = await fetch('/api/profilepic', {
       method: 'DELETE'
     });
@@ -83,12 +96,12 @@
   }
 
   async function logout () {
-    const resp = await fetch('/api/logout', { method: 'POST' });
+    await fetch('/api/logout', { method: 'POST' });
 
     goto('/');
   }
 
-  let saveshown = $derived(username == lastsavedusername && displayname == lastsaveddisplayname);
+  let saveshown = $derived(username == lastsavedusername && displayname == lastsaveddisplayname && !fileURL);
 
   let confirmdeleteopen = $state(false);
 
@@ -122,7 +135,9 @@
         <div class="profilepic">
           <div class="outerpic">
             <label>
-              {#if profile_pic}
+              {#if fileURL}
+                <img src={fileURL} alt="">
+              {:else if profile_pic}
                 <img src="/api/uploads/{profile_pic}" alt="">
               {:else}  
                 <div class="label">{'+'}</div>
@@ -130,7 +145,7 @@
               <input bind:files={files} type="file" max="1" hidden>
             </label>
           </div>
-          {#if profile_pic}
+          {#if profile_pic || fileURL}
             <button onclick={() => removeProfilePic()}>Remove profile picture</button>
           {/if}
         </div>
