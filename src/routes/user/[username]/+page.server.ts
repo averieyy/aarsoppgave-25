@@ -38,7 +38,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
     limit 50`, user.id);
 
   // Fetch the games the user has submitted to
-  const games = await db.queryAll<{ name: string, id: number }>('select g.name, g.id from games g inner join speedrun s on s.game_id = g.id where s.client_id = $1::integer and s.verified = true and s.deleted = false', user.id)
+  const games = await db.queryAll<{ name: string, id: number }>('select distinct on (g.id) g.name, g.id from games g inner join speedrun s on s.game_id = g.id where s.client_id = $1::integer and s.verified = true and s.deleted = false', user.id)
   
   // Fetch the categories the user has submitted to
   const game_categories = await db.queryAll<speedrun_category>('select distinct on (sc) sc.* from speedrun_categories sc inner join speedrun s on s.game_id = sc.game_id and s.category_id = sc.id where s.client_id = $1::int and s.deleted = false and s.verified = true', user.id);
