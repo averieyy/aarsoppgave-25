@@ -1,7 +1,7 @@
 <script lang="ts">
   import Gamelist from "$lib/components/gamelist.svelte";
   import Header from "$lib/components/header.svelte";
-  import { toTimeSince } from '$lib/timedisplay';
+  import { toTime, toTimeSince } from '$lib/timedisplay';
 
   const { data } = $props();
   let { client, lastspeedrungames, games } = $state(data);
@@ -32,6 +32,7 @@
                   {speedrun.name} - {speedrun.category_label}
                 </h3>
                 <span>{toTimeSince(speedrun.submitted)}</span>
+                <span>{toTime(speedrun.score)}</span>
                 <span class="flexexpand"></span>
                 <span class="speedrunname">
                   {#if speedrun.profile_pic}
@@ -111,7 +112,7 @@
 
     text-decoration: none;
     
-    height: 7rem;
+    min-height: 7rem;
     width: 12rem;
 
   }
