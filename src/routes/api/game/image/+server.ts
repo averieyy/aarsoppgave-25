@@ -20,11 +20,11 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   const { game: gameid, file } = body;
 
   // Check if the parameters are valid
-  if (typeof gameid != 'number' || !gameid) return json({ message: 'Invalid or missing game parameter' }, { status: 400 });
+  if (typeof gameid != 'string' || !gameid) return json({ message: 'Invalid or missing game parameter' }, { status: 400 });
   if (typeof file != 'string' || !file) return json({ message: 'Invalid or missing file parameter' }, { status: 400 });
 
   // Check if the game exists, and if the client is authorized to edit it
-  const game = await db.queryOne<game & gamemember>('select * from game_members m join games g on m.game_id = g.id where g.id = $1::integer and m.client_id = $2::integer', gameid, client.id);
+  const game = await db.queryOne<game & gamemember>('select * from game_members m join games g on m.game_id = g.id where g.url_id = $1::text and m.client_id = $2::integer', gameid, client.id);
   if (!game) return json({ message: 'Could not find game' }, { status: 404 });
   if (!game.admin) return json({ message: 'Unauthorized' }, { status: 403 });
 
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   if (!existingfile) return json({ message: 'Could not find image' }, { status: 404 });
   if (!existingfile.mime.startsWith('image')) return json({ message: 'File is not an image' }, { status: 400 });
 
-  await db.execute('update games set image = $1::text where id = $2::integer', file, gameid);
+  await db.execute('update games set image = $1::text where id = $2::integer', file, game.id);
 
   return json({ message: 'Updated game image' }, { status: 200 });
 }

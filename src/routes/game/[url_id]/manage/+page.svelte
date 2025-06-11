@@ -99,67 +99,8 @@
     }
   });
 
-  async function saveImage () {
-    if (!selectedFile) return;
-
-    // Upload the image
-    const form = new FormData();
-    form.set('file', selectedFile);
-
-    fetch('/api/upload', {
-      method: 'POST',
-      body: form
-    }).then(async resp => {
-      if (!resp.ok) { error = (await resp.json()).message; return; }
-      game.image = (await resp.json()).id;
-
-      // Update game image
-      const r = await fetch('/api/game/image', {
-        method: 'POST',
-        body: JSON.stringify({ game: game.id, file: game.image })
-      })
-
-      if (!r.ok) {
-        error = (await r.json()).message;
-        return;
-      }
-    });
-  }
-
-  let descError = $state('');
-
-  async function saveDescription () {
-    // Send request to edit description
-    const resp = await fetch('/api/game/description', {
-      method: 'POST',
-      body: JSON.stringify({ description: game.description, game: game.url_id })
-    });
-
-    // Redirect if the user is unauthorized
-    if (resp.status == 403) await goto(`/game/${game.url_id}`);
-    // Show an error if it failed
-    if (!resp.ok) descError = (await resp.json()).message;
-  }
-
-  async function saveTitle () {
-    // Send a request to edit the title (name)
-    const resp = await fetch('/api/game/title', {
-      method: 'POST',
-      body: JSON.stringify({
-        game: game.url_id,
-        name: game.name
-      })
-    });
-
-    // Redirect if the user is unauthorized
-    if (resp.status == 403) await goto(`/game/${game.url_id}`);
-    // Show an error if it failed
-    if (!resp.ok) error = (await resp.json()).message;
-  }
-
   // List of administrators
   let administrators = $state(members.filter(m => m.admin));
-
 
   // Banned members
   let bannedmembers = $state(members.filter(m => m.banned));
@@ -191,6 +132,70 @@
       error = (await resp.json()).message;
     }
   }
+
+  let oldgame = data.game;
+  let unsavedChanges = $derived(oldgame.name != game.name || oldgame.description != game.description || oldgame.image != game.image || selectedFile);
+
+  async function saveAll () {
+    // Save description
+    if (oldgame.description != game.description)
+      await fetch('/api/game/description', {
+        method: 'POST',
+        body: JSON.stringify({ description: game.description, game: game.url_id })
+      }).then(async r => {
+        if (r.ok) oldgame.description = game.description;
+        else error = (await r.json()).message;
+      });
+
+    // Save title
+    if (oldgame.name != game.name)
+      await fetch('/api/game/title', {
+        method: 'POST',
+        body: JSON.stringify({ name: game.name, game: game.url_id })
+      }).then(async r => {
+        if (r.ok) oldgame.name = game.name;
+        else error = (await r.json()).message;
+      });
+
+    // Save image
+    if (oldgame.image != game.image)
+      await fetch('/api/game/image', {
+        method: 'POST',
+        body: JSON.stringify({ file: game.image, game: game.url_id })
+      }).then(async r => {
+        if (r.ok) oldgame.image = game.image;
+        else error = (await r.json()).message;
+      });
+
+    if (selectedFile) {
+      const form = new FormData();
+      form.set('file', selectedFile);
+
+      await fetch('/api/upload', {
+        method: 'POST',
+        body: form
+      }).then(async r => {
+        if (r.ok) {
+          const path = (await r.json()).id;
+          await fetch('/api/game/image', {
+            method: 'POST',
+            body: JSON.stringify({ game: game.url_id, file: path })
+          }).then(async r => {
+            if (r.ok) {
+              game.image = path;
+              files = undefined;
+              oldgame.image = game.image;
+            }
+            else error = (await r.json()).message;
+          });
+        }
+        else error = (await r.json()).message;
+      });
+    }
+
+    oldgame = oldgame;
+    game = game;
+  }
 </script>
 
 <svelte:head>
@@ -211,8 +216,6 @@
         <h2>Appearance</h2>
         <div class="title">
           <input type="text" placeholder="Name" bind:value={game.name}>
-          <IconButton label="Edit category" onclick={() => saveTitle()}
-            path="M8 0L10 2L3 9L1 9L1 7Z" />
         </div>
         <label>
           <div class="chosenimage">
@@ -231,16 +234,7 @@
           </div>
           <input bind:files={files} hidden type="file" class="fileselector">
         </label>
-        {#if selectedFile && !game.image}
-          <button onclick={() => saveImage()}>Save</button>
-        {/if}
-        {#if descError}
-          <span class="error">
-            {descError}
-          </span>
-        {/if}
         <textarea class="input" bind:value={game.description}></textarea>
-        <button onclick={() => saveDescription()}>Save</button>
       </section>
       <section>
         <h2>Categories</h2>
@@ -293,6 +287,9 @@
         </div>
       </section>
     </main>
+  </div>
+  <div class="outersave {unsavedChanges ? 'shown' : 'hidden'}">
+    <button onclick={() => saveAll()}>Save</button>
   </div>
 </div>
 
@@ -459,6 +456,28 @@
 
     &>input {
       flex: 1;
+    }
+  }
+  .outersave {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+
+    display: flex;
+
+    overflow: hidden;
+
+    &.hidden>button {
+      translate: 0 100%;
+    }
+    &.shown>button {
+      translate: 0 0%;
+    }
+
+    &>button {
+      flex: 1;
+      transition: translate .5s ease;
     }
   }
 </style>
