@@ -11,7 +11,7 @@ export const GET: RequestHandler = async ({ url }) => {
   // Fetch the games based on the requested search parameters
   const games = await db.queryAll<game>(`select
       distinct g.* from games g
-    join game_tags t on g.id = t.game_id
+    left outer join game_tags t on g.id = t.game_id
     where
       (t.tag = ANY($1::text[]) or array_length($1::text[], 1) is null)
     and
