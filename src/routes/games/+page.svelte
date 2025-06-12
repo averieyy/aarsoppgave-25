@@ -1,10 +1,12 @@
 <script lang="ts">
   import Gamelist from "$lib/components/gamelist.svelte";
   import Header from "$lib/components/header.svelte";
+  import type { game } from "$lib/types.js";
 
   const { data } = $props();
   
-  let { client, games, tags } = $state(data);
+  let { client, tags } = $state(data);
+  let games: game[] = $state([]);
 
   let error: string = $state('');
 
