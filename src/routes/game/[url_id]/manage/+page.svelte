@@ -133,7 +133,7 @@
     }
   }
 
-  let oldgame = data.game;
+  let oldgame = $state(data.game);
   let unsavedChanges = $derived(oldgame.name != game.name || oldgame.description != game.description || oldgame.image != game.image || selectedFile);
 
   async function saveAll () {
@@ -193,7 +193,6 @@
       });
     }
 
-    oldgame = oldgame;
     game = game;
   }
 </script>
